@@ -23,19 +23,15 @@ public:
 
     virtual antlrcpp::Any visitProg(ifccParser::ProgContext *context) = 0;
 
-    virtual antlrcpp::Any visitCode(ifccParser::CodeContext *context) = 0;
+    virtual antlrcpp::Any visitUneInst(ifccParser::UneInstContext *context) = 0;
 
-    virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *context) = 0;
+    virtual antlrcpp::Any visitMulInst(ifccParser::MulInstContext *context) = 0;
 
     virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *context) = 0;
 
     virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *context) = 0;
 
-    virtual antlrcpp::Any visitVars(ifccParser::VarsContext *context) = 0;
-
-    virtual antlrcpp::Any visitId(ifccParser::IdContext *context) = 0;
-
-    virtual antlrcpp::Any visitType(ifccParser::TypeContext *context) = 0;
+    virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *context) = 0;
 
 
 };

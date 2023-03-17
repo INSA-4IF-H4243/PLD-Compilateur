@@ -2,27 +2,27 @@ grammar ifcc;
 
 axiom : prog ;
 
-prog : 'int' 'main' '(' ')' '{' code? RETURN id ';' '}' ;
+prog : TYPE 'main' '(' ')' '{' code? RETURN expr ';' '}' ;
 
-code : statement
-     | statement code;
+code : instruction ';'        # uneInst
+     | instruction ';' code   # mulInst
+     ;
 
-statement : declaration 
-          | affectation ;
 
-declaration : type VAR '=' id ';'
-            | type vars ';' ;
-          
-affectation : VAR '=' id ';' ;
+instruction : TYPE VAR ('=' expr)? #declaration
+            | VAR ('=' expr)?      #affectation
+            ;
 
-vars : VAR
-     | VAR ',' vars? ;
+expr: (CONST|VAR);
 
-id : CONST|VAR;
-type : 'string'|'int';
+TYPE : INT|CHAR;
+INT:'int';
+CHAR:'char';
+
 RETURN : 'return' ;
 CONST : [0-9]+ ;
 COMMENT : '/*' .*? '*/' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
+
 VAR : [a-zA-Z]+;

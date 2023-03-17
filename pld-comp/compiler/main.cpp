@@ -7,7 +7,7 @@
 #include "generated/ifccLexer.h"
 #include "generated/ifccParser.h"
 #include "generated/ifccBaseVisitor.h"
-
+#include "DeclarationCheckVisitor.h"
 #include "CodeGenVisitor.h"
 
 using namespace antlr4;
@@ -43,7 +43,9 @@ int main(int argn, const char **argv)
       exit(1);
   }
 
-  
+  DeclarationCheckVisitor dcv;
+  dcv.visit(tree);
+
   CodeGenVisitor v;
   v.visit(tree);
 
