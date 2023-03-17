@@ -4,10 +4,19 @@ axiom : prog ;
 
 prog : 'int' 'main' '(' ')' '{' code? RETURN id ';' '}' ;
 
-code : instruction ';'
-     | instruction ';' code;
+code : statement
+     | statement code;
 
-instruction : type VAR '=' id;
+statement : declaration 
+          | affectation ;
+
+declaration : type VAR '=' id ';'
+            | type vars ';' ;
+          
+affectation : VAR '=' id ';' ;
+
+vars : VAR
+     | VAR ',' vars? ;
 
 id : CONST|VAR;
 type : 'string'|'int';

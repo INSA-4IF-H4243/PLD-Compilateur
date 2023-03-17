@@ -25,7 +25,13 @@ public:
 
     virtual antlrcpp::Any visitCode(ifccParser::CodeContext *context) = 0;
 
-    virtual antlrcpp::Any visitInstruction(ifccParser::InstructionContext *context) = 0;
+    virtual antlrcpp::Any visitStatement(ifccParser::StatementContext *context) = 0;
+
+    virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *context) = 0;
+
+    virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *context) = 0;
+
+    virtual antlrcpp::Any visitVars(ifccParser::VarsContext *context) = 0;
 
     virtual antlrcpp::Any visitId(ifccParser::IdContext *context) = 0;
 
