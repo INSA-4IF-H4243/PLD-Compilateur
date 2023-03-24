@@ -6,6 +6,6 @@ int main() {
     c =b;
     a =c ;
     int de;
-    a;
+    az;
     return a;
 }

@@ -1,0 +1,3 @@
+#var 42 non déclarée !!!
+
+return code: 3

@@ -1,4 +1,5 @@
 #declaration de x
+#utilisation de x
 .globl	main
  main: 
 # prologue

@@ -1,0 +1,7 @@
+line 4:5 token recognition error at: '+'
+line 5:12 token recognition error at: '+'
+line 4:6 no viable alternative at input 'ab'
+line 5:13 extraneous input 'b' expecting ';'
+error: syntax error during parsing
+
+return code: 1

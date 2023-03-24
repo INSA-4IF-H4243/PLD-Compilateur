@@ -1,6 +1,7 @@
 #declaration de a
 #declaration de b
 #declaration de c
+#utilisation de b
 .globl	main
  main: 
 # prologue
