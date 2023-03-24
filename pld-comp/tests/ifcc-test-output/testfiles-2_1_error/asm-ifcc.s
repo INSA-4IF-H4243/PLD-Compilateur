@@ -1,2 +1,5 @@
+#visitdeclaration 
 #declaration de a
-#utilisation de x
+#visitExpr 
+#visitExpr 
+#expression avec x

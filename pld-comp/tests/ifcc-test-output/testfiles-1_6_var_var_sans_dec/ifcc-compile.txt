@@ -1,5 +1,3 @@
-terminate called after throwing an instance of 'std::invalid_argument'
-  what():  stoi
-Aborted
+#var a non déclarée
 
-return code: 134
+return code: 3

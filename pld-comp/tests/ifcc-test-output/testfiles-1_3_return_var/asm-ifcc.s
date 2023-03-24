@@ -1,5 +1,8 @@
+#visitdeclaration 
 #declaration de x
-#utilisation de x
+#visitExpr 
+#visitExpr 
+#expression avec x
 .globl	main
  main: 
 # prologue

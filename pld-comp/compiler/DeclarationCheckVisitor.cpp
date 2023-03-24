@@ -7,13 +7,17 @@ std::list<std::string> listeDeclarations;
 
 antlrcpp::Any DeclarationCheckVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
 {
+    std::cout << "#visitdeclaration " << "\n" ;
     std::cout << "#declaration de " << ctx->VAR()->getText() << "\n" ;
     listeDeclarations.push_back(ctx->VAR()->getText());
-
+    if(ctx->expr()){
+        visit(ctx->expr());
+    }
     return 0;
 }
 antlrcpp::Any DeclarationCheckVisitor::visitExpr(ifccParser::ExprContext *ctx)
 {
+    std::cout << "#visitExpr " << "\n" ;
     if(ctx->VAR()){
         std::cout << "#expression avec " << ctx->VAR()->getText() << "\n" ;
         bool found = (std::find(listeDeclarations.begin(), listeDeclarations.end(), ctx->VAR()->getText()) != listeDeclarations.end());
@@ -33,6 +37,9 @@ antlrcpp::Any DeclarationCheckVisitor::visitAffectation(ifccParser::AffectationC
     if(!found){
         std::cerr << "#var " << ctx->VAR()->getText() << " non déclarée\n" ;
         exit(3);
+    }
+    if(ctx->expr()){
+        visit(ctx->expr());
     }
     return 0;
 }

@@ -1,8 +1,17 @@
+#visitdeclaration 
 #declaration de a
+#visitExpr 
+#visitdeclaration 
 #declaration de g
+#visitdeclaration 
 #declaration de b
-#utilisation de a
-#utilisation de b
+#visitExpr 
+#affectation de b
+#visitExpr 
+#expression avec a
+#affectation de a
+#visitExpr 
+#expression avec b
 .globl	main
  main: 
 # prologue

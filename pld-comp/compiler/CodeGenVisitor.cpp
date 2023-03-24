@@ -47,7 +47,7 @@ antlrcpp::Any CodeGenVisitor::visitAffectation(ifccParser::AffectationContext *c
 
 	if(ctx->expr()){
 		std::string expr = (ctx->expr()->getText());
-		if (map.find(expr) != map.end()) {
+		if (ctx->expr()->VAR()) {
 			std::cout<<
 			"movl	"<<map[expr]<<"(%rbp),%eax\n"
 			"movl	%eax, "<<map[var]<<"(%rbp)\n"
@@ -74,7 +74,7 @@ antlrcpp::Any CodeGenVisitor::visitDeclaration(ifccParser::DeclarationContext *c
 
 	if(ctx->expr()){
 		std::string expr = (ctx->expr()->getText());
-		if (map.find(expr) != map.end()) {
+		if (ctx->expr()->VAR()) {
 			std::cout<<
 			"movl	"<<map[expr]<<"(%rbp),%eax\n"
 			"movl	%eax, "<<map[var]<<"(%rbp)\n"
