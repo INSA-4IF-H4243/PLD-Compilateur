@@ -39,11 +39,23 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitInstructionSimple(ifccParser::InstructionSimpleContext *ctx) override {
+  virtual antlrcpp::Any visitPar(ifccParser::ParContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *ctx) override {
+  virtual antlrcpp::Any visitAdd(ifccParser::AddContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitConst(ifccParser::ConstContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitVar(ifccParser::VarContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitVars(ifccParser::VarsContext *ctx) override {
     return visitChildren(ctx);
   }
 

@@ -9,13 +9,16 @@ code : instruction ';'        # uneInst
      ;
 
 
-instruction : TYPE VAR ('=' expr)? #declaration
-            | VAR '=' expr         #affectation
-            | expr                 #instructionSimple
+instruction : TYPE vars ('=' expr)? #declaration
+            | vars '=' expr         #affectation
             ;
 
-expr: (CONST|VAR);
-
+expr: CONST              #const
+    | VAR                #var
+    | expr '+' expr      #add
+    | '(' expr ')'       #par
+    ;
+vars: VAR(',' vars)?;
 TYPE : INT|CHAR;
 INT:'int';
 CHAR:'char';

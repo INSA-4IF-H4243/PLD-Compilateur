@@ -87,25 +87,49 @@ public class ifccBaseListener implements ifccListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInstructionSimple(ifccParser.InstructionSimpleContext ctx) { }
+	@Override public void enterPar(ifccParser.ParContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInstructionSimple(ifccParser.InstructionSimpleContext ctx) { }
+	@Override public void exitPar(ifccParser.ParContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterExprs(ifccParser.ExprsContext ctx) { }
+	@Override public void enterAdd(ifccParser.AddContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitExprs(ifccParser.ExprsContext ctx) { }
+	@Override public void exitAdd(ifccParser.AddContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterConst(ifccParser.ConstContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitConst(ifccParser.ConstContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVar(ifccParser.VarContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVar(ifccParser.VarContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -118,18 +142,6 @@ public class ifccBaseListener implements ifccListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitVars(ifccParser.VarsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterExpr(ifccParser.ExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitExpr(ifccParser.ExprContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

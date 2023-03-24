@@ -13,12 +13,13 @@ class  ifccParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    TYPE = 8, INT = 9, CHAR = 10, RETURN = 11, CONST = 12, COMMENT = 13, 
-    DIRECTIVE = 14, WS = 15, VAR = 16
+    T__7 = 8, T__8 = 9, TYPE = 10, INT = 11, CHAR = 12, RETURN = 13, CONST = 14, 
+    COMMENT = 15, DIRECTIVE = 16, WS = 17, VAR = 18
   };
 
   enum {
-    RuleAxiom = 0, RuleProg = 1, RuleCode = 2, RuleInstruction = 3, RuleExpr = 4
+    RuleAxiom = 0, RuleProg = 1, RuleCode = 2, RuleInstruction = 3, RuleExpr = 4, 
+    RuleVars = 5
   };
 
   explicit ifccParser(antlr4::TokenStream *input);
@@ -35,7 +36,8 @@ public:
   class ProgContext;
   class CodeContext;
   class InstructionContext;
-  class ExprContext; 
+  class ExprContext;
+  class VarsContext; 
 
   class  AxiomContext : public antlr4::ParserRuleContext {
   public:
@@ -113,21 +115,12 @@ public:
    
   };
 
-  class  InstructionSimpleContext : public InstructionContext {
-  public:
-    InstructionSimpleContext(InstructionContext *ctx);
-
-    ExprContext *expr();
-
-    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-  };
-
   class  DeclarationContext : public InstructionContext {
   public:
     DeclarationContext(InstructionContext *ctx);
 
     antlr4::tree::TerminalNode *TYPE();
-    antlr4::tree::TerminalNode *VAR();
+    VarsContext *vars();
     ExprContext *expr();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -137,7 +130,7 @@ public:
   public:
     AffectationContext(InstructionContext *ctx);
 
-    antlr4::tree::TerminalNode *VAR();
+    VarsContext *vars();
     ExprContext *expr();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -148,17 +141,72 @@ public:
   class  ExprContext : public antlr4::ParserRuleContext {
   public:
     ExprContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    ExprContext() = default;
+    void copyFrom(ExprContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  ParContext : public ExprContext {
+  public:
+    ParContext(ExprContext *ctx);
+
+    ExprContext *expr();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  AddContext : public ExprContext {
+  public:
+    AddContext(ExprContext *ctx);
+
+    std::vector<ExprContext *> expr();
+    ExprContext* expr(size_t i);
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ConstContext : public ExprContext {
+  public:
+    ConstContext(ExprContext *ctx);
+
     antlr4::tree::TerminalNode *CONST();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  VarContext : public ExprContext {
+  public:
+    VarContext(ExprContext *ctx);
+
     antlr4::tree::TerminalNode *VAR();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  ExprContext* expr();
+  ExprContext* expr(int precedence);
+  class  VarsContext : public antlr4::ParserRuleContext {
+  public:
+    VarsContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *VAR();
+    VarsContext *vars();
 
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
    
   };
 
-  ExprContext* expr();
+  VarsContext* vars();
 
+
+  virtual bool sempred(antlr4::RuleContext *_localctx, size_t ruleIndex, size_t predicateIndex) override;
+  bool exprSempred(ExprContext *_localctx, size_t predicateIndex);
 
 private:
   static std::vector<antlr4::dfa::DFA> _decisionToDFA;

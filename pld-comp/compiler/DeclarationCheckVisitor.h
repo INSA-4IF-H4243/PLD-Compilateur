@@ -11,8 +11,9 @@ class  DeclarationCheckVisitor : public ifccBaseVisitor {
 
 		virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *context) override;
 
-		virtual antlrcpp::Any visitExpr(ifccParser::ExprContext *context) override;
+		virtual antlrcpp::Any visitVar(ifccParser::VarContext *context) override;
 
+    	virtual antlrcpp::Any visitVars(ifccParser::VarsContext *context) override;
 
 };
 

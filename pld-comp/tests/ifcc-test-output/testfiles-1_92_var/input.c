@@ -3,6 +3,5 @@ int main() {
     int g;
     char b=5;
     b=a;
-    a;
     return b;
 }
