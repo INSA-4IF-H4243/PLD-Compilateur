@@ -9,7 +9,8 @@
 #affectation de b
 #visitExpr 
 #expression avec a
-#affectation de a
+#visitExpr 
+#expression avec a
 #visitExpr 
 #expression avec b
 .globl	main

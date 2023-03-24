@@ -87,6 +87,18 @@ public class ifccBaseListener implements ifccListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterInstructionSimple(ifccParser.InstructionSimpleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInstructionSimple(ifccParser.InstructionSimpleContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterExpr(ifccParser.ExprContext ctx) { }
 	/**
 	 * {@inheritDoc}

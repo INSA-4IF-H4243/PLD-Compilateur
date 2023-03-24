@@ -10,7 +10,8 @@ code : instruction ';'        # uneInst
 
 
 instruction : TYPE VAR ('=' expr)? #declaration
-            | VAR ('=' expr)?      #affectation
+            | VAR '=' expr         #affectation
+            | expr                 #instructionSimple
             ;
 
 expr: (CONST|VAR);

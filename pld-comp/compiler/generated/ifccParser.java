@@ -173,7 +173,7 @@ public class ifccParser extends Parser {
 			setState(18);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			if (_la==TYPE || _la==VAR) {
+			if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << TYPE) | (1L << CONST) | (1L << VAR))) != 0)) {
 				{
 				setState(17);
 				code();
@@ -297,6 +297,20 @@ public class ifccParser extends Parser {
 			super.copyFrom(ctx);
 		}
 	}
+	public static class InstructionSimpleContext extends InstructionContext {
+		public ExprContext expr() {
+			return getRuleContext(ExprContext.class,0);
+		}
+		public InstructionSimpleContext(InstructionContext ctx) { copyFrom(ctx); }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof ifccListener ) ((ifccListener)listener).enterInstructionSimple(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof ifccListener ) ((ifccListener)listener).exitInstructionSimple(this);
+		}
+	}
 	public static class DeclarationContext extends InstructionContext {
 		public TerminalNode TYPE() { return getToken(ifccParser.TYPE, 0); }
 		public TerminalNode VAR() { return getToken(ifccParser.VAR, 0); }
@@ -334,10 +348,10 @@ public class ifccParser extends Parser {
 		enterRule(_localctx, 6, RULE_instruction);
 		int _la;
 		try {
-			setState(45);
+			setState(44);
 			_errHandler.sync(this);
-			switch (_input.LA(1)) {
-			case TYPE:
+			switch ( getInterpreter().adaptivePredict(_input,3,_ctx) ) {
+			case 1:
 				_localctx = new DeclarationContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
@@ -359,28 +373,26 @@ public class ifccParser extends Parser {
 
 				}
 				break;
-			case VAR:
+			case 2:
 				_localctx = new AffectationContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
 				setState(40);
 				match(VAR);
-				setState(43);
-				_errHandler.sync(this);
-				_la = _input.LA(1);
-				if (_la==T__6) {
-					{
-					setState(41);
-					match(T__6);
-					setState(42);
-					expr();
-					}
-				}
-
+				setState(41);
+				match(T__6);
+				setState(42);
+				expr();
 				}
 				break;
-			default:
-				throw new NoViableAltException(this);
+			case 3:
+				_localctx = new InstructionSimpleContext(_localctx);
+				enterOuterAlt(_localctx, 3);
+				{
+				setState(43);
+				expr();
+				}
+				break;
 			}
 		}
 		catch (RecognitionException re) {
@@ -418,7 +430,7 @@ public class ifccParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(47);
+			setState(46);
 			_la = _input.LA(1);
 			if ( !(_la==CONST || _la==VAR) ) {
 			_errHandler.recoverInline(this);
@@ -442,20 +454,19 @@ public class ifccParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\22\64\4\2\t\2\4\3"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3\22\63\4\2\t\2\4\3"+
 		"\t\3\4\4\t\4\4\5\t\5\4\6\t\6\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\3\5\3\25\n"+
 		"\3\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\4\3\4\3\4\3\4\3\4\5\4#\n\4\3\5\3\5\3"+
-		"\5\3\5\5\5)\n\5\3\5\3\5\3\5\5\5.\n\5\5\5\60\n\5\3\6\3\6\3\6\2\2\7\2\4"+
-		"\6\b\n\2\3\4\2\16\16\22\22\2\63\2\f\3\2\2\2\4\16\3\2\2\2\6\"\3\2\2\2\b"+
-		"/\3\2\2\2\n\61\3\2\2\2\f\r\5\4\3\2\r\3\3\2\2\2\16\17\7\n\2\2\17\20\7\3"+
-		"\2\2\20\21\7\4\2\2\21\22\7\5\2\2\22\24\7\6\2\2\23\25\5\6\4\2\24\23\3\2"+
-		"\2\2\24\25\3\2\2\2\25\26\3\2\2\2\26\27\7\r\2\2\27\30\5\n\6\2\30\31\7\7"+
-		"\2\2\31\32\7\b\2\2\32\5\3\2\2\2\33\34\5\b\5\2\34\35\7\7\2\2\35#\3\2\2"+
-		"\2\36\37\5\b\5\2\37 \7\7\2\2 !\5\6\4\2!#\3\2\2\2\"\33\3\2\2\2\"\36\3\2"+
-		"\2\2#\7\3\2\2\2$%\7\n\2\2%(\7\22\2\2&\'\7\t\2\2\')\5\n\6\2(&\3\2\2\2("+
-		")\3\2\2\2)\60\3\2\2\2*-\7\22\2\2+,\7\t\2\2,.\5\n\6\2-+\3\2\2\2-.\3\2\2"+
-		"\2.\60\3\2\2\2/$\3\2\2\2/*\3\2\2\2\60\t\3\2\2\2\61\62\t\2\2\2\62\13\3"+
-		"\2\2\2\7\24\"(-/";
+		"\5\3\5\5\5)\n\5\3\5\3\5\3\5\3\5\5\5/\n\5\3\6\3\6\3\6\2\2\7\2\4\6\b\n\2"+
+		"\3\4\2\16\16\22\22\2\62\2\f\3\2\2\2\4\16\3\2\2\2\6\"\3\2\2\2\b.\3\2\2"+
+		"\2\n\60\3\2\2\2\f\r\5\4\3\2\r\3\3\2\2\2\16\17\7\n\2\2\17\20\7\3\2\2\20"+
+		"\21\7\4\2\2\21\22\7\5\2\2\22\24\7\6\2\2\23\25\5\6\4\2\24\23\3\2\2\2\24"+
+		"\25\3\2\2\2\25\26\3\2\2\2\26\27\7\r\2\2\27\30\5\n\6\2\30\31\7\7\2\2\31"+
+		"\32\7\b\2\2\32\5\3\2\2\2\33\34\5\b\5\2\34\35\7\7\2\2\35#\3\2\2\2\36\37"+
+		"\5\b\5\2\37 \7\7\2\2 !\5\6\4\2!#\3\2\2\2\"\33\3\2\2\2\"\36\3\2\2\2#\7"+
+		"\3\2\2\2$%\7\n\2\2%(\7\22\2\2&\'\7\t\2\2\')\5\n\6\2(&\3\2\2\2()\3\2\2"+
+		"\2)/\3\2\2\2*+\7\22\2\2+,\7\t\2\2,/\5\n\6\2-/\5\n\6\2.$\3\2\2\2.*\3\2"+
+		"\2\2.-\3\2\2\2/\t\3\2\2\2\60\61\t\2\2\2\61\13\3\2\2\2\6\24\"(.";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

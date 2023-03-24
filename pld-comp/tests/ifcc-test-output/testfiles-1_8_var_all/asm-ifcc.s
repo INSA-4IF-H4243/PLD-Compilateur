@@ -21,4 +21,5 @@
 #expression avec c
 #visitdeclaration 
 #declaration de de
-#affectation de az
+#visitExpr 
+#expression avec az

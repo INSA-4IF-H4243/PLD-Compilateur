@@ -75,6 +75,18 @@ public interface ifccListener extends ParseTreeListener {
 	 */
 	void exitAffectation(ifccParser.AffectationContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code instructionSimple}
+	 * labeled alternative in {@link ifccParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void enterInstructionSimple(ifccParser.InstructionSimpleContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code instructionSimple}
+	 * labeled alternative in {@link ifccParser#instruction}.
+	 * @param ctx the parse tree
+	 */
+	void exitInstructionSimple(ifccParser.InstructionSimpleContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link ifccParser#expr}.
 	 * @param ctx the parse tree
 	 */

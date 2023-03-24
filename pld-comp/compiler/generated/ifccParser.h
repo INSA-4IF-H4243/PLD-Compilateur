@@ -113,6 +113,15 @@ public:
    
   };
 
+  class  InstructionSimpleContext : public InstructionContext {
+  public:
+    InstructionSimpleContext(InstructionContext *ctx);
+
+    ExprContext *expr();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
   class  DeclarationContext : public InstructionContext {
   public:
     DeclarationContext(InstructionContext *ctx);

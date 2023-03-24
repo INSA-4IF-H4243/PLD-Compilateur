@@ -43,24 +43,20 @@ antlrcpp::Any CodeGenVisitor::visitMulInst(ifccParser::MulInstContext *ctx)
 antlrcpp::Any CodeGenVisitor::visitAffectation(ifccParser::AffectationContext *ctx) 
 {
 	std::string var = (ctx->VAR()->getText());
+	std::string expr = (ctx->expr()->getText());
 	
-
-	if(ctx->expr()){
-		std::string expr = (ctx->expr()->getText());
-		if (ctx->expr()->VAR()) {
-			std::cout<<
-			"movl	"<<map[expr]<<"(%rbp),%eax\n"
-			"movl	%eax, "<<map[var]<<"(%rbp)\n"
-			;
-		}	
-		else {
-			int constInt = stoi(expr);
-			std::cout<<
-			"movl	$"<< constInt <<", "<<map[var]<<"(%rbp)\n"
+	if (ctx->expr()->VAR()) {
+		std::cout<<
+		"movl	"<<map[expr]<<"(%rbp),%eax\n"
+		"movl	%eax, "<<map[var]<<"(%rbp)\n"
 		;
-		}
+	}	
+	else {
+		int constInt = stoi(expr);
+		std::cout<<
+		"movl	$"<< constInt <<", "<<map[var]<<"(%rbp)\n"
+		;
 	}
-
 	return 0;
 }
 
@@ -91,4 +87,5 @@ antlrcpp::Any CodeGenVisitor::visitDeclaration(ifccParser::DeclarationContext *c
 
 	return 0;
 }
+
 
