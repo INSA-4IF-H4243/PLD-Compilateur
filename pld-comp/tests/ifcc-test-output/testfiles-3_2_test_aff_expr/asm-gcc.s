@@ -12,9 +12,8 @@ main:
 	.cfi_def_cfa_register 6
 	movl	$8, -4(%rbp)
 	movl	$26, -8(%rbp)
-	movl	-4(%rbp), %edx
-	movl	-8(%rbp), %eax
-	addl	%edx, %eax
+	movl	$12, -8(%rbp)
+	movl	$7, %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
 	ret

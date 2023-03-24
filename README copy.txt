@@ -39,3 +39,43 @@ COMMENT : '/*' .*? '*/' -> skip ;
 DIRECTIVE : '#' .*? '\n' -> skip ;
 WS    : [ \t\r\n] -> channel(HIDDEN);
 VAR : ('a'..'z'|'A'..'Z');
+
+
+
+
+truc:
+
+
+
+grammar ifcc;
+
+axiom : prog ;
+
+prog : TYPE 'main' '(' ')' '{' code? RETURN exprs ';' '}' ;
+
+code : instruction ';'        # uneInst
+     | instruction ';' code   # mulInst
+     ;
+
+
+instruction : TYPE vars ('=' expr)? #declaration
+            | vars '=' expr         #affectation
+            | exprs                 #instructionSimple
+            ;
+
+exprs: expr (','expr)?;
+vars: VAR (','VAR)?;
+
+expr: (CONST|VAR);
+
+TYPE : INT|CHAR;
+INT:'int';
+CHAR:'char';
+
+RETURN : 'return' ;
+CONST : [0-9]+ ;
+COMMENT : '/*' .*? '*/' -> skip ;
+DIRECTIVE : '#' .*? '\n' -> skip ;
+WS    : [ \t\r\n] -> channel(HIDDEN);
+
+VAR : [a-zA-Z]+;

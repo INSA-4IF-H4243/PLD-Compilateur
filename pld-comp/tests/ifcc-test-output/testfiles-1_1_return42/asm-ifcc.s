@@ -1,4 +1,3 @@
-#visitExpr 
 .globl	main
  main: 
 # prologue

@@ -1,7 +1,14 @@
 line 4:5 token recognition error at: '+'
-line 5:12 token recognition error at: '+'
+line 4:7 token recognition error at: ','
+line 4:9 token recognition error at: ','
+line 5:5 token recognition error at: ','
+line 6:12 token recognition error at: '+'
+line 6:14 token recognition error at: ','
+line 6:16 token recognition error at: ','
+line 6:18 token recognition error at: '/1'
+line 6:21 token recognition error at: ','
 line 4:6 no viable alternative at input 'ab'
-line 5:13 extraneous input 'b' expecting ';'
+line 6:13 mismatched input 'b' expecting ';'
 error: syntax error during parsing
 
 return code: 1

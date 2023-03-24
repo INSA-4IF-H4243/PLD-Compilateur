@@ -1,7 +1,4 @@
-#visitdeclaration 
 #declaration de x
-#visitExpr 
-#visitExpr 
 #expression avec x
 .globl	main
  main: 

@@ -1,13 +1,7 @@
-#visitdeclaration 
 #declaration de a
-#visitExpr 
-#visitdeclaration 
 #declaration de b
-#visitExpr 
 #affectation de b
-#visitExpr 
 #expression avec a
-#visitExpr 
 #expression avec b
 .globl	main
  main: 
