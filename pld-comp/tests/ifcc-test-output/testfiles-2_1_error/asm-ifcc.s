@@ -1,2 +1,2 @@
-#declaration de a
-#expression avec x
+# declaration de a
+# expression avec x

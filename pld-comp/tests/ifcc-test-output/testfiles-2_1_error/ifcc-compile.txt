@@ -1,3 +1,3 @@
-#var x non déclarée
+# var x non déclarée
 
 return code: 3
