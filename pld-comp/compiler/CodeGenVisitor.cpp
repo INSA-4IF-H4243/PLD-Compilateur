@@ -101,6 +101,45 @@ antlrcpp::Any CodeGenVisitor::visitAdd(ifccParser::AddContext *ctx)
 		;
 	return map[tmp];
 }
+antlrcpp::Any CodeGenVisitor::visitSub(ifccParser::SubContext *ctx) 
+{
+	int res_gauche = visit(ctx->expr()[0]);
+	int res_droite = visit(ctx->expr()[1]); 
+	compteur += 4;
+	std::string tmp = "_tmp"+std::to_string(compteur);
+	map[tmp]=-compteur;
+	std::cout<<
+		" movl	"<<res_gauche<<"(%rbp), %eax\n"
+		" subl	"<<res_droite<<"(%rbp), %eax\n" 
+		" movl  %eax, "<<map[tmp]<<"(%rbp)\n"
+		;
+	return map[tmp];
+}
+antlrcpp::Any CodeGenVisitor::visitMuldiv(ifccParser::MuldivContext *ctx) 
+{
+	char op=ctx->OP()->getText()[0];
+	int res_gauche = visit(ctx->expr()[0]);
+	int res_droite = visit(ctx->expr()[1]); 
+	
+	compteur += 4;
+	std::string tmp = "_tmp"+std::to_string(compteur);
+	map[tmp]=-compteur;
+	if(op=='*'){
+		std::cout<<
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" imull	"<<res_droite<<"(%rbp), %eax\n" 
+			" movl  %eax, "<<map[tmp]<<"(%rbp)\n"
+			;
+	}
+	else if(op=='/'){
+		std::cout<<
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" idivl	"<<res_droite<<"(%rbp)\n" 
+			" movl  %eax, "<<map[tmp]<<"(%rbp)\n"
+			;
+	}
+	return map[tmp];
+}
 
 antlrcpp::Any CodeGenVisitor::visitVar(ifccParser::VarContext *ctx) {
 	return map[ctx->VAR()->getText()];

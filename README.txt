@@ -1,4 +1,8 @@
-python3 ifcc-test.py ./testfiles/*.c
+python3 ifcc-test.py ./testfiles/*.c                    pour lancer les tests
+gcc -S ret42aff.c                                       pour créer l'assembleur
+make gui FILE=ret42.c                                   pour voir l'arbre
+
+
 
 hbailleux@if501-219-13:~/PLD-Comp/pld-comp/compiler$ gcc -S ret42.c
 hbailleux@if501-219-13:~/PLD-Comp/pld-comp/compiler$ make

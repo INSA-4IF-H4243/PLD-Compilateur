@@ -47,11 +47,19 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitSub(ifccParser::SubContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitConst(ifccParser::ConstContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitVar(ifccParser::VarContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitMuldiv(ifccParser::MuldivContext *ctx) override {
     return visitChildren(ctx);
   }
 

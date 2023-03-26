@@ -1,4 +1,8 @@
-int main() {
-    int a,b,c=8+5;
-    return a;
+int main()
+{
+
+int a=2;
+int b=4;
+int j =b*a;
+return j;
 }

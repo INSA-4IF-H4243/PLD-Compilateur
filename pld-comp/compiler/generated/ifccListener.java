@@ -99,6 +99,18 @@ public interface ifccListener extends ParseTreeListener {
 	 */
 	void exitAdd(ifccParser.AddContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code sub}
+	 * labeled alternative in {@link ifccParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterSub(ifccParser.SubContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code sub}
+	 * labeled alternative in {@link ifccParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitSub(ifccParser.SubContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code const}
 	 * labeled alternative in {@link ifccParser#expr}.
 	 * @param ctx the parse tree
@@ -122,6 +134,18 @@ public interface ifccListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitVar(ifccParser.VarContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code muldiv}
+	 * labeled alternative in {@link ifccParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void enterMuldiv(ifccParser.MuldivContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code muldiv}
+	 * labeled alternative in {@link ifccParser#expr}.
+	 * @param ctx the parse tree
+	 */
+	void exitMuldiv(ifccParser.MuldivContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link ifccParser#vars}.
 	 * @param ctx the parse tree
