@@ -1,0 +1,3 @@
+# var b non déclarée
+
+return code: 3
