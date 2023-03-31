@@ -1,0 +1,5 @@
+line 5:4 no viable alternative at input 'a,b,v=12\n    return'
+line 5:12 mismatched input ',' expecting ';'
+error: syntax error during parsing
+
+return code: 1

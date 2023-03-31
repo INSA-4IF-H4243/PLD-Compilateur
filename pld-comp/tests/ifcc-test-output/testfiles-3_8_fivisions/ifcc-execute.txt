@@ -1,3 +1,2 @@
-Floating point exception (core dumped)
 
-return code: 136
+return code: 2

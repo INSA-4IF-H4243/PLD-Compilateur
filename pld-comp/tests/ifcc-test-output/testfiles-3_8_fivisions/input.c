@@ -1,8 +1,7 @@
 int main()
 {
-int a,b;
-a=4;
-b=2;
-int c=a/b;
-return a/b;
+    int a = 5;
+    int b = 2;
+    int c=a/b;
+    return c;
 }

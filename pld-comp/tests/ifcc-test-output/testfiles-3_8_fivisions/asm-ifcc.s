@@ -1,12 +1,9 @@
 # declaration de a
 # declaration de b
-# affectation de a
-# affectation de b
 # declaration de c
 # expression avec a
 # expression avec b
-# expression avec a
-# expression avec b
+# expression avec c
 
 .globl	main
  main: 
@@ -15,12 +12,12 @@
  pushq %rbp 		# save %rbp on the stack
  movq %rsp, %rbp 	# define %rbp for the current function
 
-# mise de $4 dans -12
- movl	$4, -12(%rbp)
+# mise de $5 dans -8
+ movl	$5, -8(%rbp)
 
 
-# affectation de a à -12
- movl	-12(%rbp),%eax
+# declaration de a dans -8
+ movl	-8(%rbp),%eax
  movl	%eax, -4(%rbp)
 
 
@@ -28,14 +25,15 @@
  movl	$2, -16(%rbp)
 
 
-# affectation de b à -16
+# declaration de b dans -16
  movl	-16(%rbp),%eax
- movl	%eax, -8(%rbp)
+ movl	%eax, -12(%rbp)
 
 
-# division de -4 / -8 -> -24
+# division de -4 / -12 -> -24
  movl	-4(%rbp), %eax
- idivl	-8(%rbp)
+ cltd
+ idivl	-12(%rbp)
  movl  %eax, -24(%rbp)
 
 
@@ -43,14 +41,9 @@
  movl	-24(%rbp),%eax
  movl	%eax, -20(%rbp)
 
-
-# division de -4 / -8 -> -28
- movl	-4(%rbp), %eax
- idivl	-8(%rbp)
- movl  %eax, -28(%rbp)
-
 retour : 
-movl	-28(%rbp), %eax
+movl	-20(%rbp), %eax
+
 # epilogue
  popq %rbp 			# restore %rbp from the stack
  	ret

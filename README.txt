@@ -1,45 +1,74 @@
-python3 ifcc-test.py ./testfiles/*.c                    pour lancer les tests
-gcc -S ret42aff.c                                       pour créer l'assembleur
-make gui FILE=ret42.c                                   pour voir l'arbre
+Compilateur C vers Assembleur:
 
+Fonctionnalités : 
 
+Programme basique C:
+int main() {
+   return 42;
+}
+test 1_1
 
-hbailleux@if501-219-13:~/PLD-Comp/pld-comp/compiler$ gcc -S ret42.c
-hbailleux@if501-219-13:~/PLD-Comp/pld-comp/compiler$ make
-g++ -g -c -std=c++17 -I../antlr/include -Wno-attributes  -MMD -o build/CodeGenVisitor.o CodeGenVisitor.cpp 
-g++ -g build/*.o ../antlr/lib/libantlr4-runtime.a -o ifcc
-hbailleux@if501-219-13:~/PLD-Comp/pld-comp/compiler$ ./ifcc ret42.c
-.globl  main
- main: 
-# prologue
-pushq %rbp              # save %rbp on the stack
-movq %rsp, %rbp         # define %rbp for the current function
-        movl    $42, %eax
-# epilogue
-popq %rbp                       # restore %rbp from the stack
-        re
+Déclaration de variables:
+    int a=8;
+    int b=5;
+    int c=a;
+    return c;
+test 1_5
 
+Affectation d'une variable:
+    int a=8;
+    int b=5;
+    b=a;
+test 1_7
 
-questce qui a changé ?
-movl	$42, -4(%rbp)
-	movl	-4(%rbp), %eax
+Déclaration de char:
+    char a = 4;
+    return a;
+test 1_9
 
-    a est à -4
+Déclaration et Affectation de plusieurs variables en une instruction:
+    int a,b,v;
+    a,b,v=12;
+    return a,b,v;
+test 1_93
 
+Détection de non déclaration:
+int main() {
+    int c=a;
+    return c;
+}
+test 1_6
 
-make gui FILE=ret42.c
+Expressions Arithmétiques (=,+,-,*,/,()):
+        int b,c;
+        int a=17;
+        b=42+a;
+        c = a*b - (b*b +12)*7;
+        return c+46*(6-12);
+test 3_7
 
-grammar ifcc;
+Détection des multiples déclarations:
+        int a,b;
+        int a;
+        return 0;
+test 3_9
 
-axiom : prog ;
+Ce qui ne Fonctionne Pas:
 
-prog : 'int' 'main' '(' ')' '{' code RETURN VAR ';' '}' ;
+Boucles:
 
-code : 'int' VAR '=' CONST';';
+Fonctions:
 
-RETURN : 'return' ;
-CONST : [0-9]+ ;
-COMMENT : '/*' .*? '*/' -> skip ;
-DIRECTIVE : '#' .*? '\n' -> skip ;
-WS    : [ \t\r\n] -> channel(HIDDEN);
-VAR : ('a'..'z'|'A'..'Z');
+If..Else:
+
+Comparateurs:
+
+Adressage:
+
+Types différents de int:
+
+Utilisation de Char:
+
+Tableaux:
+
+...

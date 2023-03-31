@@ -11,6 +11,7 @@
 
 retour : 
 movl	-4(%rbp), %eax
+
 # epilogue
  popq %rbp 			# restore %rbp from the stack
  	ret

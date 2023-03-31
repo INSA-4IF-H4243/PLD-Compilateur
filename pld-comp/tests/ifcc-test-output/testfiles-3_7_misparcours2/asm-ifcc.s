@@ -6,6 +6,8 @@
 # affectation de c
 # expression avec a
 # expression avec b
+# expression avec a
+# expression avec b
 # expression avec b
 # expression avec b
 # expression avec c
@@ -41,80 +43,94 @@
  movl	%eax, -4(%rbp)
 
 
-# multiplication de -12 * -4 -> -28
+# division de -12 / -4 -> -28
  movl	-12(%rbp), %eax
- imull	-4(%rbp), %eax
+ cltd
+ idivl	-4(%rbp)
  movl  %eax, -28(%rbp)
 
 
-# multiplication de -4 * -4 -> -32
- movl	-4(%rbp), %eax
+# multiplication de -12 * -4 -> -32
+ movl	-12(%rbp), %eax
  imull	-4(%rbp), %eax
  movl  %eax, -32(%rbp)
 
 
-# mise de $12 dans -36
- movl	$12, -36(%rbp)
+# addition de -28 + -32 -> -36
+ movl	-28(%rbp), %eax
+ addl	-32(%rbp), %eax
+ movl  %eax, -36(%rbp)
 
 
-# addition de -32 + -36 -> -40
- movl	-32(%rbp), %eax
- addl	-36(%rbp), %eax
+# multiplication de -4 * -4 -> -40
+ movl	-4(%rbp), %eax
+ imull	-4(%rbp), %eax
  movl  %eax, -40(%rbp)
 
 
-# mise de $7 dans -44
- movl	$7, -44(%rbp)
+# mise de $12 dans -44
+ movl	$12, -44(%rbp)
 
 
-# multiplication de -40 * -44 -> -48
+# addition de -40 + -44 -> -48
  movl	-40(%rbp), %eax
- imull	-44(%rbp), %eax
+ addl	-44(%rbp), %eax
  movl  %eax, -48(%rbp)
 
 
-# soustraction de -28 - -48 -> -52
- movl	-28(%rbp), %eax
- subl	-48(%rbp), %eax
- movl  %eax, -52(%rbp)
+# mise de $7 dans -52
+ movl	$7, -52(%rbp)
 
 
-# affectation de c à -52
- movl	-52(%rbp),%eax
+# multiplication de -48 * -52 -> -56
+ movl	-48(%rbp), %eax
+ imull	-52(%rbp), %eax
+ movl  %eax, -56(%rbp)
+
+
+# soustraction de -36 - -56 -> -60
+ movl	-36(%rbp), %eax
+ subl	-56(%rbp), %eax
+ movl  %eax, -60(%rbp)
+
+
+# affectation de c à -60
+ movl	-60(%rbp),%eax
  movl	%eax, -8(%rbp)
 
 
-# mise de $46 dans -56
- movl	$46, -56(%rbp)
+# mise de $46 dans -64
+ movl	$46, -64(%rbp)
 
 
-# mise de $6 dans -60
- movl	$6, -60(%rbp)
+# mise de $6 dans -68
+ movl	$6, -68(%rbp)
 
 
-# mise de $12 dans -64
- movl	$12, -64(%rbp)
+# mise de $12 dans -72
+ movl	$12, -72(%rbp)
 
 
-# soustraction de -60 - -64 -> -68
- movl	-60(%rbp), %eax
- subl	-64(%rbp), %eax
- movl  %eax, -68(%rbp)
-
-
-# multiplication de -56 * -68 -> -72
- movl	-56(%rbp), %eax
- imull	-68(%rbp), %eax
- movl  %eax, -72(%rbp)
-
-
-# addition de -8 + -72 -> -76
- movl	-8(%rbp), %eax
- addl	-72(%rbp), %eax
+# soustraction de -68 - -72 -> -76
+ movl	-68(%rbp), %eax
+ subl	-72(%rbp), %eax
  movl  %eax, -76(%rbp)
 
+
+# multiplication de -64 * -76 -> -80
+ movl	-64(%rbp), %eax
+ imull	-76(%rbp), %eax
+ movl  %eax, -80(%rbp)
+
+
+# addition de -8 + -80 -> -84
+ movl	-8(%rbp), %eax
+ addl	-80(%rbp), %eax
+ movl  %eax, -84(%rbp)
+
 retour : 
-movl	-76(%rbp), %eax
+movl	-84(%rbp), %eax
+
 # epilogue
  popq %rbp 			# restore %rbp from the stack
  	ret

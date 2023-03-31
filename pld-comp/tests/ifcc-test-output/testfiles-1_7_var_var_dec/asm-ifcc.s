@@ -35,6 +35,7 @@
 
 retour : 
 movl	-12(%rbp), %eax
+
 # epilogue
  popq %rbp 			# restore %rbp from the stack
  	ret

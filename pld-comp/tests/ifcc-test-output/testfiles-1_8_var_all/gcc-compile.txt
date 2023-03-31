@@ -1,8 +1,8 @@
 input.c: In function ‘main’:
 input.c:10:5: error: ‘az’ undeclared (first use in this function); did you mean ‘a’?
-   10 |     az;
-      |     ^~
-      |     a
+     az;
+     ^~
+     a
 input.c:10:5: note: each undeclared identifier is reported only once for each function it appears in
 
 return code: 1

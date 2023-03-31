@@ -123,12 +123,14 @@ antlrcpp::Any CodeGenVisitor::visitMuldiv(ifccParser::MuldivContext *ctx)
 {
 	char op=ctx->OP()->getText()[0];
 	int res_gauche = visit(ctx->expr()[0]);
-	int res_droite = visit(ctx->expr()[1]); 
+	int res_droite = visit(ctx->expr()[1]);
+	std::string tmp = "";
+	map[tmp] = 0;
 	
-	compteur += 4;
-	std::string tmp = "_tmp"+std::to_string(compteur);
-	map[tmp]=-compteur;
 	if(op=='*'){
+		compteur += 4;
+		tmp = "_tmp"+std::to_string(compteur);
+		map[tmp]=-compteur;
 		std::cout<<
 			"\n# multiplication de "<<res_gauche<<" * "<<res_droite<<" -> "<<-compteur<<"\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
@@ -136,10 +138,14 @@ antlrcpp::Any CodeGenVisitor::visitMuldiv(ifccParser::MuldivContext *ctx)
 			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
 	}
-	else if(op=='/'){
+	else {
+		compteur += 4;
+		tmp = "_tmp"+std::to_string(compteur);
+		map[tmp]=-compteur;
 		std::cout<<
 			"\n# division de "<<res_gauche<<" / "<<res_droite<<" -> "<<-compteur<<"\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" cltd\n" //uniquement si on veut le résultat en int
 			" idivl	"<<res_droite<<"(%rbp)\n" 
 			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
