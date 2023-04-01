@@ -47,7 +47,19 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitNeg(ifccParser::NegContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitSub(ifccParser::SubContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitNot(ifccParser::NotContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitOr(ifccParser::OrContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -56,6 +68,18 @@ public:
   }
 
   virtual antlrcpp::Any visitVar(ifccParser::VarContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitAnd(ifccParser::AndContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCmp(ifccParser::CmpContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitXor(ifccParser::XorContext *ctx) override {
     return visitChildren(ctx);
   }
 

@@ -45,7 +45,6 @@
 
 # division de -12 / -4 -> -28
  movl	-12(%rbp), %eax
- cltd
  idivl	-4(%rbp)
  movl  %eax, -28(%rbp)
 
@@ -128,7 +127,7 @@
  addl	-80(%rbp), %eax
  movl  %eax, -84(%rbp)
 
-retour : 
+# retour : 
 movl	-84(%rbp), %eax
 
 # epilogue

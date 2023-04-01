@@ -13,12 +13,18 @@ instruction : TYPE vars ('=' expr)? #declaration
             | vars '=' expr         #affectation
             ;
 
-expr        : expr OP  expr         #muldiv
-            | expr '+' expr         #add
-            | expr '-' expr         #sub
+expr        : expr OPM  expr        #muldiv
+            | expr '+'  expr        #add
+            | expr '-'  expr        #sub
             | CONST                 #const
             | VAR                   #var
             | '(' expr ')'          #par
+            | expr CMPOP expr       #cmp
+            | expr '|' expr         #or
+            | expr '&' expr         #and
+            | expr '^' expr         #xor
+            | '-' expr              #neg
+            | '!' expr              #not
             ;
 
 vars        : VAR(',' vars)?;
@@ -28,7 +34,8 @@ CHAR        :'char';
 
 RETURN      : 'return' ;
 CONST       : [0-9]+ ;
-OP : ('*'|'/');
+OPM : ('*'|'/');
+CMPOP : ('=='|'!='|'>'|'<');
 COMMENT     : '/*' .*? '*/' -> skip ;
 DIRECTIVE   : '#' .*? '\n' -> skip ;
 WS          : [ \t\r\n] -> channel(HIDDEN);

@@ -35,11 +35,23 @@ public:
 
     virtual antlrcpp::Any visitAdd(ifccParser::AddContext *context) = 0;
 
+    virtual antlrcpp::Any visitNeg(ifccParser::NegContext *context) = 0;
+
     virtual antlrcpp::Any visitSub(ifccParser::SubContext *context) = 0;
+
+    virtual antlrcpp::Any visitNot(ifccParser::NotContext *context) = 0;
+
+    virtual antlrcpp::Any visitOr(ifccParser::OrContext *context) = 0;
 
     virtual antlrcpp::Any visitConst(ifccParser::ConstContext *context) = 0;
 
     virtual antlrcpp::Any visitVar(ifccParser::VarContext *context) = 0;
+
+    virtual antlrcpp::Any visitAnd(ifccParser::AndContext *context) = 0;
+
+    virtual antlrcpp::Any visitCmp(ifccParser::CmpContext *context) = 0;
+
+    virtual antlrcpp::Any visitXor(ifccParser::XorContext *context) = 0;
 
     virtual antlrcpp::Any visitMuldiv(ifccParser::MuldivContext *context) = 0;
 
