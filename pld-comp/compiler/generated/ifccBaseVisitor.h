@@ -31,11 +31,23 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitBlockInst(ifccParser::BlockInstContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *ctx) override {
     return visitChildren(ctx);
   }
 
   virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCondition(ifccParser::ConditionContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitCond(ifccParser::CondContext *ctx) override {
     return visitChildren(ctx);
   }
 

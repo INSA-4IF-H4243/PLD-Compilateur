@@ -36,6 +36,12 @@ antlrcpp::Any CodeGenVisitor::visitMulInst(ifccParser::MulInstContext *ctx)
 	return 0;
 }
 
+antlrcpp::Any CodeGenVisitor::visitBlockInst(ifccParser::BlockInstContext *ctx) 
+{
+	visit(ctx->code());
+	return 0;
+}
+
 antlrcpp::Any CodeGenVisitor::visitAffectation(ifccParser::AffectationContext *ctx) 
 {
 	visit(ctx->vars());
@@ -209,7 +215,31 @@ antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx)
 	return map[tmp];
 }
 
-
+antlrcpp::Any CodeGenVisitor::visitCondition(ifccParser::ConditionContext *ctx) 
+{
+	int res = visit(ctx->expr());
+	if(ctx->ELSE()) { 
+		std::cout<<
+				" cmpl $0, " << res << "(%rbp)\n"
+				" je .L1\n"  
+			;
+		visit(ctx->code()[0]);
+		std::cout<<
+				" L1:\n"
+			;
+		visit(ctx->code()[1]);
+	} else {
+		std::cout<<
+				" cmpl $0, " << res << "(%rbp)\n"
+				" je .L1\n"
+			;
+		visit(ctx->code()[0]);
+		std::cout<<
+				" L1:\n"
+			;
+	}
+	return 0;
+}
 
 
 

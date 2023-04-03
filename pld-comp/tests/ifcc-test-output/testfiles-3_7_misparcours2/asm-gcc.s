@@ -5,28 +5,29 @@
 main:
 .LFB0:
 	.cfi_startproc
+	endbr64
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movl	$17, -4(%rbp)
-	movl	-4(%rbp), %eax
+	movl	$17, -12(%rbp)
+	movl	-12(%rbp), %eax
 	addl	$42, %eax
 	movl	%eax, -8(%rbp)
-	movl	-4(%rbp), %eax
+	movl	-12(%rbp), %eax
 	imull	-8(%rbp), %eax
 	movl	%eax, %edx
 	movl	-8(%rbp), %eax
-	imull	-8(%rbp), %eax
+	imull	%eax, %eax
 	addl	$12, %eax
 	movl	%eax, %ecx
 	sall	$3, %eax
 	subl	%eax, %ecx
 	movl	%ecx, %eax
 	addl	%edx, %eax
-	movl	%eax, -12(%rbp)
-	movl	-12(%rbp), %eax
+	movl	%eax, -4(%rbp)
+	movl	-4(%rbp), %eax
 	subl	$276, %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8
@@ -34,5 +35,21 @@ main:
 	.cfi_endproc
 .LFE0:
 	.size	main, .-main
-	.ident	"GCC: (Debian 8.3.0-6) 8.3.0"
+	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
 	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 8
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 8
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 8
+4:

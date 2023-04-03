@@ -4,13 +4,18 @@ axiom       : prog ;
 
 prog        : TYPE 'main' '(' ')' '{' code? RETURN expr ';' '}' ;
 
-code        : instruction ';'       #uneInst
-            | instruction ';' code  #mulInst
+code        : instruction ';'         #uneInst
+            | instruction ';' code    #mulInst
+            | '{' code '}'            #blockInst
             ;
 
+instruction : TYPE vars ('=' expr)?        #declaration
+            | vars '=' expr                #affectation
+            | cond                         #condition
+            ;
 
-instruction : TYPE vars ('=' expr)?       #declaration
-            | vars '=' expr               #affectation
+cond        : IF '(' expr ')' code
+            | IF '(' expr ')' code ELSE code      
             ;
 
 expr        : expr OPM  expr         #muldiv
@@ -19,13 +24,15 @@ expr        : expr OPM  expr         #muldiv
             | VAR                    #var
             | '(' expr ')'           #par
             | expr CMPOP expr        #cmp
-            ;  
+            ;
 
 vars        : VAR(',' vars)?;
 TYPE        : INT|CHAR;
 INT         :'int';
 CHAR        :'char';
 
+IF: 'if';
+ELSE: 'else';
 RETURN      : 'return' ;
 CONST       : [0-9]+ ;
 OPM : ('*'|'/');

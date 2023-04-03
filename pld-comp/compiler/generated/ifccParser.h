@@ -13,13 +13,14 @@ class  ifccParser : public antlr4::Parser {
 public:
   enum {
     T__0 = 1, T__1 = 2, T__2 = 3, T__3 = 4, T__4 = 5, T__5 = 6, T__6 = 7, 
-    T__7 = 8, TYPE = 9, INT = 10, CHAR = 11, RETURN = 12, CONST = 13, OPM = 14, 
-    OPP = 15, CMPOP = 16, COMMENT = 17, DIRECTIVE = 18, WS = 19, VAR = 20
+    T__7 = 8, TYPE = 9, INT = 10, CHAR = 11, IF = 12, ELSE = 13, RETURN = 14, 
+    CONST = 15, OPM = 16, OPP = 17, CMPOP = 18, COMMENT = 19, DIRECTIVE = 20, 
+    WS = 21, VAR = 22
   };
 
   enum {
-    RuleAxiom = 0, RuleProg = 1, RuleCode = 2, RuleInstruction = 3, RuleExpr = 4, 
-    RuleVars = 5
+    RuleAxiom = 0, RuleProg = 1, RuleCode = 2, RuleInstruction = 3, RuleCond = 4, 
+    RuleExpr = 5, RuleVars = 6
   };
 
   explicit ifccParser(antlr4::TokenStream *input);
@@ -36,6 +37,7 @@ public:
   class ProgContext;
   class CodeContext;
   class InstructionContext;
+  class CondContext;
   class ExprContext;
   class VarsContext; 
 
@@ -90,6 +92,15 @@ public:
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
+  class  BlockInstContext : public CodeContext {
+  public:
+    BlockInstContext(CodeContext *ctx);
+
+    CodeContext *code();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
   class  MulInstContext : public CodeContext {
   public:
     MulInstContext(CodeContext *ctx);
@@ -115,6 +126,15 @@ public:
    
   };
 
+  class  ConditionContext : public InstructionContext {
+  public:
+    ConditionContext(InstructionContext *ctx);
+
+    CondContext *cond();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
   class  DeclarationContext : public InstructionContext {
   public:
     DeclarationContext(InstructionContext *ctx);
@@ -137,6 +157,23 @@ public:
   };
 
   InstructionContext* instruction();
+
+  class  CondContext : public antlr4::ParserRuleContext {
+  public:
+    CondContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+    virtual size_t getRuleIndex() const override;
+    antlr4::tree::TerminalNode *IF();
+    ExprContext *expr();
+    std::vector<CodeContext *> code();
+    CodeContext* code(size_t i);
+    antlr4::tree::TerminalNode *ELSE();
+
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+   
+  };
+
+  CondContext* cond();
 
   class  ExprContext : public antlr4::ParserRuleContext {
   public:
