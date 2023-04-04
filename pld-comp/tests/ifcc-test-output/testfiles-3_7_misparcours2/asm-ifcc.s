@@ -73,6 +73,12 @@
  movl  %eax, -48(%rbp)
 
 
+# soustraction de -28 / -48 -> -52
+ movl	-28(%rbp), %eax
+ subl	-48(%rbp)
+ movl  %eax, -52(%rbp)
+
+
 # affectation de c à -52
  movl	-52(%rbp),%eax
  movl	%eax, -8(%rbp)
@@ -88,6 +94,12 @@
 
 # mise de $12 dans -64
  movl	$12, -64(%rbp)
+
+
+# soustraction de -60 / -64 -> -68
+ movl	-60(%rbp), %eax
+ subl	-64(%rbp)
+ movl  %eax, -68(%rbp)
 
 
 # multiplication de -56 * -68 -> -72

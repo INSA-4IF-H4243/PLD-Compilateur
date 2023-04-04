@@ -118,7 +118,7 @@ antlrcpp::Any CodeGenVisitor::visitAddsub(ifccParser::AddsubContext *ctx)
 			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
 	}
-	else if(op=='/'){
+	else if(op=='-'){
 		std::cout<<
 			"\n# soustraction de "<<res_gauche<<" / "<<res_droite<<" -> "<<-compteur<<"\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
@@ -202,6 +202,16 @@ antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx)
 			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
 	}
+	else if(op==">="){
+		std::cout<<
+		    "# comparaison >=\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
+			" setge    %al\n"
+			" movzbl  %al, %eax\n"
+			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;
+	}
 	else if(op==">"){
 		std::cout<<
 			"# comparaison >\n"
@@ -221,7 +231,17 @@ antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx)
 			" movzbl  %al, %eax\n"
 			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
-	}                                                                                                                                     
+	}
+	else if(op=="<="){
+		std::cout<<
+			"# comparaison <=\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
+			" setle   %al\n"
+			" movzbl  %al, %eax\n"
+			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;   
+	}                                                                                                          
 	return map[tmp];
 }
 
