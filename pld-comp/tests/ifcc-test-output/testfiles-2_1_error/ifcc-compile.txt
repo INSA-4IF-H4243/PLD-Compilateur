@@ -1,11 +1,3 @@
-/mnt/c/Users/DELL/Desktop/AD_GL_AF/PLD-Compilateur/pld-comp/tests/ifcc-wrapper.sh: 2: : not found
-/mnt/c/Users/DELL/Desktop/AD_GL_AF/PLD-Compilateur/pld-comp/tests/ifcc-wrapper.sh: 6: : not found
-/mnt/c/Users/DELL/Desktop/AD_GL_AF/PLD-Compilateur/pld-comp/tests/ifcc-wrapper.sh: 7: : not found
-/mnt/c/Users/DELL/Desktop/AD_GL_AF/PLD-Compilateur/pld-comp/tests/ifcc-wrapper.sh: 15: : not found
-/mnt/c/Users/DELL/Desktop/AD_GL_AF/PLD-Compilateur/pld-comp/tests/ifcc-wrapper.sh: 17: : not found
-/mnt/c/Users/DELL/Desktop/AD_GL_AF/PLD-Compilateur/pld-comp/tests/ifcc-wrapper.sh: 20: : not found
-line 1:0 mismatched input '<EOF>' expecting TYPE
-error: syntax error during parsing
-/mnt/c/Users/DELL/Desktop/AD_GL_AF/PLD-Compilateur/pld-comp/tests/ifcc-wrapper.sh: 23: : not found
+# var x non déclarée
 
-return code: 1
+return code: 3

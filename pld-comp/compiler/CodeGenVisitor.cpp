@@ -169,15 +169,16 @@ antlrcpp::Any CodeGenVisitor::visitConst(ifccParser::ConstContext *ctx) {
 
 antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx) 
 {
-	char op=ctx->CMPOP()->getText()[0];
+	std::string op =ctx->CMPOP()->getText();
 	int res_gauche = visit(ctx->expr()[0]);
 	int res_droite = visit(ctx->expr()[1]); 
 	
 	compteur += 4;
 	std::string tmp = "_tmp"+std::to_string(compteur);
 	map[tmp]=-compteur;
-	if(op=='=='){
+	if(op == "=="){
 		std::cout<<
+			"# comparaison ==\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
 			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
 			" sete   %al\n"
@@ -185,8 +186,9 @@ antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx)
 			" movl   %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
 	}
-	else if(op=='!='){
+	else if(op=="!="){
 		std::cout<<
+		    "# comparaison !=\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
 			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
 			" setne   %al\n"
@@ -194,8 +196,9 @@ antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx)
 			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
 	}
-	else if(op=='>'){
+	else if(op==">"){
 		std::cout<<
+			"# comparaison >\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
 			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
 			" setg    %al\n"
@@ -203,11 +206,12 @@ antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx)
 			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
 	}
-	else if(op=='<'){
+	else if(op=="<"){
 		std::cout<<
+			"# comparaison <\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
 			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
-			" sets    %al\n"
+			" setl    %al\n"
 			" movzbl  %al, %eax\n"
 			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
@@ -217,6 +221,12 @@ antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx)
 
 antlrcpp::Any CodeGenVisitor::visitCondition(ifccParser::ConditionContext *ctx) 
 {
+	visit(ctx->cond());
+	return 0;
+}
+
+antlrcpp::Any CodeGenVisitor::visitIf(ifccParser::IfContext *ctx) 
+{
 	int res = visit(ctx->expr());
 	if(ctx->ELSE()) { 
 		std::cout<<
@@ -225,9 +235,13 @@ antlrcpp::Any CodeGenVisitor::visitCondition(ifccParser::ConditionContext *ctx)
 			;
 		visit(ctx->code()[0]);
 		std::cout<<
-				" L1:\n"
+				" jmp .L2\n"
+				" .L1:\n"
 			;
 		visit(ctx->code()[1]);
+		std::cout<<
+				" .L2:\n"
+			;
 	} else {
 		std::cout<<
 				" cmpl $0, " << res << "(%rbp)\n"
@@ -235,7 +249,7 @@ antlrcpp::Any CodeGenVisitor::visitCondition(ifccParser::ConditionContext *ctx)
 			;
 		visit(ctx->code()[0]);
 		std::cout<<
-				" L1:\n"
+				" .L1:\n"
 			;
 	}
 	return 0;

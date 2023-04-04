@@ -14,8 +14,7 @@ instruction : TYPE vars ('=' expr)?        #declaration
             | cond                         #condition
             ;
 
-cond        : IF '(' expr ')' code
-            | IF '(' expr ')' code ELSE code      
+cond        : IF '(' expr ')' code (ELSE code)?   #if
             ;
 
 expr        : expr OPM  expr         #muldiv

@@ -47,7 +47,7 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCond(ifccParser::CondContext *ctx) override {
+  virtual antlrcpp::Any visitIf(ifccParser::IfContext *ctx) override {
     return visitChildren(ctx);
   }
 

@@ -161,16 +161,27 @@ public:
   class  CondContext : public antlr4::ParserRuleContext {
   public:
     CondContext(antlr4::ParserRuleContext *parent, size_t invokingState);
+   
+    CondContext() = default;
+    void copyFrom(CondContext *context);
+    using antlr4::ParserRuleContext::copyFrom;
+
     virtual size_t getRuleIndex() const override;
+
+   
+  };
+
+  class  IfContext : public CondContext {
+  public:
+    IfContext(CondContext *ctx);
+
     antlr4::tree::TerminalNode *IF();
     ExprContext *expr();
     std::vector<CodeContext *> code();
     CodeContext* code(size_t i);
     antlr4::tree::TerminalNode *ELSE();
 
-
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
-   
   };
 
   CondContext* cond();

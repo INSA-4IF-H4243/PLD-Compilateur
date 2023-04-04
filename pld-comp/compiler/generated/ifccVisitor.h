@@ -35,7 +35,7 @@ public:
 
     virtual antlrcpp::Any visitCondition(ifccParser::ConditionContext *context) = 0;
 
-    virtual antlrcpp::Any visitCond(ifccParser::CondContext *context) = 0;
+    virtual antlrcpp::Any visitIf(ifccParser::IfContext *context) = 0;
 
     virtual antlrcpp::Any visitPar(ifccParser::ParContext *context) = 0;
 

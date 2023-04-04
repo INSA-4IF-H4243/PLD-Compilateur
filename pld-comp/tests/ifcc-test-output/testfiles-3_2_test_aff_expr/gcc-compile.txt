@@ -1,21 +1,21 @@
 input.c: In function ‘main’:
 input.c:7:9: error: redeclaration of ‘a’ with no linkage
-    7 |     int a,b,v;
-      |         ^
+     int a,b,v;
+         ^
 input.c:2:9: note: previous definition of ‘a’ was here
-    2 |     int a=8;
-      |         ^
+     int a=8;
+         ^
 input.c:7:11: error: redeclaration of ‘b’ with no linkage
-    7 |     int a,b,v;
-      |           ^
+     int a,b,v;
+           ^
 input.c:3:9: note: previous definition of ‘b’ was here
-    3 |     int b=26;
-      |         ^
+     int b=26;
+         ^
 input.c:9:13: error: expected ‘;’ before ‘return’
-    9 |     a,b,v=12
-      |             ^
-      |             ;
-   10 |     return a+b,a,a/12,7;
-      |     ~~~~~~   
+     a,b,v=12
+             ^
+             ;
+     return a+b,a,a/12,7;
+     ~~~~~~   
 
 return code: 1
