@@ -1,4 +1,4 @@
-build/CFGVisitor.o: CFGVisitor.cpp CodeGenVisitor.h \
+build/CFGVisitor.o: CFGVisitor.cpp CFGVisitor.h \
  ../antlr/include/antlr4-runtime.h ../antlr/include/antlr4-common.h \
  ../antlr/include/support/guid.h ../antlr/include/support/Declarations.h \
  ../antlr/include/ANTLRErrorListener.h \

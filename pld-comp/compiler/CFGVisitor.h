@@ -6,7 +6,7 @@
 #include "IR.h"
 
 
-class  CodeGenVisitor : public ifccBaseVisitor {
+class  CFGVisitor : public ifccBaseVisitor {
 	public:
 		virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override ;
 		virtual antlrcpp::Any visitUneInst(ifccParser::UneInstContext *ctx) override;

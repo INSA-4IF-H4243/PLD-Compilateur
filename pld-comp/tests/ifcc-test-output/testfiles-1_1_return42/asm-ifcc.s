@@ -1,17 +1,10 @@
+test
 
-.globl	main
- main: 
+# declaration de _tmp4(%rbp) avec la valeur 42
+ movl	$42, _tmp4(%rbp)
 
-# prologue
- pushq %rbp 		# save %rbp on the stack
- movq %rsp, %rbp 	# define %rbp for the current function
 
-# mise de $42 dans -4
- movl	$42, -4(%rbp)
+# declaration de retour(%rbp) dans _tmp4(%rbp)
+ movl	retour(%rbp),%eax
+ movl	%eax, _tmp4(%rbp)
 
-retour : 
-movl	-4(%rbp), %eax
-
-# epilogue
- popq %rbp 			# restore %rbp from the stack
- 	ret

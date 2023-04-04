@@ -9,6 +9,7 @@
 #include "generated/ifccBaseVisitor.h"
 #include "DeclarationCheckVisitor.h"
 #include "CodeGenVisitor.h"
+#include "CFGVisitor.h"
 
 using namespace antlr4;
 using namespace std;
@@ -46,8 +47,12 @@ int main(int argn, const char **argv)
   DeclarationCheckVisitor dcv;
   dcv.visit(tree);
 
-  CodeGenVisitor v;
+  /*CodeGenVisitor v;
   v.visit(tree);
+  cout<<"CFGV"<<endl;*/
+
+  CFGVisitor cfgv;
+  cfgv.visit(tree);
 
   return 0;
 }

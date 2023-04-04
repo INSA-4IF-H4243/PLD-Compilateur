@@ -1,108 +1,118 @@
-#include "CodeGenVisitor.h"
+#include "CFGVisitor.h"
 #include <string>
 #include <map>
 #include "IR.h"
 //std::map<std::string, int> map;
-std::list<std::string> listeVars;
-int compteur=0;
+std::list<std::string> listeVarsCFG;
+int compteurCFG=0;
 CFG* cfg;
 
-antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx) 
+antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx) 
 {
+	cfg=new CFG();
+	//cout<<"construction CFG"<<endl;
 	//std::string retour = ctx->expr()->getText();
 	if(ctx->code()) visit(ctx->code());
+	//cout<<"ajout retour"<<endl;
 	string res = visit(ctx->expr());
 	IRInstrCopy* instr = new IRInstrCopy(cfg->current_bb,"retour",res);
+	//cout<<"ajout bb"<<endl;
 	cfg->current_bb->add_IRInstr(instr);
 	
+	//cout<<"gen pseudo code"<<endl;
+	cfg->gen_asm(std::cout);
 
 	return 0;
 }
-antlrcpp::Any CodeGenVisitor::visitUneInst(ifccParser::UneInstContext *ctx) 
+antlrcpp::Any CFGVisitor::visitUneInst(ifccParser::UneInstContext *ctx) 
 {
 	visit(ctx->instruction());
 	return 0;
 }
 
-antlrcpp::Any CodeGenVisitor::visitMulInst(ifccParser::MulInstContext *ctx) 
+antlrcpp::Any CFGVisitor::visitMulInst(ifccParser::MulInstContext *ctx) 
 {
 	visit(ctx->instruction());
 	visit(ctx->code());
 	return 0;
 }
 
-antlrcpp::Any CodeGenVisitor::visitAffectation(ifccParser::AffectationContext *ctx) 
+antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx) 
 {
 	visit(ctx->vars());
 	string res = visit(ctx->expr());
 
-	for(std::string var:listeVars){
+	for(std::string var:listeVarsCFG){
 		IRInstrCopy* instr = new IRInstrCopy(cfg->current_bb,var,res);
 		cfg->current_bb->add_IRInstr(instr);
 		;
 	}
-	listeVars.clear();
+	listeVarsCFG.clear();
 	return 0;
 }
 
-antlrcpp::Any CodeGenVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx) 
+antlrcpp::Any CFGVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx) 
 {
+	//cout<<"visit declaration"<<endl;
 	std::string type = (ctx->TYPE()->getText());
 
 	visit(ctx->vars());
-	for(std::string var:listeVars){
-        compteur+=4;
-		cfg->add_SymbolIndex(var,-compteur);
+	//cout<<"ajout compteur"<<endl;
+	for(std::string var:listeVarsCFG){
+        compteurCFG+=4;
+		cfg->add_SymbolIndex(var,-compteurCFG);
+		//cout<<"add_SymbolIndex"<<endl;
     }
+	//cout<<"Creation instr"<<endl;
 	if(ctx->expr()){	
 		string res = visit(ctx->expr());
-		for(std::string var:listeVars){
+		for(std::string var:listeVarsCFG){
 			IRInstrCopy* instr = new IRInstrCopy(cfg->current_bb,var,res);
 			cfg->current_bb->add_IRInstr(instr);
 			;
 		}	
 	}
-	listeVars.clear();
+	listeVarsCFG.clear();
 	return 0;
 }
 
-antlrcpp::Any CodeGenVisitor::visitVars(ifccParser::VarsContext *ctx) {
-	listeVars.push_back(ctx->VAR()->getText());
+antlrcpp::Any CFGVisitor::visitVars(ifccParser::VarsContext *ctx) {
+	listeVarsCFG.push_back(ctx->VAR()->getText());
 	if(ctx->vars()){
 		visit(ctx->vars());
 	}
 	return 0;
 }
 
-antlrcpp::Any CodeGenVisitor::visitPar(ifccParser::ParContext *ctx) 
+antlrcpp::Any CFGVisitor::visitPar(ifccParser::ParContext *ctx) 
 {
 	string res = visit(ctx->expr());
 	return res;
 }
 
-antlrcpp::Any CodeGenVisitor::visitAdd(ifccParser::AddContext *ctx) 
+antlrcpp::Any CFGVisitor::visitAdd(ifccParser::AddContext *ctx) 
 {
 	string res_gauche = visit(ctx->expr()[0]);
 	string res_droite = visit(ctx->expr()[1]); 
-	compteur += 4;
-	std::string tmp = "_tmp"+std::to_string(compteur);
-	cfg->add_SymbolIndex(tmp,-compteur);
+	compteurCFG += 4;
+	std::string tmp = "_tmp"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp,-compteurCFG);
 	IRInstrAdd* instr = new IRInstrAdd(cfg->current_bb,tmp,res_gauche,res_droite);
 	cfg->current_bb->add_IRInstr(instr);
 	return tmp;
 }
-antlrcpp::Any CodeGenVisitor::visitSub(ifccParser::SubContext *ctx) 
+antlrcpp::Any CFGVisitor::visitSub(ifccParser::SubContext *ctx) 
 {
 	string res_gauche = visit(ctx->expr()[0]);
 	string res_droite = visit(ctx->expr()[1]); 
-	compteur += 4;
-	std::string tmp = "_tmp"+std::to_string(compteur);
-	cfg->add_SymbolIndex(tmp,-compteur);
+	compteurCFG += 4;
+	std::string tmp = "_tmp"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp,-compteurCFG);
 	IRInstrSub* instr = new IRInstrSub(cfg->current_bb,tmp,res_gauche,res_droite);
 	cfg->current_bb->add_IRInstr(instr);
 	return tmp;
 }
-antlrcpp::Any CodeGenVisitor::visitMuldiv(ifccParser::MuldivContext *ctx) 
+antlrcpp::Any CFGVisitor::visitMuldiv(ifccParser::MuldivContext *ctx) 
 {
 	char op=ctx->OP()->getText()[0];
 	string res_gauche = visit(ctx->expr()[0]);
@@ -110,30 +120,30 @@ antlrcpp::Any CodeGenVisitor::visitMuldiv(ifccParser::MuldivContext *ctx)
 	std::string tmp = "";
 	
 	if(op=='*'){
-		compteur += 4;
-		std::string tmp = "_tmp"+std::to_string(compteur);
-		cfg->add_SymbolIndex(tmp,-compteur);
+		compteurCFG += 4;
+		tmp = "_tmp"+std::to_string(compteurCFG);
+		cfg->add_SymbolIndex(tmp,-compteurCFG);
 		IRInstrMul* instr = new IRInstrMul(cfg->current_bb,tmp,res_gauche,res_droite);
 		cfg->current_bb->add_IRInstr(instr);
 	}
 	else {
-		compteur += 4;
-		std::string tmp = "_tmp"+std::to_string(compteur);
-		cfg->add_SymbolIndex(tmp,-compteur);
+		compteurCFG += 4;
+		tmp = "_tmp"+std::to_string(compteurCFG);
+		cfg->add_SymbolIndex(tmp,-compteurCFG);
 		IRInstrDiv* instr = new IRInstrDiv(cfg->current_bb,tmp,res_gauche,res_droite);
 		cfg->current_bb->add_IRInstr(instr);
 	}
 	return tmp;
 }
 
-antlrcpp::Any CodeGenVisitor::visitVar(ifccParser::VarContext *ctx) {
+antlrcpp::Any CFGVisitor::visitVar(ifccParser::VarContext *ctx) {
 	return ctx->VAR()->getText();
 	}
 
-antlrcpp::Any CodeGenVisitor::visitConst(ifccParser::ConstContext *ctx) {
-	compteur+=4;
-	std::string tmp = "_tmp"+std::to_string(compteur);
-	cfg->add_SymbolIndex(tmp,-compteur);
+antlrcpp::Any CFGVisitor::visitConst(ifccParser::ConstContext *ctx) {
+	compteurCFG+=4;
+	std::string tmp = "_tmp"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp,-compteurCFG);
 	int cst = stoi(ctx->CONST()->getText());
 	IRInstrLdconst* instr = new IRInstrLdconst(cfg->current_bb,tmp,cst);
 	cfg->current_bb->add_IRInstr(instr);

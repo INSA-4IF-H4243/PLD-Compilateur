@@ -9,67 +9,62 @@
 # expression avec b
 # expression avec b
 # expression avec c
+test
 
-.globl	main
- main: 
-
-# prologue
- pushq %rbp 		# save %rbp on the stack
- movq %rsp, %rbp 	# define %rbp for the current function
-
-# mise de $17 dans -16
- movl	$17, -16(%rbp)
+# declaration de _tmp16(%rbp) avec la valeur 17
+ movl	$17, _tmp16(%rbp)
 
 
-# affectation de a à -16
- movl	-16(%rbp),%eax
- movl	%eax, -4(%rbp)
+# declaration de a(%rbp) dans _tmp16(%rbp)
+ movl	a(%rbp),%eax
+ movl	%eax, _tmp16(%rbp)
+
+test
+
+# declaration de _tmp20(%rbp) avec la valeur 42
+ movl	$42, _tmp20(%rbp)
 
 
-# mise de $42 dans -20
- movl	$42, -20(%rbp)
+# declaration de b(%rbp) dans _tmp20(%rbp)
+ movl	b(%rbp),%eax
+ movl	%eax, _tmp20(%rbp)
 
 
-# affectation de b à -20
- movl	-20(%rbp),%eax
- movl	%eax, -8(%rbp)
+# declaration de _tmp24(%rbp) avec la valeur a(%rbp) * a(%rbp)
+ movl	a(%rbp),%eax
+ imull	a(%rbp),%eax
+ movl	%eax, _tmp24(%rbp)
 
 
-# multiplication de -4 * -4 -> -24
- movl	-4(%rbp), %eax
- imull	-4(%rbp), %eax
- movl  %eax, -24(%rbp)
+# declaration de _tmp28(%rbp) avec la valeur b(%rbp) * b(%rbp)
+ movl	b(%rbp),%eax
+ imull	b(%rbp),%eax
+ movl	%eax, _tmp28(%rbp)
 
 
-# multiplication de -8 * -8 -> -28
- movl	-8(%rbp), %eax
- imull	-8(%rbp), %eax
- movl  %eax, -28(%rbp)
+# declaration de _tmp32(%rbp) avec la valeur _tmp24(%rbp) + _tmp28(%rbp)
+ movl	_tmp24(%rbp),%eax
+ addl	_tmp28(%rbp),%eax
+ movl	%eax, _tmp32(%rbp)
+
+test
+
+# declaration de _tmp36(%rbp) avec la valeur 1
+ movl	$1, _tmp36(%rbp)
 
 
-# addition de -24 + -28 -> -32
- movl	-24(%rbp), %eax
- addl	-28(%rbp), %eax
- movl  %eax, -32(%rbp)
+# declaration de _tmp40(%rbp) avec la valeur _tmp32(%rbp) + _tmp36(%rbp)
+ movl	_tmp32(%rbp),%eax
+ addl	_tmp36(%rbp),%eax
+ movl	%eax, _tmp40(%rbp)
 
 
-# mise de $1 dans -36
- movl	$1, -36(%rbp)
+# declaration de c(%rbp) dans _tmp40(%rbp)
+ movl	c(%rbp),%eax
+ movl	%eax, _tmp40(%rbp)
 
 
-# addition de -32 + -36 -> -40
- movl	-32(%rbp), %eax
- addl	-36(%rbp), %eax
- movl  %eax, -40(%rbp)
+# declaration de retour(%rbp) dans c(%rbp)
+ movl	retour(%rbp),%eax
+ movl	%eax, c(%rbp)
 
-
-# affectation de c à -40
- movl	-40(%rbp),%eax
- movl	%eax, -12(%rbp)
-
-retour : 
-movl	-12(%rbp), %eax
-
-# epilogue
- popq %rbp 			# restore %rbp from the stack
- 	ret

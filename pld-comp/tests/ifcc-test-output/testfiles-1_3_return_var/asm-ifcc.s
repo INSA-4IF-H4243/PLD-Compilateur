@@ -1,24 +1,17 @@
 # declaration de x
 # expression avec x
+test
 
-.globl	main
- main: 
-
-# prologue
- pushq %rbp 		# save %rbp on the stack
- movq %rsp, %rbp 	# define %rbp for the current function
-
-# mise de $8 dans -8
- movl	$8, -8(%rbp)
+# declaration de _tmp8(%rbp) avec la valeur 8
+ movl	$8, _tmp8(%rbp)
 
 
-# declaration de x dans -8
- movl	-8(%rbp),%eax
- movl	%eax, -4(%rbp)
+# declaration de x(%rbp) dans _tmp8(%rbp)
+ movl	x(%rbp),%eax
+ movl	%eax, _tmp8(%rbp)
 
-retour : 
-movl	-4(%rbp), %eax
 
-# epilogue
- popq %rbp 			# restore %rbp from the stack
- 	ret
+# declaration de retour(%rbp) dans x(%rbp)
+ movl	retour(%rbp),%eax
+ movl	%eax, x(%rbp)
+

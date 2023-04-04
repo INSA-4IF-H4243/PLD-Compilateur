@@ -43,7 +43,7 @@ public:
 
 	/** Actual code generation */
 	virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
-
+	virtual void gen_PseudoCode(); /**< Pseudo code generation for this IR instruction */
 protected:
 	BasicBlock *bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
 	Operation op;
@@ -57,6 +57,7 @@ class IRInstrLdconst : public IRInstr
 public:
 	IRInstrLdconst(BasicBlock *bb_, string var, int cst);
 	void gen_asm(ostream &o) override;
+	void gen_PseudoCode() override;
 private:
 	string var;
 	int cst;
@@ -67,6 +68,7 @@ class IRInstrCopy : public IRInstr
 public:
     IRInstrCopy(BasicBlock *bb_, string var, string res);
     void gen_asm(ostream &o) override;
+	void gen_PseudoCode() override;
 private:
 	string var;
 	string res;
@@ -77,6 +79,7 @@ class IRInstrAdd : public IRInstr
 public:
 	IRInstrAdd(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
 	void gen_asm(ostream &o) override;
+	void gen_PseudoCode() override;
 private:
 	string tmp;
 	string res_gauche;
@@ -88,6 +91,7 @@ class IRInstrSub : public IRInstr
 public:
 	IRInstrSub(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
 	void gen_asm(ostream &o) override;
+	void gen_PseudoCode() override;
 private:
 	string tmp;
 	string res_gauche;
@@ -99,6 +103,7 @@ class IRInstrMul : public IRInstr
 public:
 	IRInstrMul(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
 	void gen_asm(ostream &o) override;
+	void gen_PseudoCode() override;
 private:
 	string tmp;
 	string res_gauche;
@@ -110,13 +115,45 @@ class IRInstrDiv : public IRInstr
 public:
 	IRInstrDiv(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
 	void gen_asm(ostream &o) override;
+	void gen_PseudoCode() override;
 private:
 	string tmp;
 	string res_gauche;
 	string res_droite;
 };
 
+class IRInstrCmp_eq : public IRInstr
+{
+public:
+	IRInstrCmp_eq(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+	void gen_asm(ostream &o) override;
+private:
+	string tmp;
+	string res_gauche;
+	string res_droite;
+};
 
+class IRInstrCmp_lt : public IRInstr
+{
+public:
+	IRInstrCmp_lt(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+	void gen_asm(ostream &o) override;
+private:
+	string tmp;
+	string res_gauche;
+	string res_droite;
+};
+
+class IRInstrCmp_le : public IRInstr
+{
+public:
+	IRInstrCmp_le(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+	void gen_asm(ostream &o) override;
+private:
+	string tmp;
+	string res_gauche;
+	string res_droite;
+};
 
 
 /**  The class for a basic block */
@@ -152,7 +189,7 @@ public:
 	void gen_asm(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
 	void add_IRInstr(IRInstr *instr);
-
+	void gen_PseudoCode();
 	// No encapsulation whatsoever here. Feel free to do better.
 	BasicBlock *exit_true;	  /**< pointer to the next basic block, true branch. If nullptr, return from procedure */
 	BasicBlock *exit_false;	  /**< pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
@@ -181,7 +218,7 @@ public:
 	// DefFonction* ast; /**< The AST this CFG comes from */
 	CFG();
 	void add_bb(BasicBlock *bb);
-
+	void gen_PseudoCode();
 	// x86 code generation: could be encapsulated in a processor class in a retargetable compiler
 	void gen_asm(ostream &o);
 	// string IR_reg_to_asm(string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */

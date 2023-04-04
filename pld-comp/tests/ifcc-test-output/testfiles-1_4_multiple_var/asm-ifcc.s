@@ -2,43 +2,38 @@
 # declaration de b
 # declaration de c
 # expression avec b
+test
 
-.globl	main
- main: 
-
-# prologue
- pushq %rbp 		# save %rbp on the stack
- movq %rsp, %rbp 	# define %rbp for the current function
-
-# mise de $8 dans -8
- movl	$8, -8(%rbp)
+# declaration de _tmp8(%rbp) avec la valeur 8
+ movl	$8, _tmp8(%rbp)
 
 
-# declaration de a dans -8
- movl	-8(%rbp),%eax
- movl	%eax, -4(%rbp)
+# declaration de a(%rbp) dans _tmp8(%rbp)
+ movl	a(%rbp),%eax
+ movl	%eax, _tmp8(%rbp)
+
+test
+
+# declaration de _tmp16(%rbp) avec la valeur 5
+ movl	$5, _tmp16(%rbp)
 
 
-# mise de $5 dans -16
- movl	$5, -16(%rbp)
+# declaration de b(%rbp) dans _tmp16(%rbp)
+ movl	b(%rbp),%eax
+ movl	%eax, _tmp16(%rbp)
+
+test
+
+# declaration de _tmp24(%rbp) avec la valeur 10
+ movl	$10, _tmp24(%rbp)
 
 
-# declaration de b dans -16
- movl	-16(%rbp),%eax
- movl	%eax, -12(%rbp)
+# declaration de c(%rbp) dans _tmp24(%rbp)
+ movl	c(%rbp),%eax
+ movl	%eax, _tmp24(%rbp)
 
 
-# mise de $10 dans -24
- movl	$10, -24(%rbp)
+# declaration de retour(%rbp) dans b(%rbp)
+ movl	retour(%rbp),%eax
+ movl	%eax, b(%rbp)
 
-
-# declaration de c dans -24
- movl	-24(%rbp),%eax
- movl	%eax, -20(%rbp)
-
-retour : 
-movl	-12(%rbp), %eax
-
-# epilogue
- popq %rbp 			# restore %rbp from the stack
- 	ret

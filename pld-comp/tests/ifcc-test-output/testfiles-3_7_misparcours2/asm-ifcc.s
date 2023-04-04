@@ -11,126 +11,125 @@
 # expression avec b
 # expression avec b
 # expression avec c
+test
 
-.globl	main
- main: 
-
-# prologue
- pushq %rbp 		# save %rbp on the stack
- movq %rsp, %rbp 	# define %rbp for the current function
-
-# mise de $17 dans -16
- movl	$17, -16(%rbp)
+# declaration de _tmp16(%rbp) avec la valeur 17
+ movl	$17, _tmp16(%rbp)
 
 
-# declaration de a dans -16
- movl	-16(%rbp),%eax
- movl	%eax, -12(%rbp)
+# declaration de a(%rbp) dans _tmp16(%rbp)
+ movl	a(%rbp),%eax
+ movl	%eax, _tmp16(%rbp)
+
+test
+
+# declaration de _tmp20(%rbp) avec la valeur 42
+ movl	$42, _tmp20(%rbp)
 
 
-# mise de $42 dans -20
- movl	$42, -20(%rbp)
+# declaration de _tmp24(%rbp) avec la valeur _tmp20(%rbp) + a(%rbp)
+ movl	_tmp20(%rbp),%eax
+ addl	a(%rbp),%eax
+ movl	%eax, _tmp24(%rbp)
 
 
-# addition de -20 + -12 -> -24
- movl	-20(%rbp), %eax
- addl	-12(%rbp), %eax
- movl  %eax, -24(%rbp)
+# declaration de b(%rbp) dans _tmp24(%rbp)
+ movl	b(%rbp),%eax
+ movl	%eax, _tmp24(%rbp)
 
 
-# affectation de b à -24
- movl	-24(%rbp),%eax
- movl	%eax, -4(%rbp)
-
-
-# division de -12 / -4 -> -28
- movl	-12(%rbp), %eax
+# declaration de _tmp28(%rbp) avec la valeur a(%rbp) / b(%rbp)
+ movl	a(%rbp),%eax
  cltd
- idivl	-4(%rbp)
- movl  %eax, -28(%rbp)
+ idivl	b(%rbp)
+ movl	%eax, _tmp28(%rbp)
 
 
-# multiplication de -12 * -4 -> -32
- movl	-12(%rbp), %eax
- imull	-4(%rbp), %eax
- movl  %eax, -32(%rbp)
+# declaration de _tmp32(%rbp) avec la valeur a(%rbp) * b(%rbp)
+ movl	a(%rbp),%eax
+ imull	b(%rbp),%eax
+ movl	%eax, _tmp32(%rbp)
 
 
-# addition de -28 + -32 -> -36
- movl	-28(%rbp), %eax
- addl	-32(%rbp), %eax
- movl  %eax, -36(%rbp)
+# declaration de _tmp36(%rbp) avec la valeur _tmp28(%rbp) + _tmp32(%rbp)
+ movl	_tmp28(%rbp),%eax
+ addl	_tmp32(%rbp),%eax
+ movl	%eax, _tmp36(%rbp)
 
 
-# multiplication de -4 * -4 -> -40
- movl	-4(%rbp), %eax
- imull	-4(%rbp), %eax
- movl  %eax, -40(%rbp)
+# declaration de _tmp40(%rbp) avec la valeur b(%rbp) * b(%rbp)
+ movl	b(%rbp),%eax
+ imull	b(%rbp),%eax
+ movl	%eax, _tmp40(%rbp)
+
+test
+
+# declaration de _tmp44(%rbp) avec la valeur 12
+ movl	$12, _tmp44(%rbp)
 
 
-# mise de $12 dans -44
- movl	$12, -44(%rbp)
+# declaration de _tmp48(%rbp) avec la valeur _tmp40(%rbp) + _tmp44(%rbp)
+ movl	_tmp40(%rbp),%eax
+ addl	_tmp44(%rbp),%eax
+ movl	%eax, _tmp48(%rbp)
+
+test
+
+# declaration de _tmp52(%rbp) avec la valeur 7
+ movl	$7, _tmp52(%rbp)
 
 
-# addition de -40 + -44 -> -48
- movl	-40(%rbp), %eax
- addl	-44(%rbp), %eax
- movl  %eax, -48(%rbp)
+# declaration de _tmp56(%rbp) avec la valeur _tmp48(%rbp) * _tmp52(%rbp)
+ movl	_tmp48(%rbp),%eax
+ imull	_tmp52(%rbp),%eax
+ movl	%eax, _tmp56(%rbp)
 
 
-# mise de $7 dans -52
- movl	$7, -52(%rbp)
+# declaration de _tmp60(%rbp) avec la valeur _tmp36(%rbp) - _tmp56(%rbp)
+ movl	_tmp36(%rbp),%eax
+ subl	_tmp56(%rbp),%eax
+ movl	%eax, _tmp60(%rbp)
 
 
-# multiplication de -48 * -52 -> -56
- movl	-48(%rbp), %eax
- imull	-52(%rbp), %eax
- movl  %eax, -56(%rbp)
+# declaration de c(%rbp) dans _tmp60(%rbp)
+ movl	c(%rbp),%eax
+ movl	%eax, _tmp60(%rbp)
+
+test
+
+# declaration de _tmp64(%rbp) avec la valeur 46
+ movl	$46, _tmp64(%rbp)
+
+test
+
+# declaration de _tmp68(%rbp) avec la valeur 6
+ movl	$6, _tmp68(%rbp)
+
+test
+
+# declaration de _tmp72(%rbp) avec la valeur 12
+ movl	$12, _tmp72(%rbp)
 
 
-# soustraction de -36 - -56 -> -60
- movl	-36(%rbp), %eax
- subl	-56(%rbp), %eax
- movl  %eax, -60(%rbp)
+# declaration de _tmp76(%rbp) avec la valeur _tmp68(%rbp) - _tmp72(%rbp)
+ movl	_tmp68(%rbp),%eax
+ subl	_tmp72(%rbp),%eax
+ movl	%eax, _tmp76(%rbp)
 
 
-# affectation de c à -60
- movl	-60(%rbp),%eax
- movl	%eax, -8(%rbp)
+# declaration de _tmp80(%rbp) avec la valeur _tmp64(%rbp) * _tmp76(%rbp)
+ movl	_tmp64(%rbp),%eax
+ imull	_tmp76(%rbp),%eax
+ movl	%eax, _tmp80(%rbp)
 
 
-# mise de $46 dans -64
- movl	$46, -64(%rbp)
+# declaration de _tmp84(%rbp) avec la valeur c(%rbp) + _tmp80(%rbp)
+ movl	c(%rbp),%eax
+ addl	_tmp80(%rbp),%eax
+ movl	%eax, _tmp84(%rbp)
 
 
-# mise de $6 dans -68
- movl	$6, -68(%rbp)
+# declaration de retour(%rbp) dans _tmp84(%rbp)
+ movl	retour(%rbp),%eax
+ movl	%eax, _tmp84(%rbp)
 
-
-# mise de $12 dans -72
- movl	$12, -72(%rbp)
-
-
-# soustraction de -68 - -72 -> -76
- movl	-68(%rbp), %eax
- subl	-72(%rbp), %eax
- movl  %eax, -76(%rbp)
-
-
-# multiplication de -64 * -76 -> -80
- movl	-64(%rbp), %eax
- imull	-76(%rbp), %eax
- movl  %eax, -80(%rbp)
-
-
-# addition de -8 + -80 -> -84
- movl	-8(%rbp), %eax
- addl	-80(%rbp), %eax
- movl  %eax, -84(%rbp)
-
-retour : 
-movl	-84(%rbp), %eax
-
-# epilogue
- popq %rbp 			# restore %rbp from the stack
- 	ret
