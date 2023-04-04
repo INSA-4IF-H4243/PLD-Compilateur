@@ -1,6 +1,2 @@
-asm-ifcc.s: Messages de l'assembleur:
-asm-ifcc.s:12: Erreur: non concordance du nombre d'opérandes pour « test »
-asm-ifcc.s:22: Erreur: non concordance du nombre d'opérandes pour « test »
-asm-ifcc.s:50: Erreur: non concordance du nombre d'opérandes pour « test »
 
-return code: 1
+return code: 0

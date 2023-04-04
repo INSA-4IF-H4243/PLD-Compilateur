@@ -1,5 +1,5 @@
 python3 ifcc-test.py ./testfiles/*.c
-
+make gui FILE=ret42aff.c
 hbailleux@if501-219-13:~/PLD-Comp/pld-comp/compiler$ gcc -S ret42.c
 hbailleux@if501-219-13:~/PLD-Comp/pld-comp/compiler$ make
 g++ -g -c -std=c++17 -I../antlr/include -Wno-attributes  -MMD -o build/CodeGenVisitor.o CodeGenVisitor.cpp 

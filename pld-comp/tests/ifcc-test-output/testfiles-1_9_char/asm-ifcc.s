@@ -1,17 +1,26 @@
 # declaration de a
 # expression avec a
-test
+
+.globl	main
+ main: 
+
+# prologue
+ pushq %rbp 		# save %rbp on the stack
+ movq %rsp, %rbp 	# define %rbp for the current function
 
 # declaration de _tmp8(%rbp) avec la valeur 4
- movl	$4, _tmp8(%rbp)
+ movl	$4, -8(%rbp)
 
 
 # declaration de a(%rbp) dans _tmp8(%rbp)
- movl	a(%rbp),%eax
- movl	%eax, _tmp8(%rbp)
+ movl	-8(%rbp),%eax
+ movl	%eax, -4(%rbp)
 
 
-# declaration de retour(%rbp) dans a(%rbp)
- movl	retour(%rbp),%eax
- movl	%eax, a(%rbp)
+# retour de a
+retour : 
+movl	-4(%rbp), %eax
 
+# epilogue
+ popq %rbp 			# restore %rbp from the stack
+ 	ret

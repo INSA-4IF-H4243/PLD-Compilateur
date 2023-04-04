@@ -17,6 +17,21 @@ void IRInstr::gen_PseudoCode()
 {
 }
 /*Instructions par type*/
+IRInstrRetour::IRInstrRetour(BasicBlock *bb_, string var) : IRInstr(bb_, Operation::retour, {var})
+{
+    this->var = var;
+}
+
+void IRInstrRetour::gen_asm(ostream &o)
+{
+    o << "\n# retour de " << var <<"\n";
+    o<< "retour : \n"<<"movl	"<< bb->cfg->SymbolIndex[var] <<"(%rbp), %eax\n\n";
+}
+
+void IRInstrRetour::gen_PseudoCode()
+{
+    cout << "retour de " << var << endl;
+}
 IRInstrLdconst::IRInstrLdconst(BasicBlock *bb_, string var, int cst) : IRInstr(bb_, Operation::ldconst, {var, to_string(cst)})
 {
     this->var = var;
@@ -25,9 +40,8 @@ IRInstrLdconst::IRInstrLdconst(BasicBlock *bb_, string var, int cst) : IRInstr(b
 
 void IRInstrLdconst::gen_asm(ostream &o)
 {
-    cout<<"test"<<endl;
     o << "\n# declaration de " << var << "(%rbp) avec la valeur " << cst << "\n"
-    " movl	$" << cst << ", " << var << "(%rbp)\n\n";
+    " movl	$" << cst << ", " << bb->cfg->SymbolIndex[var] << "(%rbp)\n\n";
 }
 
 void IRInstrLdconst::gen_PseudoCode()
@@ -44,8 +58,8 @@ IRInstrCopy::IRInstrCopy(BasicBlock *bb_, string var, string res) : IRInstr(bb_,
 void IRInstrCopy::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << var << "(%rbp) dans " << res << "(%rbp)\n"
-    " movl	" << var << "(%rbp),%eax\n"
-    " movl	%eax, " << res << "(%rbp)\n\n";
+    " movl	" << bb->cfg->SymbolIndex[res] << "(%rbp),%eax\n"
+    " movl	%eax, " << bb->cfg->SymbolIndex[var] << "(%rbp)\n\n";
 }
 
 void IRInstrCopy::gen_PseudoCode()
@@ -63,9 +77,9 @@ IRInstrAdd::IRInstrAdd(BasicBlock *bb_, string tmp, string res_gauche, string re
 void IRInstrAdd::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) + " << res_droite << "(%rbp)\n"
-    " movl	" << res_gauche << "(%rbp),%eax\n"
-    " addl	" << res_droite << "(%rbp),%eax\n"
-    " movl	%eax, " << tmp << "(%rbp)\n\n";
+    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
+    " addl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
+    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
 }
 
 void IRInstrAdd::gen_PseudoCode()
@@ -83,9 +97,9 @@ IRInstrSub::IRInstrSub(BasicBlock *bb_, string tmp, string res_gauche, string re
 void IRInstrSub::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) - " << res_droite << "(%rbp)\n"
-    " movl	" << res_gauche << "(%rbp),%eax\n"
-    " subl	" << res_droite << "(%rbp),%eax\n"
-    " movl	%eax, " << tmp << "(%rbp)\n\n";
+    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
+    " subl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
+    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
 }
 
 void IRInstrSub::gen_PseudoCode()
@@ -103,9 +117,9 @@ IRInstrMul::IRInstrMul(BasicBlock *bb_, string tmp, string res_gauche, string re
 void IRInstrMul::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) * " << res_droite << "(%rbp)\n"
-    " movl	" << res_gauche << "(%rbp),%eax\n"
-    " imull	" << res_droite << "(%rbp),%eax\n"
-    " movl	%eax, " << tmp << "(%rbp)\n\n";
+    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
+    " imull	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
+    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
 }
 
 void IRInstrMul::gen_PseudoCode()
@@ -123,10 +137,10 @@ IRInstrDiv::IRInstrDiv(BasicBlock *bb_, string tmp, string res_gauche, string re
 void IRInstrDiv::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) / " << res_droite << "(%rbp)\n"
-    " movl	" << res_gauche << "(%rbp),%eax\n"
+    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
     " cltd\n"
-    " idivl	" << res_droite << "(%rbp)\n"
-    " movl	%eax, " << tmp << "(%rbp)\n\n";
+    " idivl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp)\n"
+    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
 }
 
 void IRInstrDiv::gen_PseudoCode()
@@ -143,12 +157,12 @@ IRInstrCmp_eq::IRInstrCmp_eq(BasicBlock *bb_, string tmp, string res_gauche, str
 
 void IRInstrCmp_eq::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) == " << res_droite << "(%rbp)\n"
-    " movl	" << res_gauche << "(%rbp),%eax\n"
-    " cmpl	" << res_droite << "(%rbp),%eax\n"
+    o << "\n# comparaison de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) == " << res_droite << "(%rbp)\n"
+    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
+    " cmpl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
     " sete	%al\n"
     " movzbl	%al, %eax\n"
-    " movl	%eax, " << tmp << "(%rbp)\n\n";
+    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
 }
 
 IRInstrCmp_lt::IRInstrCmp_lt(BasicBlock *bb_, string tmp, string res_gauche, string res_droite) : IRInstr(bb_, Operation::cmp_lt, {tmp, res_gauche, res_droite})
@@ -160,9 +174,9 @@ IRInstrCmp_lt::IRInstrCmp_lt(BasicBlock *bb_, string tmp, string res_gauche, str
 
 void IRInstrCmp_lt::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) < " << res_droite << "(%rbp)\n"
-    " movl	" << res_gauche << "(%rbp),%eax\n"
-    " cmpl	" << res_droite << "(%rbp),%eax\n"
+    o << "\n# comparaison de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) < " << res_droite << "(%rbp)\n"
+    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
+    " cmpl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
     " setl	%al\n"
     " movzbl	%al, %eax\n"
     " movl	%eax, " << tmp << "(%rbp)\n\n";
@@ -177,9 +191,9 @@ IRInstrCmp_le::IRInstrCmp_le(BasicBlock *bb_, string tmp, string res_gauche, str
 
 void IRInstrCmp_le::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) <= " << res_droite << "(%rbp)\n"
-    " movl	" << res_gauche << "(%rbp),%eax\n"
-    " cmpl	" << res_droite << "(%rbp),%eax\n"
+    o << "\n# comparaison de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) <= " << res_droite << "(%rbp)\n"
+    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
+    " cmpl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
     " setle	%al\n"
     " movzbl	%al, %eax\n"
     " movl	%eax, " << tmp << "(%rbp)\n\n";

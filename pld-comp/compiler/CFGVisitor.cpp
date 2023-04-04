@@ -9,18 +9,26 @@ CFG* cfg;
 
 antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx) 
 {
+	std::cout<<"\n.globl	main\n"
+		" main: \n\n"
+		"# prologue\n"
+		" pushq %rbp 		# save %rbp on the stack\n"
+		" movq %rsp, %rbp 	# define %rbp for the current function\n";
 	cfg=new CFG();
 	//cout<<"construction CFG"<<endl;
 	//std::string retour = ctx->expr()->getText();
 	if(ctx->code()) visit(ctx->code());
 	//cout<<"ajout retour"<<endl;
 	string res = visit(ctx->expr());
-	IRInstrCopy* instr = new IRInstrCopy(cfg->current_bb,"retour",res);
+	IRInstrRetour* instr = new IRInstrRetour(cfg->current_bb,res);
 	//cout<<"ajout bb"<<endl;
 	cfg->current_bb->add_IRInstr(instr);
 	
 	//cout<<"gen pseudo code"<<endl;
 	cfg->gen_asm(std::cout);
+	std::cout<<	"# epilogue\n"
+			" popq %rbp 			# restore %rbp from the stack\n"	
+			" 	ret\n";
 
 	return 0;
 }

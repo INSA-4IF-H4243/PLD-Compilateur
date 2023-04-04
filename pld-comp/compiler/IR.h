@@ -35,7 +35,8 @@ public:
 		// call,
 		cmp_eq,
 		cmp_lt,
-		cmp_le
+		cmp_le,
+		retour
 	} Operation;
 
 	/**  constructor */
@@ -50,6 +51,16 @@ protected:
 	// Type t;
 	vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
 						   // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design.
+};
+
+class IRInstrRetour : public IRInstr
+{
+public:
+	IRInstrRetour(BasicBlock *bb_, string var);
+	void gen_asm(ostream &o) override;
+	void gen_PseudoCode() override;
+private:
+	string var;
 };
 
 class IRInstrLdconst : public IRInstr
@@ -234,10 +245,10 @@ public:
 	// basic block management
 	// string new_BB_name();
 	BasicBlock *current_bb;
-
+	map<string, int> SymbolIndex;
 protected:
 	// map <string, Type> SymbolType; /**< part of the symbol table  */
-	map<string, int> SymbolIndex; /**< part of the symbol table  */
+	 /**< part of the symbol table  */
 	// int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
 	// int nextBBnumber; /**< just for naming */
 
