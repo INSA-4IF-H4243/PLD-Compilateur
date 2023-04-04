@@ -5,6 +5,6 @@ int main() {
         a = 1;
     } else {
         a = 0;
-    };
+    }
     return b;
 }

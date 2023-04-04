@@ -42,6 +42,12 @@ antlrcpp::Any CodeGenVisitor::visitBlockInst(ifccParser::BlockInstContext *ctx)
 	return 0;
 }
 
+antlrcpp::Any CodeGenVisitor::visitCondInst(ifccParser::CondInstContext *ctx) 
+{
+	visit(ctx->instruction());
+	return 0;
+}
+
 antlrcpp::Any CodeGenVisitor::visitAffectation(ifccParser::AffectationContext *ctx) 
 {
 	visit(ctx->vars());

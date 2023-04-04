@@ -27,6 +27,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitCondInst(ifccParser::CondInstContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitMulInst(ifccParser::MulInstContext *ctx) override {
     return visitChildren(ctx);
   }

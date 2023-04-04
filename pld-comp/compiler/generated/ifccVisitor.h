@@ -25,6 +25,8 @@ public:
 
     virtual antlrcpp::Any visitUneInst(ifccParser::UneInstContext *context) = 0;
 
+    virtual antlrcpp::Any visitCondInst(ifccParser::CondInstContext *context) = 0;
+
     virtual antlrcpp::Any visitMulInst(ifccParser::MulInstContext *context) = 0;
 
     virtual antlrcpp::Any visitBlockInst(ifccParser::BlockInstContext *context) = 0;

@@ -5,6 +5,7 @@ axiom       : prog ;
 prog        : TYPE 'main' '(' ')' '{' code? RETURN expr ';' '}' ;
 
 code        : instruction ';'         #uneInst
+            | instruction             #condInst
             | instruction ';' code    #mulInst
             | '{' code '}'            #blockInst
             ;

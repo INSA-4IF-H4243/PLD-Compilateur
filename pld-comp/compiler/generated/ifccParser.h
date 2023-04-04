@@ -101,6 +101,15 @@ public:
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };
 
+  class  CondInstContext : public CodeContext {
+  public:
+    CondInstContext(CodeContext *ctx);
+
+    InstructionContext *instruction();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
   class  MulInstContext : public CodeContext {
   public:
     MulInstContext(CodeContext *ctx);
