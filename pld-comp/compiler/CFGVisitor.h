@@ -15,8 +15,7 @@ class  CFGVisitor : public ifccBaseVisitor {
 		virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *ctx) override;
     	virtual antlrcpp::Any visitVars(ifccParser::VarsContext *ctx) override;
 		virtual antlrcpp::Any visitPar(ifccParser::ParContext *ctx) override;
-		virtual antlrcpp::Any visitAdd(ifccParser::AddContext *ctx) override;
-		virtual antlrcpp::Any visitSub(ifccParser::SubContext *ctx) override;		
+		virtual antlrcpp::Any visitAddsub(ifccParser::AddsubContext *ctx) override;	
 		virtual antlrcpp::Any visitMuldiv(ifccParser::MuldivContext *ctx) override;
 		virtual antlrcpp::Any visitVar(ifccParser::VarContext *ctx) override;
 		virtual antlrcpp::Any visitConst(ifccParser::ConstContext *ctx) override;

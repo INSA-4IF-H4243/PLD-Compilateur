@@ -25,21 +25,29 @@ public:
 
     virtual antlrcpp::Any visitUneInst(ifccParser::UneInstContext *context) = 0;
 
+    virtual antlrcpp::Any visitCondInst(ifccParser::CondInstContext *context) = 0;
+
     virtual antlrcpp::Any visitMulInst(ifccParser::MulInstContext *context) = 0;
+
+    virtual antlrcpp::Any visitBlockInst(ifccParser::BlockInstContext *context) = 0;
 
     virtual antlrcpp::Any visitDeclaration(ifccParser::DeclarationContext *context) = 0;
 
     virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *context) = 0;
 
+    virtual antlrcpp::Any visitCondition(ifccParser::ConditionContext *context) = 0;
+
+    virtual antlrcpp::Any visitIf(ifccParser::IfContext *context) = 0;
+
     virtual antlrcpp::Any visitPar(ifccParser::ParContext *context) = 0;
-
-    virtual antlrcpp::Any visitAdd(ifccParser::AddContext *context) = 0;
-
-    virtual antlrcpp::Any visitSub(ifccParser::SubContext *context) = 0;
 
     virtual antlrcpp::Any visitConst(ifccParser::ConstContext *context) = 0;
 
     virtual antlrcpp::Any visitVar(ifccParser::VarContext *context) = 0;
+
+    virtual antlrcpp::Any visitCmp(ifccParser::CmpContext *context) = 0;
+
+    virtual antlrcpp::Any visitAddsub(ifccParser::AddsubContext *context) = 0;
 
     virtual antlrcpp::Any visitMuldiv(ifccParser::MuldivContext *context) = 0;
 

@@ -98,31 +98,28 @@ antlrcpp::Any CFGVisitor::visitPar(ifccParser::ParContext *ctx)
 	return res;
 }
 
-antlrcpp::Any CFGVisitor::visitAdd(ifccParser::AddContext *ctx) 
+antlrcpp::Any CFGVisitor::visitAddsub(ifccParser::AddsubContext *ctx) 
 {
+	char op=ctx->OPP()->getText()[0];
 	string res_gauche = visit(ctx->expr()[0]);
 	string res_droite = visit(ctx->expr()[1]); 
 	compteurCFG += 4;
 	std::string tmp = "_tmp"+std::to_string(compteurCFG);
 	cfg->add_SymbolIndex(tmp,-compteurCFG);
-	IRInstrAdd* instr = new IRInstrAdd(cfg->current_bb,tmp,res_gauche,res_droite);
-	cfg->current_bb->add_IRInstr(instr);
-	return tmp;
-}
-antlrcpp::Any CFGVisitor::visitSub(ifccParser::SubContext *ctx) 
-{
-	string res_gauche = visit(ctx->expr()[0]);
-	string res_droite = visit(ctx->expr()[1]); 
-	compteurCFG += 4;
-	std::string tmp = "_tmp"+std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp,-compteurCFG);
-	IRInstrSub* instr = new IRInstrSub(cfg->current_bb,tmp,res_gauche,res_droite);
+	IRInstr* instr;
+	if(op=='+'){
+		 instr = new IRInstrAdd(cfg->current_bb,tmp,res_gauche,res_droite);
+	}
+	else if(op=='-'){
+		 instr = new IRInstrSub(cfg->current_bb,tmp,res_gauche,res_droite);
+		
+	}
 	cfg->current_bb->add_IRInstr(instr);
 	return tmp;
 }
 antlrcpp::Any CFGVisitor::visitMuldiv(ifccParser::MuldivContext *ctx) 
 {
-	char op=ctx->OP()->getText()[0];
+	char op=ctx->OPM()->getText()[0];
 	string res_gauche = visit(ctx->expr()[0]);
 	string res_droite = visit(ctx->expr()[1]);
 	std::string tmp = "";

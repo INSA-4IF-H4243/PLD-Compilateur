@@ -1,5 +1,7 @@
-int main()
-{
-    int b=8-4+4;
-    return b;
+int main() {
+   int a = 7;
+   if(a != 8888) {
+      a = 1;
+   }
+   return a;
 }

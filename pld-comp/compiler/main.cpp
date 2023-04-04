@@ -49,7 +49,7 @@ int main(int argn, const char **argv)
 
   /*CodeGenVisitor v;
   v.visit(tree);
-  cout<<"CFGV"<<endl;*/
+  /*cout<<"CFGV"<<endl;*/
 
   CFGVisitor cfgv;
   cfgv.visit(tree);
