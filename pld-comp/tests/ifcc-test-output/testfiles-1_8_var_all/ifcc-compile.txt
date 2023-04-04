@@ -1,4 +1,0 @@
-line 10:6 no viable alternative at input 'az;'
-error: syntax error during parsing
-
-return code: 1
