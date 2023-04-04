@@ -8,11 +8,11 @@
  pushq %rbp 		# save %rbp on the stack
  movq %rsp, %rbp 	# define %rbp for the current function
 
-# declaration de _tmp8(%rbp) avec la valeur 4
+# declaration de _tmp8 avec la valeur 4
  movl	$4, -8(%rbp)
 
 
-# declaration de a(%rbp) dans _tmp8(%rbp)
+# declaration de a dans _tmp8
  movl	-8(%rbp),%eax
  movl	%eax, -4(%rbp)
 

@@ -40,7 +40,7 @@ IRInstrLdconst::IRInstrLdconst(BasicBlock *bb_, string var, int cst) : IRInstr(b
 
 void IRInstrLdconst::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << var << "(%rbp) avec la valeur " << cst << "\n"
+    o << "\n# declaration de " << var << " avec la valeur " << cst << "\n"
     " movl	$" << cst << ", " << bb->cfg->SymbolIndex[var] << "(%rbp)\n\n";
 }
 
@@ -57,7 +57,7 @@ IRInstrCopy::IRInstrCopy(BasicBlock *bb_, string var, string res) : IRInstr(bb_,
 
 void IRInstrCopy::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << var << "(%rbp) dans " << res << "(%rbp)\n"
+    o << "\n# declaration de " << var << " dans " << res << "\n"
     " movl	" << bb->cfg->SymbolIndex[res] << "(%rbp),%eax\n"
     " movl	%eax, " << bb->cfg->SymbolIndex[var] << "(%rbp)\n\n";
 }
@@ -76,7 +76,7 @@ IRInstrAdd::IRInstrAdd(BasicBlock *bb_, string tmp, string res_gauche, string re
 
 void IRInstrAdd::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) + " << res_droite << "(%rbp)\n"
+    o << "\n# declaration de " << tmp << " avec la valeur " << res_gauche << " + " << res_droite << "\n"
     " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
     " addl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
     " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
@@ -96,7 +96,7 @@ IRInstrSub::IRInstrSub(BasicBlock *bb_, string tmp, string res_gauche, string re
 
 void IRInstrSub::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) - " << res_droite << "(%rbp)\n"
+    o << "\n# declaration de " << tmp << " avec la valeur " << res_gauche << " - " << res_droite << "\n"
     " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
     " subl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
     " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
@@ -116,7 +116,7 @@ IRInstrMul::IRInstrMul(BasicBlock *bb_, string tmp, string res_gauche, string re
 
 void IRInstrMul::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) * " << res_droite << "(%rbp)\n"
+    o << "\n# declaration de " << tmp << " avec la valeur " << res_gauche << " * " << res_droite << "\n"
     " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
     " imull	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
     " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
@@ -136,7 +136,7 @@ IRInstrDiv::IRInstrDiv(BasicBlock *bb_, string tmp, string res_gauche, string re
 
 void IRInstrDiv::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) / " << res_droite << "(%rbp)\n"
+    o << "\n# declaration de " << tmp << " avec la valeur " << res_gauche << " / " << res_droite << "\n"
     " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
     " cltd\n"
     " idivl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp)\n"
@@ -157,7 +157,7 @@ IRInstrCmp_eq::IRInstrCmp_eq(BasicBlock *bb_, string tmp, string res_gauche, str
 
 void IRInstrCmp_eq::gen_asm(ostream &o)
 {
-    o << "\n# comparaison de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) == " << res_droite << "(%rbp)\n"
+    o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " == " << res_droite << "\n"
     " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
     " cmpl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
     " sete	%al\n"
@@ -174,7 +174,7 @@ IRInstrCmp_lt::IRInstrCmp_lt(BasicBlock *bb_, string tmp, string res_gauche, str
 
 void IRInstrCmp_lt::gen_asm(ostream &o)
 {
-    o << "\n# comparaison de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) < " << res_droite << "(%rbp)\n"
+    o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " < " << res_droite << "\n"
     " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
     " cmpl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
     " setl	%al\n"
@@ -191,7 +191,7 @@ IRInstrCmp_le::IRInstrCmp_le(BasicBlock *bb_, string tmp, string res_gauche, str
 
 void IRInstrCmp_le::gen_asm(ostream &o)
 {
-    o << "\n# comparaison de " << tmp << "(%rbp) avec la valeur " << res_gauche << "(%rbp) <= " << res_droite << "(%rbp)\n"
+    o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " <= " << res_droite << "\n"
     " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
     " cmpl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
     " setle	%al\n"

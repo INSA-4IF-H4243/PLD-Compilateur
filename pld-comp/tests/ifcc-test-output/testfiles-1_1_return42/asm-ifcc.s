@@ -6,7 +6,7 @@
  pushq %rbp 		# save %rbp on the stack
  movq %rsp, %rbp 	# define %rbp for the current function
 
-# declaration de _tmp4(%rbp) avec la valeur 42
+# declaration de _tmp4 avec la valeur 42
  movl	$42, -4(%rbp)
 
 

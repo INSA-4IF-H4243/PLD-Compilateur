@@ -11,25 +11,25 @@
  pushq %rbp 		# save %rbp on the stack
  movq %rsp, %rbp 	# define %rbp for the current function
 
-# declaration de _tmp8(%rbp) avec la valeur 8
+# declaration de _tmp8 avec la valeur 8
  movl	$8, -8(%rbp)
 
 
-# declaration de a(%rbp) dans _tmp8(%rbp)
+# declaration de a dans _tmp8
  movl	-8(%rbp),%eax
  movl	%eax, -4(%rbp)
 
 
-# declaration de _tmp16(%rbp) avec la valeur 5
+# declaration de _tmp16 avec la valeur 5
  movl	$5, -16(%rbp)
 
 
-# declaration de b(%rbp) dans _tmp16(%rbp)
+# declaration de b dans _tmp16
  movl	-16(%rbp),%eax
  movl	%eax, -12(%rbp)
 
 
-# declaration de b(%rbp) dans a(%rbp)
+# declaration de b dans a
  movl	-4(%rbp),%eax
  movl	%eax, -12(%rbp)
 
