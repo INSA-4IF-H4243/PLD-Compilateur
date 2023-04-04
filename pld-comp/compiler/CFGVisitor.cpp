@@ -5,7 +5,7 @@
 //std::map<std::string, int> map;
 std::list<std::string> listeVarsCFG;
 int compteurCFG=0;
-CFG* cfg;
+CFG* cfg = new CFG();
 
 antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx) 
 {
@@ -14,17 +14,11 @@ antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 		"# prologue\n"
 		" pushq %rbp 		# save %rbp on the stack\n"
 		" movq %rsp, %rbp 	# define %rbp for the current function\n";
-	cfg=new CFG();
-	//cout<<"construction CFG"<<endl;
-	//std::string retour = ctx->expr()->getText();
 	if(ctx->code()) visit(ctx->code());
-	//cout<<"ajout retour"<<endl;
 	string res = visit(ctx->expr());
 	IRInstrRetour* instr = new IRInstrRetour(cfg->current_bb,res);
-	//cout<<"ajout bb"<<endl;
 	cfg->current_bb->add_IRInstr(instr);
-	
-	//cout<<"gen pseudo code"<<endl;
+
 	cfg->gen_asm(std::cout);
 	std::cout<<	"# epilogue\n"
 			" popq %rbp 			# restore %rbp from the stack\n"	
@@ -53,7 +47,7 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
 	for(std::string var:listeVarsCFG){
 		IRInstrCopy* instr = new IRInstrCopy(cfg->current_bb,var,res);
 		cfg->current_bb->add_IRInstr(instr);
-		;
+		
 	}
 	listeVarsCFG.clear();
 	return 0;
@@ -61,23 +55,18 @@ antlrcpp::Any CFGVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx) 
 {
-	//cout<<"visit declaration"<<endl;
 	std::string type = (ctx->TYPE()->getText());
-
 	visit(ctx->vars());
-	//cout<<"ajout compteur"<<endl;
 	for(std::string var:listeVarsCFG){
         compteurCFG+=4;
 		cfg->add_SymbolIndex(var,-compteurCFG);
-		//cout<<"add_SymbolIndex"<<endl;
     }
-	//cout<<"Creation instr"<<endl;
 	if(ctx->expr()){	
 		string res = visit(ctx->expr());
 		for(std::string var:listeVarsCFG){
 			IRInstrCopy* instr = new IRInstrCopy(cfg->current_bb,var,res);
 			cfg->current_bb->add_IRInstr(instr);
-			;
+			
 		}	
 	}
 	listeVarsCFG.clear();
@@ -108,10 +97,10 @@ antlrcpp::Any CFGVisitor::visitAddsub(ifccParser::AddsubContext *ctx)
 	cfg->add_SymbolIndex(tmp,-compteurCFG);
 	IRInstr* instr;
 	if(op=='+'){
-		 instr = new IRInstrAdd(cfg->current_bb,tmp,res_gauche,res_droite);
+		instr = new IRInstrAdd(cfg->current_bb,tmp,res_gauche,res_droite);
 	}
 	else if(op=='-'){
-		 instr = new IRInstrSub(cfg->current_bb,tmp,res_gauche,res_droite);
+		instr = new IRInstrSub(cfg->current_bb,tmp,res_gauche,res_droite);
 		
 	}
 	cfg->current_bb->add_IRInstr(instr);
@@ -143,7 +132,7 @@ antlrcpp::Any CFGVisitor::visitMuldiv(ifccParser::MuldivContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitVar(ifccParser::VarContext *ctx) {
 	return ctx->VAR()->getText();
-	}
+}
 
 antlrcpp::Any CFGVisitor::visitConst(ifccParser::ConstContext *ctx) {
 	compteurCFG+=4;
