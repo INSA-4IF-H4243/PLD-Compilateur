@@ -1,2 +1,4 @@
+line 3:0 mismatched input '<' expecting {'{', TYPE, 'if', 'return', VAR}
+error: syntax error during parsing
 
-return code: 0
+return code: 1

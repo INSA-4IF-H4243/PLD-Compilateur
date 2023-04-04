@@ -1,2 +1,4 @@
+line 6:0 no viable alternative at input 'b=42+a;\n<'
+error: syntax error during parsing
 
-return code: 0
+return code: 1

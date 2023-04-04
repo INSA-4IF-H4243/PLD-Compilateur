@@ -122,7 +122,7 @@ antlrcpp::Any CodeGenVisitor::visitAddsub(ifccParser::AddsubContext *ctx)
 		std::cout<<
 			"\n# soustraction de "<<res_gauche<<" / "<<res_droite<<" -> "<<-compteur<<"\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
-			" subl	"<<res_droite<<"(%rbp)\n" 
+			" subl	"<<res_droite<<"(%rbp), %eax\n" 
 			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
 	}

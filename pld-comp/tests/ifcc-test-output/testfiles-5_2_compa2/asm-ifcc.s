@@ -43,7 +43,7 @@
 
 # soustraction de -4 / -12 -> -28
  movl	-4(%rbp), %eax
- subl	-12(%rbp)
+ subl	-12(%rbp), %eax
  movl  %eax, -28(%rbp)
 
 # comparaison <

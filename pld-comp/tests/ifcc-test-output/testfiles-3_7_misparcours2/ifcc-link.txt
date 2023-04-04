@@ -1,5 +1,0 @@
-asm-ifcc.s: Messages de l'assembleur:
-asm-ifcc.s:78: Erreur: non concordance du nombre d'opérandes pour « sub »
-asm-ifcc.s:101: Erreur: non concordance du nombre d'opérandes pour « sub »
-
-return code: 1
