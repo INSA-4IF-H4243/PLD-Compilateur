@@ -16,8 +16,8 @@ main:
 	movl	-4(%rbp), %edx
 	movl	-8(%rbp), %eax
 	addl	%edx, %eax
-	cmpl	$999, %eax
-	setne	%al
+	cmpl	$998, %eax
+	setg	%al
 	movzbl	%al, %eax
 	movl	%eax, -12(%rbp)
 	movl	-12(%rbp), %eax

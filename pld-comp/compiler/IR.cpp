@@ -176,10 +176,10 @@ void IRInstrCmp_lt::gen_asm(ostream &o)
 {
     o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " < " << res_droite << "\n"
     " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
-    " cmpl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
+    " cmpl	%eax, " << bb->cfg->SymbolIndex[res_droite] << "(%rbp)\n"
     " setl	%al\n"
     " movzbl	%al, %eax\n"
-    " movl	%eax, " << tmp << "(%rbp)\n\n";
+    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
 }
 
 IRInstrCmp_le::IRInstrCmp_le(BasicBlock *bb_, string tmp, string res_gauche, string res_droite) : IRInstr(bb_, Operation::cmp_le, {tmp, res_gauche, res_droite})
@@ -193,10 +193,10 @@ void IRInstrCmp_le::gen_asm(ostream &o)
 {
     o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " <= " << res_droite << "\n"
     " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
-    " cmpl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
+    " cmpl	%eax, " << bb->cfg->SymbolIndex[res_droite] << "(%rbp)\n"
     " setle	%al\n"
     " movzbl	%al, %eax\n"
-    " movl	%eax, " << tmp << "(%rbp)\n\n";
+    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
 }
 
 

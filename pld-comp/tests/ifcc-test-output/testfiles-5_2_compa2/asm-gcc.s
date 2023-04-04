@@ -16,7 +16,7 @@ main:
 	movl	-4(%rbp), %eax
 	subl	-8(%rbp), %eax
 	cmpl	%eax, -12(%rbp)
-	setg	%al
+	setle	%al
 	movzbl	%al, %eax
 	movl	%eax, -12(%rbp)
 	movl	-12(%rbp), %eax

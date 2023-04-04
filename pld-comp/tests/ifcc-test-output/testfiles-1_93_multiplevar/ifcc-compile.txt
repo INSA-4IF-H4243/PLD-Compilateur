@@ -1,4 +1,0 @@
-line 5:12 mismatched input ',' expecting ';'
-error: syntax error during parsing
-
-return code: 1

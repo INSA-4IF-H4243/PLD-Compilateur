@@ -18,7 +18,7 @@ main:
 	addl	%eax, %eax
 	addl	%edx, %eax
 	cmpl	$7, %eax
-	setg	%al
+	setle	%al
 	movzbl	%al, %eax
 	movl	%eax, -12(%rbp)
 	movl	-12(%rbp), %eax

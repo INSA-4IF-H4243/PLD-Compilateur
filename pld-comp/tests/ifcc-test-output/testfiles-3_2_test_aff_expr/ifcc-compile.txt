@@ -1,5 +1,0 @@
-line 4:5 no viable alternative at input 'a+'
-line 10:14 mismatched input ',' expecting ';'
-error: syntax error during parsing
-
-return code: 1

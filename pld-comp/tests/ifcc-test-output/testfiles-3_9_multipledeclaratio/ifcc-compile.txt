@@ -1,3 +1,0 @@
-# var a déjà déclarée
-
-return code: 3
