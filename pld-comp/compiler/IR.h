@@ -34,6 +34,9 @@ public:
 		// wmem,
 		// call,
 		cmp_eq,
+		cmp_ne,
+		cmp_gt,
+		cmp_ge,
 		cmp_lt,
 		cmp_le,
 		retour
@@ -144,6 +147,39 @@ private:
 	string res_droite;
 };
 
+class IRInstrCmp_ne : public IRInstr
+{
+public:
+	IRInstrCmp_ne(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+	void gen_asm(ostream &o) override;
+private:
+	string tmp;
+	string res_gauche;
+	string res_droite;
+};
+
+class IRInstrCmp_gt : public IRInstr
+{
+public:
+	IRInstrCmp_gt(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+	void gen_asm(ostream &o) override;
+private:
+	string tmp;
+	string res_gauche;
+	string res_droite;
+};
+
+class IRInstrCmp_ge : public IRInstr
+{
+public:
+	IRInstrCmp_ge(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+	void gen_asm(ostream &o) override;
+private:
+	string tmp;
+	string res_gauche;
+	string res_droite;
+};
+
 class IRInstrCmp_lt : public IRInstr
 {
 public:
@@ -245,8 +281,9 @@ public:
 	// basic block management
 	// string new_BB_name();
 	BasicBlock *current_bb;
-	map<string, int> SymbolIndex;
+	
 protected:
+	map<string, int> SymbolIndex;
 	// map <string, Type> SymbolType; /**< part of the symbol table  */
 	 /**< part of the symbol table  */
 	// int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */

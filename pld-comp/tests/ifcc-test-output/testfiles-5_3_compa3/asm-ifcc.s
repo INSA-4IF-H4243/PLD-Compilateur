@@ -47,10 +47,10 @@
  movl	%eax, -28(%rbp)
 
 
-# comparaison de _tmp32 avec la valeur _tmp28 == c
+# comparaison de _tmp32 avec la valeur _tmp28 >= c
  movl	-28(%rbp),%eax
- cmpl	-20(%rbp),%eax
- sete	%al
+ cmpl	%eax, -20(%rbp)
+ setle	%al
  movzbl	%al, %eax
  movl	%eax, -32(%rbp)
 

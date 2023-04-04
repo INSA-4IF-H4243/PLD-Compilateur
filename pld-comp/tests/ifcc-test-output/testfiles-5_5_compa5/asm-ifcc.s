@@ -57,10 +57,10 @@
  movl	%eax, -36(%rbp)
 
 
-# comparaison de _tmp40 avec la valeur _tmp28 <= _tmp36
+# comparaison de _tmp40 avec la valeur _tmp28 > _tmp36
  movl	-28(%rbp),%eax
  cmpl	%eax, -36(%rbp)
- setle	%al
+ setl	%al
  movzbl	%al, %eax
  movl	%eax, -40(%rbp)
 

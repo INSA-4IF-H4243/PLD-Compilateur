@@ -25,7 +25,7 @@ IRInstrRetour::IRInstrRetour(BasicBlock *bb_, string var) : IRInstr(bb_, Operati
 void IRInstrRetour::gen_asm(ostream &o)
 {
     o << "\n# retour de " << var <<"\n";
-    o<< "retour : \n"<<"movl	"<< bb->cfg->SymbolIndex[var] <<"(%rbp), %eax\n\n";
+    o<< "retour : \n"<<"movl	"<< bb->cfg->get_var_index(var) <<"(%rbp), %eax\n\n";
 }
 
 void IRInstrRetour::gen_PseudoCode()
@@ -41,7 +41,7 @@ IRInstrLdconst::IRInstrLdconst(BasicBlock *bb_, string var, int cst) : IRInstr(b
 void IRInstrLdconst::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << var << " avec la valeur " << cst << "\n"
-    " movl	$" << cst << ", " << bb->cfg->SymbolIndex[var] << "(%rbp)\n\n";
+    " movl	$" << cst << ", " << bb->cfg->get_var_index(var) << "(%rbp)\n\n";
 }
 
 void IRInstrLdconst::gen_PseudoCode()
@@ -58,8 +58,8 @@ IRInstrCopy::IRInstrCopy(BasicBlock *bb_, string var, string res) : IRInstr(bb_,
 void IRInstrCopy::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << var << " dans " << res << "\n"
-    " movl	" << bb->cfg->SymbolIndex[res] << "(%rbp),%eax\n"
-    " movl	%eax, " << bb->cfg->SymbolIndex[var] << "(%rbp)\n\n";
+    " movl	" << bb->cfg->get_var_index(res) << "(%rbp),%eax\n"
+    " movl	%eax, " << bb->cfg->get_var_index(var) << "(%rbp)\n\n";
 }
 
 void IRInstrCopy::gen_PseudoCode()
@@ -77,9 +77,9 @@ IRInstrAdd::IRInstrAdd(BasicBlock *bb_, string tmp, string res_gauche, string re
 void IRInstrAdd::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << tmp << " avec la valeur " << res_gauche << " + " << res_droite << "\n"
-    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
-    " addl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
-    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
+    " addl	" << bb->cfg->get_var_index(res_droite) << "(%rbp),%eax\n"
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
 }
 
 void IRInstrAdd::gen_PseudoCode()
@@ -97,9 +97,9 @@ IRInstrSub::IRInstrSub(BasicBlock *bb_, string tmp, string res_gauche, string re
 void IRInstrSub::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << tmp << " avec la valeur " << res_gauche << " - " << res_droite << "\n"
-    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
-    " subl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
-    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
+    " subl	" << bb->cfg->get_var_index(res_droite) << "(%rbp),%eax\n"
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
 }
 
 void IRInstrSub::gen_PseudoCode()
@@ -117,9 +117,9 @@ IRInstrMul::IRInstrMul(BasicBlock *bb_, string tmp, string res_gauche, string re
 void IRInstrMul::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << tmp << " avec la valeur " << res_gauche << " * " << res_droite << "\n"
-    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
-    " imull	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
-    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
+    " imull	" << bb->cfg->get_var_index(res_droite) << "(%rbp),%eax\n"
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
 }
 
 void IRInstrMul::gen_PseudoCode()
@@ -137,10 +137,10 @@ IRInstrDiv::IRInstrDiv(BasicBlock *bb_, string tmp, string res_gauche, string re
 void IRInstrDiv::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << tmp << " avec la valeur " << res_gauche << " / " << res_droite << "\n"
-    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
     " cltd\n"
-    " idivl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp)\n"
-    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
+    " idivl	" << bb->cfg->get_var_index(res_droite) << "(%rbp)\n"
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
 }
 
 void IRInstrDiv::gen_PseudoCode()
@@ -158,11 +158,62 @@ IRInstrCmp_eq::IRInstrCmp_eq(BasicBlock *bb_, string tmp, string res_gauche, str
 void IRInstrCmp_eq::gen_asm(ostream &o)
 {
     o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " == " << res_droite << "\n"
-    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
-    " cmpl	" << bb->cfg->SymbolIndex[res_droite] << "(%rbp),%eax\n"
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
+    " cmpl	" << bb->cfg->get_var_index(res_droite) << "(%rbp),%eax\n"
     " sete	%al\n"
     " movzbl	%al, %eax\n"
-    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
+}
+
+IRInstrCmp_ne::IRInstrCmp_ne(BasicBlock *bb_, string tmp, string res_gauche, string res_droite) : IRInstr(bb_, Operation::cmp_ne, {tmp, res_gauche, res_droite})
+{
+    this->tmp = tmp;
+    this->res_gauche = res_gauche;
+    this->res_droite = res_droite;
+}
+
+void IRInstrCmp_ne::gen_asm(ostream &o)
+{
+    o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " != " << res_droite << "\n"
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
+    " cmpl	" << bb->cfg->get_var_index(res_droite) << "(%rbp),%eax\n"
+    " setne	%al\n"
+    " movzbl	%al, %eax\n"
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
+}
+
+IRInstrCmp_gt::IRInstrCmp_gt(BasicBlock *bb_, string tmp, string res_gauche, string res_droite) : IRInstr(bb_, Operation::cmp_gt, {tmp, res_gauche, res_droite})
+{
+    this->tmp = tmp;
+    this->res_gauche = res_gauche;
+    this->res_droite = res_droite;
+}
+
+void IRInstrCmp_gt::gen_asm(ostream &o)
+{
+    o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " > " << res_droite << "\n"
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
+    " cmpl	%eax, " << bb->cfg->get_var_index(res_droite) << "(%rbp)\n"
+    " setl	%al\n"
+    " movzbl	%al, %eax\n"
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
+}
+
+IRInstrCmp_ge::IRInstrCmp_ge(BasicBlock *bb_, string tmp, string res_gauche, string res_droite) : IRInstr(bb_, Operation::cmp_ge, {tmp, res_gauche, res_droite})
+{
+    this->tmp = tmp;
+    this->res_gauche = res_gauche;
+    this->res_droite = res_droite;
+}
+
+void IRInstrCmp_ge::gen_asm(ostream &o)
+{
+    o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " >= " << res_droite << "\n"
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
+    " cmpl	%eax, " << bb->cfg->get_var_index(res_droite) << "(%rbp)\n"
+    " setle	%al\n"
+    " movzbl	%al, %eax\n"
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
 }
 
 IRInstrCmp_lt::IRInstrCmp_lt(BasicBlock *bb_, string tmp, string res_gauche, string res_droite) : IRInstr(bb_, Operation::cmp_lt, {tmp, res_gauche, res_droite})
@@ -175,11 +226,11 @@ IRInstrCmp_lt::IRInstrCmp_lt(BasicBlock *bb_, string tmp, string res_gauche, str
 void IRInstrCmp_lt::gen_asm(ostream &o)
 {
     o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " < " << res_droite << "\n"
-    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
-    " cmpl	%eax, " << bb->cfg->SymbolIndex[res_droite] << "(%rbp)\n"
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
+    " cmpl	" << bb->cfg->get_var_index(res_droite) << "(%rbp),%eax\n"
     " setl	%al\n"
     " movzbl	%al, %eax\n"
-    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
 }
 
 IRInstrCmp_le::IRInstrCmp_le(BasicBlock *bb_, string tmp, string res_gauche, string res_droite) : IRInstr(bb_, Operation::cmp_le, {tmp, res_gauche, res_droite})
@@ -192,11 +243,11 @@ IRInstrCmp_le::IRInstrCmp_le(BasicBlock *bb_, string tmp, string res_gauche, str
 void IRInstrCmp_le::gen_asm(ostream &o)
 {
     o << "\n# comparaison de " << tmp << " avec la valeur " << res_gauche << " <= " << res_droite << "\n"
-    " movl	" << bb->cfg->SymbolIndex[res_gauche] << "(%rbp),%eax\n"
-    " cmpl	%eax, " << bb->cfg->SymbolIndex[res_droite] << "(%rbp)\n"
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
+    " cmpl	" << bb->cfg->get_var_index(res_droite) << "(%rbp),%eax\n"
     " setle	%al\n"
     " movzbl	%al, %eax\n"
-    " movl	%eax, " << bb->cfg->SymbolIndex[tmp] << "(%rbp)\n\n";
+    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
 }
 
 
@@ -254,4 +305,9 @@ void CFG::gen_PseudoCode()
 void CFG::add_SymbolIndex(string name, int t)
 {
     SymbolIndex[name] = t;
+}
+
+int CFG::get_var_index(string name)
+{
+    return SymbolIndex[name];
 }

@@ -159,27 +159,32 @@ antlrcpp::Any CFGVisitor::visitCmp(ifccParser::CmpContext *ctx) {
 	std::string op = ctx->CMPOP()->getText();
 	string res_gauche = visit(ctx->expr()[0]);
 	string res_droite = visit(ctx->expr()[1]);
-	std::string tmp = "";
+	compteurCFG += 4;
+	std::string	tmp = "_tmp"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp,-compteurCFG);
 	
 	if(op.compare("==")==0) {
-		compteurCFG += 4;
-		tmp = "_tmp"+std::to_string(compteurCFG);
-		cfg->add_SymbolIndex(tmp,-compteurCFG);
 		IRInstrCmp_eq* instr = new IRInstrCmp_eq(cfg->current_bb,tmp,res_gauche,res_droite);
 		cfg->current_bb->add_IRInstr(instr);
 	}
-	else if (op.compare(">")==0) {
-		compteurCFG += 4;
-		tmp = "_tmp"+std::to_string(compteurCFG);
-		cfg->add_SymbolIndex(tmp,-compteurCFG);
+	else if (op.compare("!=")==0) {
+		IRInstrCmp_ne* instr = new IRInstrCmp_ne(cfg->current_bb,tmp,res_gauche,res_droite);
+		cfg->current_bb->add_IRInstr(instr);
+	}
+	else if (op.compare("<")==0) {
 		IRInstrCmp_lt* instr = new IRInstrCmp_lt(cfg->current_bb,tmp,res_gauche,res_droite);
 		cfg->current_bb->add_IRInstr(instr);
 	}
-	else if (op.compare(">=")==0) {
-		compteurCFG += 4;
-		tmp = "_tmp"+std::to_string(compteurCFG);
-		cfg->add_SymbolIndex(tmp,-compteurCFG);
+	else if (op.compare(">")==0) {
+		IRInstrCmp_gt* instr = new IRInstrCmp_gt(cfg->current_bb,tmp,res_gauche,res_droite);
+		cfg->current_bb->add_IRInstr(instr);
+	}
+	else if (op.compare("<=")==0) {
 		IRInstrCmp_le* instr = new IRInstrCmp_le(cfg->current_bb,tmp,res_gauche,res_droite);
+		cfg->current_bb->add_IRInstr(instr);
+	}
+	else if (op.compare(">=")==0) {
+		IRInstrCmp_ge* instr = new IRInstrCmp_ge(cfg->current_bb,tmp,res_gauche,res_droite);
 		cfg->current_bb->add_IRInstr(instr);
 	}
 	return tmp;

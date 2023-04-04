@@ -52,7 +52,7 @@
 
 # comparaison de _tmp36 avec la valeur _tmp28 <= _tmp32
  movl	-28(%rbp),%eax
- cmpl	%eax, -32(%rbp)
+ cmpl	-32(%rbp),%eax
  setle	%al
  movzbl	%al, %eax
  movl	%eax, -36(%rbp)
