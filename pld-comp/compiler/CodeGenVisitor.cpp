@@ -8,7 +8,7 @@ int compteur=0;
 
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx) 
 {
-	std::string retour = ctx->expr()->getText();
+	//std::string retour = ctx->expr()->getText();
 	std::cout<<"\n.globl	main\n"
 		" main: \n\n"
 		"# prologue\n"

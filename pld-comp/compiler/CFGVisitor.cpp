@@ -6,21 +6,15 @@
 std::list<std::string> listeVars;
 int compteur=0;
 CFG* cfg;
-/*
+
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx) 
 {
-	std::string retour = ctx->expr()->getText();
-	std::cout<<"\n.globl	main\n"
-		" main: \n\n"
-		"# prologue\n"
-		" pushq %rbp 		# save %rbp on the stack\n"
-		" movq %rsp, %rbp 	# define %rbp for the current function\n";
+	//std::string retour = ctx->expr()->getText();
 	if(ctx->code()) visit(ctx->code());
-	int res = visit(ctx->expr());
-	std::cout<< "retour : \n"<<"movl	"<< res <<"(%rbp), %eax\n\n";
-	std::cout<<	"# epilogue\n"
-			" popq %rbp 			# restore %rbp from the stack\n"	
-			" 	ret\n";
+	string res = visit(ctx->expr());
+	IRInstrCopy* instr = new IRInstrCopy(cfg->current_bb,"retour",res);
+	cfg->current_bb->add_IRInstr(instr);
+	
 
 	return 0;
 }
@@ -40,13 +34,11 @@ antlrcpp::Any CodeGenVisitor::visitMulInst(ifccParser::MulInstContext *ctx)
 antlrcpp::Any CodeGenVisitor::visitAffectation(ifccParser::AffectationContext *ctx) 
 {
 	visit(ctx->vars());
+	string res = visit(ctx->expr());
 
-	int res = visit(ctx->expr());
 	for(std::string var:listeVars){
-		std::cout<<
-		"\n# affectation de "<<var<<" à "<<res<<"\n"
-		" movl	"<<res<<"(%rbp),%eax\n"
-		" movl	%eax, "<<map[var]<<"(%rbp)\n\n"
+		IRInstrCopy* instr = new IRInstrCopy(cfg->current_bb,var,res);
+		cfg->current_bb->add_IRInstr(instr);
 		;
 	}
 	listeVars.clear();
@@ -60,15 +52,13 @@ antlrcpp::Any CodeGenVisitor::visitDeclaration(ifccParser::DeclarationContext *c
 	visit(ctx->vars());
 	for(std::string var:listeVars){
         compteur+=4;
-		map[var]=-compteur;
+		cfg->add_SymbolIndex(var,-compteur);
     }
 	if(ctx->expr()){	
-		int res = visit(ctx->expr());
+		string res = visit(ctx->expr());
 		for(std::string var:listeVars){
-			std::cout<<
-			"\n# declaration de "<<var<<" dans "<<(-compteur)<<"\n"
-			" movl	"<<res<<"(%rbp),%eax\n"
-			" movl	%eax, "<<map[var]<<"(%rbp)\n\n"
+			IRInstrCopy* instr = new IRInstrCopy(cfg->current_bb,var,res);
+			cfg->current_bb->add_IRInstr(instr);
 			;
 		}	
 	}
@@ -86,91 +76,71 @@ antlrcpp::Any CodeGenVisitor::visitVars(ifccParser::VarsContext *ctx) {
 
 antlrcpp::Any CodeGenVisitor::visitPar(ifccParser::ParContext *ctx) 
 {
-	int res = visit(ctx->expr());
+	string res = visit(ctx->expr());
 	return res;
 }
 
 antlrcpp::Any CodeGenVisitor::visitAdd(ifccParser::AddContext *ctx) 
 {
-	int res_gauche = visit(ctx->expr()[0]);
-	int res_droite = visit(ctx->expr()[1]); 
+	string res_gauche = visit(ctx->expr()[0]);
+	string res_droite = visit(ctx->expr()[1]); 
 	compteur += 4;
 	std::string tmp = "_tmp"+std::to_string(compteur);
-	map[tmp]=-compteur;
-	std::cout<<
-		"\n# addition de "<<res_gauche<<" + "<<res_droite<<" -> "<<-compteur<<"\n"
-		" movl	"<<res_gauche<<"(%rbp), %eax\n"
-		" addl	"<<res_droite<<"(%rbp), %eax\n" 
-		" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
-		;
-	return map[tmp];
+	cfg->add_SymbolIndex(tmp,-compteur);
+	IRInstrAdd* instr = new IRInstrAdd(cfg->current_bb,tmp,res_gauche,res_droite);
+	cfg->current_bb->add_IRInstr(instr);
+	return tmp;
 }
 antlrcpp::Any CodeGenVisitor::visitSub(ifccParser::SubContext *ctx) 
 {
-	int res_gauche = visit(ctx->expr()[0]);
-	int res_droite = visit(ctx->expr()[1]); 
+	string res_gauche = visit(ctx->expr()[0]);
+	string res_droite = visit(ctx->expr()[1]); 
 	compteur += 4;
 	std::string tmp = "_tmp"+std::to_string(compteur);
-	map[tmp]=-compteur;
-	std::cout<<
-		"\n# soustraction de "<<res_gauche<<" - "<<res_droite<<" -> "<<-compteur<<"\n"
-		" movl	"<<res_gauche<<"(%rbp), %eax\n"
-		" subl	"<<res_droite<<"(%rbp), %eax\n" 
-		" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
-		;
-	return map[tmp];
+	cfg->add_SymbolIndex(tmp,-compteur);
+	IRInstrSub* instr = new IRInstrSub(cfg->current_bb,tmp,res_gauche,res_droite);
+	cfg->current_bb->add_IRInstr(instr);
+	return tmp;
 }
 antlrcpp::Any CodeGenVisitor::visitMuldiv(ifccParser::MuldivContext *ctx) 
 {
 	char op=ctx->OP()->getText()[0];
-	int res_gauche = visit(ctx->expr()[0]);
-	int res_droite = visit(ctx->expr()[1]);
+	string res_gauche = visit(ctx->expr()[0]);
+	string res_droite = visit(ctx->expr()[1]);
 	std::string tmp = "";
-	map[tmp] = 0;
 	
 	if(op=='*'){
 		compteur += 4;
-		tmp = "_tmp"+std::to_string(compteur);
-		map[tmp]=-compteur;
-		std::cout<<
-			"\n# multiplication de "<<res_gauche<<" * "<<res_droite<<" -> "<<-compteur<<"\n"
-			" movl	"<<res_gauche<<"(%rbp), %eax\n"
-			" imull	"<<res_droite<<"(%rbp), %eax\n" 
-			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
-			;
+		std::string tmp = "_tmp"+std::to_string(compteur);
+		cfg->add_SymbolIndex(tmp,-compteur);
+		IRInstrMul* instr = new IRInstrMul(cfg->current_bb,tmp,res_gauche,res_droite);
+		cfg->current_bb->add_IRInstr(instr);
 	}
 	else {
 		compteur += 4;
-		tmp = "_tmp"+std::to_string(compteur);
-		map[tmp]=-compteur;
-		std::cout<<
-			"\n# division de "<<res_gauche<<" / "<<res_droite<<" -> "<<-compteur<<"\n"
-			" movl	"<<res_gauche<<"(%rbp), %eax\n"
-			" cltd\n" //uniquement si on veut le résultat en int
-			" idivl	"<<res_droite<<"(%rbp)\n" 
-			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
-			;
+		std::string tmp = "_tmp"+std::to_string(compteur);
+		cfg->add_SymbolIndex(tmp,-compteur);
+		IRInstrDiv* instr = new IRInstrDiv(cfg->current_bb,tmp,res_gauche,res_droite);
+		cfg->current_bb->add_IRInstr(instr);
 	}
-	return map[tmp];
+	return tmp;
 }
 
 antlrcpp::Any CodeGenVisitor::visitVar(ifccParser::VarContext *ctx) {
-	return map[ctx->VAR()->getText()];
+	return ctx->VAR()->getText();
 	}
 
 antlrcpp::Any CodeGenVisitor::visitConst(ifccParser::ConstContext *ctx) {
 	compteur+=4;
 	std::string tmp = "_tmp"+std::to_string(compteur);
-	map[tmp]=-compteur;
-	int cst = (int)stoi(ctx->CONST()->getText());
-	std::cout<<
-		"\n# mise de "<<"$"<<cst<<" dans "<<-compteur<<"\n"
-		" movl	$"<<cst<<", "<<map[tmp]<<"(%rbp)\n\n"
-		;
-	return map[tmp];
+	cfg->add_SymbolIndex(tmp,-compteur);
+	int cst = stoi(ctx->CONST()->getText());
+	IRInstrLdconst* instr = new IRInstrLdconst(cfg->current_bb,tmp,cst);
+	cfg->current_bb->add_IRInstr(instr);
+	return tmp;
 }
 
-*/
+
 
 
 
