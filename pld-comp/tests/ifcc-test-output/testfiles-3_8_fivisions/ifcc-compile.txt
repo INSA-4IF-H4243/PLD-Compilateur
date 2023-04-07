@@ -1,0 +1,4 @@
+line 3:0 mismatched input '<' expecting {'{', TYPE, 'if', 'while', 'return', VAR}
+error: syntax error during parsing
+
+return code: 1

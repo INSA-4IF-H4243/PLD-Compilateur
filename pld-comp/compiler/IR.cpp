@@ -13,9 +13,11 @@ IRInstr::IRInstr(BasicBlock *bb_, Operation op_, vector<string> params_)
 void IRInstr::gen_asm(ostream &o)
 {
 }
+
 void IRInstr::gen_PseudoCode()
 {
 }
+
 /*Instructions par type*/
 IRInstrRetour::IRInstrRetour(BasicBlock *bb_, string var) : IRInstr(bb_, Operation::retour, {var})
 {
@@ -25,7 +27,7 @@ IRInstrRetour::IRInstrRetour(BasicBlock *bb_, string var) : IRInstr(bb_, Operati
 void IRInstrRetour::gen_asm(ostream &o)
 {
     o << "\n# retour de " << var <<"\n";
-    o<< "retour : \n"<<"movl	"<< bb->cfg->get_var_index(var) <<"(%rbp), %eax\n\n";
+    o << " movl	"<< bb->cfg->get_var_index(var) <<"(%rbp), %eax\n\n";
 }
 
 void IRInstrRetour::gen_PseudoCode()
@@ -253,20 +255,35 @@ void IRInstrCmp_le::gen_asm(ostream &o)
 
 BasicBlock::BasicBlock(CFG *cfg_, string label_)
 {
-    cfg = cfg_;
-    label = label_;
+    this->cfg = cfg_;
+    this->label = label_;
+    this->exit_true = nullptr;
+    this->exit_false = nullptr;
 }
+
 void BasicBlock::add_IRInstr(IRInstr *instr)
 {
     instrs.push_back(instr);
 }
+
 void BasicBlock::gen_asm(ostream &o)
 {
+    o << label << ":\n";
     for (IRInstr *i : instrs)
     {
         i->gen_asm(o);
     }
+
+    if(exit_true != nullptr && exit_false == nullptr)
+    {
+        o << "jmp " << exit_true->label << "\n";
+    } 
+    else if(exit_true != nullptr && exit_false != nullptr)
+    {
+        o << "je " << exit_false->label << "\n";
+    }
 }
+
 void BasicBlock::gen_PseudoCode()
 {
     for (IRInstr *i : instrs)
@@ -277,25 +294,25 @@ void BasicBlock::gen_PseudoCode()
 
 CFG::CFG()
 {
-    current_bb = new BasicBlock(this, "1stBlock");
-    
+    this->current_bb = new BasicBlock(this, "initBlock");
 }
+
 void CFG::add_bb(BasicBlock *bb)
 {
     bbs.push_back(bb);
     current_bb = bb;
 }
+
 void CFG::gen_asm(ostream &o)
 {
-    current_bb->gen_asm(o);
     for (BasicBlock *i : bbs)
     {
         i->gen_asm(o);
     }
 }
+
 void CFG::gen_PseudoCode()
 {
-    current_bb->gen_PseudoCode();
     for (BasicBlock *i : bbs)
     {
         i->gen_PseudoCode();

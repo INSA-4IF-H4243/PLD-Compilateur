@@ -13,6 +13,8 @@
  pushq %rbp 		# save %rbp on the stack
  movq %rsp, %rbp 	# define %rbp for the current function
 
+entry:
+
 # declaration de _tmp8 avec la valeur 7
  movl	$7, -8(%rbp)
 
@@ -64,8 +66,7 @@
 
 
 # retour de c
-retour : 
-movl	-20(%rbp), %eax
+ movl	-20(%rbp), %eax
 
 # epilogue
  popq %rbp 			# restore %rbp from the stack

@@ -36,17 +36,17 @@ antlrcpp::Any CodeGenVisitor::visitMulInst(ifccParser::MulInstContext *ctx)
 	return 0;
 }
 
-antlrcpp::Any CodeGenVisitor::visitBlockInst(ifccParser::BlockInstContext *ctx) 
-{
-	visit(ctx->code());
-	return 0;
-}
+// antlrcpp::Any CodeGenVisitor::visitBlockInst(ifccParser::BlockInstContext *ctx) 
+// {
+// 	visit(ctx->code());
+// 	return 0;
+// }
 
-antlrcpp::Any CodeGenVisitor::visitCondInst(ifccParser::CondInstContext *ctx) 
-{
-	visit(ctx->instruction());
-	return 0;
-}
+// antlrcpp::Any CodeGenVisitor::visitCondInst(ifccParser::CondInstContext *ctx) 
+// {
+// 	visit(ctx->instruction());
+// 	return 0;
+// }
 
 antlrcpp::Any CodeGenVisitor::visitAffectation(ifccParser::AffectationContext *ctx) 
 {
@@ -245,7 +245,7 @@ antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx)
 	return map[tmp];
 }
 
-antlrcpp::Any CodeGenVisitor::visitCondition(ifccParser::ConditionContext *ctx) 
+/*antlrcpp::Any CodeGenVisitor::visitCondition(ifccParser::ConditionContext *ctx) 
 {
 	visit(ctx->cond());
 	return 0;
@@ -279,7 +279,7 @@ antlrcpp::Any CodeGenVisitor::visitIf(ifccParser::IfContext *ctx)
 			;
 	}
 	return 0;
-}
+} */
 
 
 

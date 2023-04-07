@@ -1,0 +1,4 @@
+line 6:0 mismatched input '<' expecting 'return'
+error: syntax error during parsing
+
+return code: 1

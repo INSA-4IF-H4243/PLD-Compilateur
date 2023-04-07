@@ -8,7 +8,7 @@ code        : instruction ';'                                #uneInst
             | instruction ';' code                           #mulInst
             | '{' code '}'                                   #block
             | IF '(' expr ')' code  ( ELSE code )? code?     #ifInst
-            | WHILE '(' expr ')' '{' code '}' code?          #whileInst
+            | WHILE '(' expr ')' code code?                  #whileInst
             ;
 
 instruction : TYPE vars ('=' expr)?        #declaration
