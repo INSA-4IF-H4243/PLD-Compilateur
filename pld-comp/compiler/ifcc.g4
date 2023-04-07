@@ -4,18 +4,15 @@ axiom       : prog ;
 
 prog        : TYPE 'main' '(' ')' '{' code? RETURN expr ';' '}' ;
 
-code        : instruction ';'         #uneInst
-            | instruction             #condInst
-            | instruction ';' code    #mulInst
-            | '{' code '}'            #blockInst
+code        : instruction ';'                                #uneInst
+            | instruction ';' code                           #mulInst
+            | '{' code '}'                                   #block
+            | IF '(' expr ')' code  ( ELSE code )? code?     #ifInst
+            | WHILE '(' expr ')' '{' code '}' code?          #whileInst
             ;
 
 instruction : TYPE vars ('=' expr)?        #declaration
             | vars '=' expr                #affectation
-            | cond                         #condition
-            ;
-
-cond        : IF '(' expr ')' code (ELSE code)?   #if
             ;
 
 expr        : expr OPM  expr         #muldiv
@@ -33,6 +30,7 @@ CHAR        :'char';
 
 IF: 'if';
 ELSE: 'else';
+WHILE: 'while';
 RETURN      : 'return' ;
 CONST       : [0-9]+ ;
 OPM : ('*'|'/');

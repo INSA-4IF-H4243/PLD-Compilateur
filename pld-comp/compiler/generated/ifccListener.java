@@ -39,18 +39,6 @@ public interface ifccListener extends ParseTreeListener {
 	 */
 	void exitUneInst(ifccParser.UneInstContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code condInst}
-	 * labeled alternative in {@link ifccParser#code}.
-	 * @param ctx the parse tree
-	 */
-	void enterCondInst(ifccParser.CondInstContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code condInst}
-	 * labeled alternative in {@link ifccParser#code}.
-	 * @param ctx the parse tree
-	 */
-	void exitCondInst(ifccParser.CondInstContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code mulInst}
 	 * labeled alternative in {@link ifccParser#code}.
 	 * @param ctx the parse tree
@@ -63,17 +51,41 @@ public interface ifccListener extends ParseTreeListener {
 	 */
 	void exitMulInst(ifccParser.MulInstContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code blockInst}
+	 * Enter a parse tree produced by the {@code block}
 	 * labeled alternative in {@link ifccParser#code}.
 	 * @param ctx the parse tree
 	 */
-	void enterBlockInst(ifccParser.BlockInstContext ctx);
+	void enterBlock(ifccParser.BlockContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code blockInst}
+	 * Exit a parse tree produced by the {@code block}
 	 * labeled alternative in {@link ifccParser#code}.
 	 * @param ctx the parse tree
 	 */
-	void exitBlockInst(ifccParser.BlockInstContext ctx);
+	void exitBlock(ifccParser.BlockContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code ifInst}
+	 * labeled alternative in {@link ifccParser#code}.
+	 * @param ctx the parse tree
+	 */
+	void enterIfInst(ifccParser.IfInstContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code ifInst}
+	 * labeled alternative in {@link ifccParser#code}.
+	 * @param ctx the parse tree
+	 */
+	void exitIfInst(ifccParser.IfInstContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code whileInst}
+	 * labeled alternative in {@link ifccParser#code}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhileInst(ifccParser.WhileInstContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code whileInst}
+	 * labeled alternative in {@link ifccParser#code}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhileInst(ifccParser.WhileInstContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code declaration}
 	 * labeled alternative in {@link ifccParser#instruction}.
@@ -98,30 +110,6 @@ public interface ifccListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAffectation(ifccParser.AffectationContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code condition}
-	 * labeled alternative in {@link ifccParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterCondition(ifccParser.ConditionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code condition}
-	 * labeled alternative in {@link ifccParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitCondition(ifccParser.ConditionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code if}
-	 * labeled alternative in {@link ifccParser#cond}.
-	 * @param ctx the parse tree
-	 */
-	void enterIf(ifccParser.IfContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code if}
-	 * labeled alternative in {@link ifccParser#cond}.
-	 * @param ctx the parse tree
-	 */
-	void exitIf(ifccParser.IfContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code par}
 	 * labeled alternative in {@link ifccParser#expr}.
