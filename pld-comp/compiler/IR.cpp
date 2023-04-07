@@ -199,6 +199,22 @@ void IRInstrCmp_le::gen_asm(ostream &o)
     " movl	%eax, " << tmp << "(%rbp)\n\n";
 }
 
+IRInstrIfInst::IRInstrIfInst(BasicBlock* bb_, BasicBlock *cond, BasicBlock *bodyIf, BasicBlock *bodyElse) : IRInstr(bb_, Operation::if_inst, {})
+{
+    this->cond = cond;
+    this->bodyIf = bodyIf;
+    this->bodyElse = bodyElse;
+}
+
+void IRInstrIfInst::gen_asm(ostream &o)
+{
+    o << "\n# if ... else ...\n"
+    " jmp " << cond -> label << "\n";
+    cond -> gen_asm(o);
+    bodyIf -> gen_asm(o);
+    bodyElse -> gen_asm(o);
+    o << " \n\n";
+}
 
 BasicBlock::BasicBlock(CFG *cfg_, string label_)
 {

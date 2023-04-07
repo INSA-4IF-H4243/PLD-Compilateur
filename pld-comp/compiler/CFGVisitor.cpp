@@ -155,6 +155,42 @@ antlrcpp::Any CFGVisitor::visitConst(ifccParser::ConstContext *ctx) {
 	return tmp;
 }
 
+antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfContext *ctx) 
+{
+	string res = visit(ctx->expr()[0]);
+	compteurCFG += 4;
+	std::string tmp = "_tmp"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp,-compteurCFG);
+	if(ctx->ELSE()){
+		BasicBlock* fl = new BasicBlock(cfg, "false" + std::to_string(compteurCFG));
+		BasicBlock* tr = new BasicBlock(cfg, "true" + std::to_string(compteurCFG));
+		BasicBlock* fin = new BasicBlock(cfg, "fin" + std::to_string(compteurCFG));
+		
+		cfg->current_bb->exit_false = fl;
+		cfg->current_bb->exit_true = tr;
+		
+		cfg->add_bb(tr);
+		string code0 = visit(ctx->code()[0]);
+		cfg->current_bb->exit_true = fin;
+		
+		cfg->add_bb(fl);
+		string code1 = visit(ctx->code()[1]);
+		cfg->current_bb->exit_true = fin;
+		cfg->add_bb(fin);
+	} else {
+		BasicBlock* tr = new BasicBlock(cfg, "true" + std::to_string(compteurCFG));
+		BasicBlock* fin = new BasicBlock(cfg, "fin" + std::to_string(compteurCFG));
+		
+		cfg->current_bb->exit_false = fin;
+		cfg->current_bb->exit_true = tr;
+		
+		cfg->add_bb(tr);
+		string code0 = visit(ctx->code()[0]);
+		cfg->current_bb->exit_true = fin;
+		cfg->add_bb(fin);
+	}
+	return tmp;
+}
 
 
 

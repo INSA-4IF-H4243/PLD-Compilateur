@@ -27,15 +27,19 @@ public:
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitCondInst(ifccParser::CondInstContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
   virtual antlrcpp::Any visitMulInst(ifccParser::MulInstContext *ctx) override {
     return visitChildren(ctx);
   }
 
-  virtual antlrcpp::Any visitBlockInst(ifccParser::BlockInstContext *ctx) override {
+  virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitIfInst(ifccParser::IfInstContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitWhileInst(ifccParser::WhileInstContext *ctx) override {
     return visitChildren(ctx);
   }
 
@@ -44,14 +48,6 @@ public:
   }
 
   virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitCondition(ifccParser::ConditionContext *ctx) override {
-    return visitChildren(ctx);
-  }
-
-  virtual antlrcpp::Any visitIf(ifccParser::IfContext *ctx) override {
     return visitChildren(ctx);
   }
 

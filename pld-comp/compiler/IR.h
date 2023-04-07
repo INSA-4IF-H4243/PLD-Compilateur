@@ -36,6 +36,7 @@ public:
 		cmp_eq,
 		cmp_lt,
 		cmp_le,
+		if_inst,
 		retour
 	} Operation;
 
@@ -166,6 +167,17 @@ private:
 	string res_droite;
 };
 
+
+class IRInstrIfInst : public IRInstr
+{
+public:
+	IRInstrIfInst(BasicBlock *bb_, BasicBlock *cond,BasicBlock *bodyIf,BasicBlock *bodyElse);
+	void gen_asm(ostream &o) override;
+private:
+	BasicBlock *cond;
+	BasicBlock *bodyIf;
+	BasicBlock *bodyElse;
+};
 
 /**  The class for a basic block */
 
