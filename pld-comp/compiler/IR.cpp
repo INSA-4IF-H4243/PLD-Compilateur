@@ -280,7 +280,7 @@ void BasicBlock::gen_asm(ostream &o)
     } 
     else if(exit_true != nullptr && exit_false != nullptr)
     {
-        o << "je " << exit_false->label << "\n";
+        o << "jne " << exit_false->label << "\n";
     }
 }
 
