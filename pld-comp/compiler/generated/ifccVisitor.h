@@ -23,6 +23,10 @@ public:
 
     virtual antlrcpp::Any visitProg(ifccParser::ProgContext *context) = 0;
 
+    virtual antlrcpp::Any visitFunc(ifccParser::FuncContext *context) = 0;
+
+    virtual antlrcpp::Any visitArgs(ifccParser::ArgsContext *context) = 0;
+
     virtual antlrcpp::Any visitUneInst(ifccParser::UneInstContext *context) = 0;
 
     virtual antlrcpp::Any visitMulInst(ifccParser::MulInstContext *context) = 0;
@@ -47,9 +51,13 @@ public:
 
     virtual antlrcpp::Any visitAddsub(ifccParser::AddsubContext *context) = 0;
 
+    virtual antlrcpp::Any visitFuncCall(ifccParser::FuncCallContext *context) = 0;
+
     virtual antlrcpp::Any visitMuldiv(ifccParser::MuldivContext *context) = 0;
 
     virtual antlrcpp::Any visitVars(ifccParser::VarsContext *context) = 0;
+
+    virtual antlrcpp::Any visitInput(ifccParser::InputContext *context) = 0;
 
 
 };

@@ -1,7 +1,9 @@
 int main() {
-   int a = 7;
-   if(a != 8888) {
+   int a;
+   if(1+1 == 2) {
       a = 1;
+   } else {
+      a = 2;
    }
    return a;
 }

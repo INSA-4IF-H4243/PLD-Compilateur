@@ -1,5 +1,0 @@
-line 10:4 missing 'return' at 'az'
-line 11:4 mismatched input 'return' expecting '}'
-error: syntax error during parsing
-
-return code: 1

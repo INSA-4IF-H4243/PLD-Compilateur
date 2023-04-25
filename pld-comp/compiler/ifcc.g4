@@ -2,7 +2,11 @@ grammar ifcc;
 
 axiom       : prog ;
 
-prog        : TYPE 'main' '(' ')' '{' code? RETURN expr ';' '}' ;
+prog        : (func)* TYPE 'main' '(' ')' '{' code? RETURN expr ';' '}' ;
+
+func        : TYPE VAR '(' args? ')' '{' code? RETURN expr ';' '}' ;
+
+args        : TYPE VAR (',' args)? ;
 
 code        : instruction ';'                                #uneInst
             | instruction ';' code                           #mulInst
@@ -15,15 +19,17 @@ instruction : TYPE vars ('=' expr)?        #declaration
             | vars '=' expr                #affectation
             ;
 
-expr        : expr OPM  expr         #muldiv
-            | expr OPP  expr         #addsub
+expr        : expr OPM expr         #muldiv
+            | expr OPP expr         #addsub
             | CONST                  #const
             | VAR                    #var
             | '(' expr ')'           #par
             | expr CMPOP expr        #cmp
+            | VAR '(' input? ')'      #funcCall
             ;
 
 vars        : VAR(',' vars)?;
+input       : VAR(',' input)?;
 TYPE        : INT|CHAR;
 INT         :'int';
 CHAR        :'char';

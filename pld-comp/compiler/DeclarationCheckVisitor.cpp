@@ -5,6 +5,9 @@
 
 std::list<std::string> listeDeclarations;
 std::list<std::string> listeLigne;
+std::map<std::string, std::list<std::string>> mapFunctions;
+std::list<std::string> listeParams;
+std::list<std::string> listInput;
 
 antlrcpp::Any DeclarationCheckVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
 {
@@ -38,9 +41,7 @@ antlrcpp::Any DeclarationCheckVisitor::visitAffectation(ifccParser::AffectationC
             exit(3);
         }
     }
-
     visit(ctx->expr());
-
     listeLigne.clear();
     return 0;
 }
@@ -55,7 +56,6 @@ antlrcpp::Any DeclarationCheckVisitor::visitVar(ifccParser::VarContext *ctx)
             exit(3);
         }
     }
-
     return 0;
 }
 		
@@ -64,5 +64,58 @@ antlrcpp::Any DeclarationCheckVisitor::visitVars(ifccParser::VarsContext *ctx){
     if(ctx->vars()){
         visit(ctx->vars());
     }
+    return 0;
+}
+
+antlrcpp::Any DeclarationCheckVisitor::visitInput(ifccParser::InputContext *ctx) {
+    std::cout << "# input parametre " << ctx->VAR()->getText() << "\n" ;
+    listInput.push_back(ctx->VAR()->getText());
+    visit(ctx->VAR());
+    if (ctx->input()) {
+        visit(ctx->input());
+    }
+    return 0;
+}
+
+antlrcpp::Any DeclarationCheckVisitor::visitArgs(ifccParser::ArgsContext *ctx)
+{
+    visit(ctx->VAR());
+    listeParams.push_back(ctx->VAR()->getText());
+    if(ctx->args()){
+        visit(ctx->args());
+    }
+    return 0;
+}
+
+antlrcpp::Any DeclarationCheckVisitor::visitFunc(ifccParser::FuncContext *ctx)
+{
+    std::cout << "# fonction " << ctx->VAR()->getText() << "\n" ;
+    if (ctx->args()) {
+        visit(ctx->args());
+    }
+    mapFunctions[ctx->VAR()->getText()] = listeParams;
+    listeParams.clear();
+    return 0;
+}
+
+antlrcpp::Any DeclarationCheckVisitor::visitFuncCall(ifccParser::FuncCallContext *ctx)
+{
+    std::cout << "# appel de fonction " << ctx->VAR()->getText() << "\n" ;
+    try {
+        mapFunctions.at(ctx->VAR()->getText());
+    } catch (const std::out_of_range& oor) {
+        std::cerr << "# fonction " << ctx->VAR()->getText() << " non déclarée\n" ;
+        exit(3);
+    }
+
+    if (ctx->input()) {
+        visit(ctx->input());
+    }
+    std::list<std::string> listeParamsFonction = mapFunctions[ctx->VAR()->getText()];
+    if (listInput.size() != listeParamsFonction.size()) {
+        std::cerr << "# nombre de paramètres incorrects\n" ;
+        exit(3);
+    }
+    listInput.clear();
     return 0;
 }
