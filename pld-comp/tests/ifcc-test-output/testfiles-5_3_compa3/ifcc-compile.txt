@@ -1,3 +1,2 @@
-/home/ktabakh/Documents/4IF/PLD-Compilateur/pld-comp/tests/ifcc-wrapper.sh: 21: /home/ktabakh/Documents/4IF/PLD-Compilateur/pld-comp/tests/../compiler/ifcc: Permission denied
 
-return code: 126
+return code: 0
