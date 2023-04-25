@@ -6,7 +6,7 @@ prog        : TYPE 'main' '(' ')' '{' code? RETURN expr ';' '}' ;
 
 code        : instruction ';'                                #uneInst
             | instruction ';' code                           #mulInst
-            | '{' code '}'                                   #block
+            | '{' code? '}'                                  #block
             | IF '(' expr ')' code  ( ELSE code )? code?     #ifInst
             | WHILE '(' expr ')' code code?                  #whileInst
             ;

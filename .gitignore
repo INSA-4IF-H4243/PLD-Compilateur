@@ -2,3 +2,4 @@ pld-comp/compiler/build
 pld-comp/compiler/generated
 pld-comp/compiler/ifcc
 pld-comp/tests/ifcc-test-output
+./vscode
