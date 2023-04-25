@@ -9,11 +9,7 @@ CFG* cfg = new CFG();
 
 antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx) 
 {
-	std::cout<<"\n.globl	main\n"
-		" main: \n\n"
-		"# prologue\n"
-		" pushq %rbp 		# save %rbp on the stack\n"
-		" movq %rsp, %rbp 	# define %rbp for the current function\n\n";
+	
 	BasicBlock* bb = new BasicBlock(cfg, "entry");
 	cfg->add_bb(bb);
 
@@ -23,9 +19,7 @@ antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 	cfg->current_bb->add_IRInstr(instr);
 
 	cfg->gen_asm(std::cout);
-	std::cout<<	"# epilogue\n"
-			" popq %rbp 			# restore %rbp from the stack\n"	
-			" 	ret\n";
+
 
 	return 0;
 }

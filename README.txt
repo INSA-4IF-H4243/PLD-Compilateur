@@ -1,6 +1,8 @@
 Compilateur C vers Assembleur:
+Programmé par l'hexanôme H4243 4IF INSA LYON:
+    TABAKH Khalil, QI Jiaqi, PHUNG Minh, NGO Ngoc Minh, ALPOU Yannick, BAILLEUX Henri, MOUSSET Maxime
 
-Fonctionnalités : 
+    -- Fonctionnalités De notre Compilateur : 
 
 Programme basique C:
 int main() {
@@ -53,15 +55,34 @@ Détection des multiples déclarations:
         return 0;
 test 3_9
 
-Ce qui ne Fonctionne Pas:
-
-Boucles:
-
-Fonctions:
+Comparateurs:
+    int a = 7;
+    int b = 9;
+    int c = 11;
+    c = ((a+b) > (a*3));
+test 5_5
 
 If..Else:
+   int a = 7;
+   if(a == 9) {
+      a = 1;
+   }else{
+      a = 0;
+   }
+test4_1
 
-Comparateurs:
+While:
+    int a = 3;
+    while (a < 7) {
+        a = a + 1;
+    }
+test6_1
+
+    -- Ce qui ne Fonctionne Pas:
+
+Boucles: For
+
+Fonctions:
 
 Adressage:
 
@@ -72,3 +93,13 @@ Utilisation de Char:
 Tableaux:
 
 ...
+
+    -- Documentation Utilisateur:
+ 
+ Pour compiler un programme:
+
+ Dans le dossier /compiler
+    $make
+    $./ifcc mon_programme.c
+
+    -- Documentation Développeur:

@@ -305,10 +305,18 @@ void CFG::add_bb(BasicBlock *bb)
 
 void CFG::gen_asm(ostream &o)
 {
+    o<<"\n.globl	main\n"
+            " main: \n\n"
+            "# prologue\n"
+            " pushq %rbp 		# save %rbp on the stack\n"
+            " movq %rsp, %rbp 	# define %rbp for the current function\n\n";    
     for (BasicBlock *i : bbs)
     {
         i->gen_asm(o);
     }
+    o<<	"# epilogue\n"
+			" popq %rbp 			# restore %rbp from the stack\n"	
+			" 	ret\n";
 }
 
 void CFG::gen_PseudoCode()
