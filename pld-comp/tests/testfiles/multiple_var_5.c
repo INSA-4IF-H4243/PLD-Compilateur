@@ -1,4 +1,3 @@
-  
 int main() {
     int a,b,v;
     a,b,v=12
