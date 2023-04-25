@@ -1,1 +1,4 @@
+pld-comp/compiler/.antlr
+pld-comp/compiler/build
+pld-comp/compiler/generated
 pld-comp/tests/ifcc-test-output
