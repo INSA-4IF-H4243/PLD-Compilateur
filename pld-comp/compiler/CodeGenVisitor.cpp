@@ -8,7 +8,7 @@ int compteur=0;
 
 antlrcpp::Any CodeGenVisitor::visitProg(ifccParser::ProgContext *ctx) 
 {
-	std::string retour = ctx->expr()->getText();
+	//std::string retour = ctx->expr()->getText();
 	std::cout<<"\n.globl	main\n"
 		" main: \n\n"
 		"# prologue\n"
@@ -35,6 +35,18 @@ antlrcpp::Any CodeGenVisitor::visitMulInst(ifccParser::MulInstContext *ctx)
 	visit(ctx->code());
 	return 0;
 }
+
+// antlrcpp::Any CodeGenVisitor::visitBlockInst(ifccParser::BlockInstContext *ctx) 
+// {
+// 	visit(ctx->code());
+// 	return 0;
+// }
+
+// antlrcpp::Any CodeGenVisitor::visitCondInst(ifccParser::CondInstContext *ctx) 
+// {
+// 	visit(ctx->instruction());
+// 	return 0;
+// }
 
 antlrcpp::Any CodeGenVisitor::visitAffectation(ifccParser::AffectationContext *ctx) 
 {
@@ -89,48 +101,44 @@ antlrcpp::Any CodeGenVisitor::visitPar(ifccParser::ParContext *ctx)
 	return res;
 }
 
-antlrcpp::Any CodeGenVisitor::visitAdd(ifccParser::AddContext *ctx) 
+antlrcpp::Any CodeGenVisitor::visitAddsub(ifccParser::AddsubContext *ctx) 
 {
+	char op=ctx->OPP()->getText()[0];
 	int res_gauche = visit(ctx->expr()[0]);
 	int res_droite = visit(ctx->expr()[1]); 
+
 	compteur += 4;
 	std::string tmp = "_tmp"+std::to_string(compteur);
 	map[tmp]=-compteur;
-	std::cout<<
-		"\n# addition de "<<res_gauche<<" + "<<res_droite<<" -> "<<-compteur<<"\n"
-		" movl	"<<res_gauche<<"(%rbp), %eax\n"
-		" addl	"<<res_droite<<"(%rbp), %eax\n" 
-		" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
-		;
+	if(op=='+'){
+		std::cout<<
+			"\n# addiction de "<<res_gauche<<" * "<<res_droite<<" -> "<<-compteur<<"\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" addl	"<<res_droite<<"(%rbp), %eax\n" 
+			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;
+	}
+	else if(op=='-'){
+		std::cout<<
+			"\n# soustraction de "<<res_gauche<<" / "<<res_droite<<" -> "<<-compteur<<"\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" subl	"<<res_droite<<"(%rbp), %eax\n" 
+			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;
+	}
 	return map[tmp];
 }
-antlrcpp::Any CodeGenVisitor::visitSub(ifccParser::SubContext *ctx) 
-{
-	int res_gauche = visit(ctx->expr()[0]);
-	int res_droite = visit(ctx->expr()[1]); 
-	compteur += 4;
-	std::string tmp = "_tmp"+std::to_string(compteur);
-	map[tmp]=-compteur;
-	std::cout<<
-		"\n# soustraction de "<<res_gauche<<" - "<<res_droite<<" -> "<<-compteur<<"\n"
-		" movl	"<<res_gauche<<"(%rbp), %eax\n"
-		" subl	"<<res_droite<<"(%rbp), %eax\n" 
-		" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
-		;
-	return map[tmp];
-}
+
 antlrcpp::Any CodeGenVisitor::visitMuldiv(ifccParser::MuldivContext *ctx) 
 {
-	char op=ctx->OP()->getText()[0];
+	char op=ctx->OPM()->getText()[0];
 	int res_gauche = visit(ctx->expr()[0]);
-	int res_droite = visit(ctx->expr()[1]);
-	std::string tmp = "";
-	map[tmp] = 0;
+	int res_droite = visit(ctx->expr()[1]); 
 	
+	compteur += 4;
+	std::string tmp = "_tmp"+std::to_string(compteur);
+	map[tmp]=-compteur;
 	if(op=='*'){
-		compteur += 4;
-		tmp = "_tmp"+std::to_string(compteur);
-		map[tmp]=-compteur;
 		std::cout<<
 			"\n# multiplication de "<<res_gauche<<" * "<<res_droite<<" -> "<<-compteur<<"\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
@@ -138,14 +146,10 @@ antlrcpp::Any CodeGenVisitor::visitMuldiv(ifccParser::MuldivContext *ctx)
 			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
 	}
-	else {
-		compteur += 4;
-		tmp = "_tmp"+std::to_string(compteur);
-		map[tmp]=-compteur;
+	else if(op=='/'){
 		std::cout<<
 			"\n# division de "<<res_gauche<<" / "<<res_droite<<" -> "<<-compteur<<"\n"
 			" movl	"<<res_gauche<<"(%rbp), %eax\n"
-			" cltd\n" //uniquement si on veut le résultat en int
 			" idivl	"<<res_droite<<"(%rbp)\n" 
 			" movl  %eax, "<<map[tmp]<<"(%rbp)\n\n"
 			;
@@ -169,8 +173,113 @@ antlrcpp::Any CodeGenVisitor::visitConst(ifccParser::ConstContext *ctx) {
 	return map[tmp];
 }
 
+antlrcpp::Any CodeGenVisitor::visitCmp(ifccParser::CmpContext *ctx) 
+{
+	std::string op =ctx->CMPOP()->getText();
+	int res_gauche = visit(ctx->expr()[0]);
+	int res_droite = visit(ctx->expr()[1]); 
+	
+	compteur += 4;
+	std::string tmp = "_tmp"+std::to_string(compteur);
+	map[tmp]=-compteur;
+	if(op == "=="){
+		std::cout<<
+			"# comparaison ==\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
+			" sete   %al\n"
+			" movzbl %al, %eax\n"
+			" movl   %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;
+	}
+	else if(op=="!="){
+		std::cout<<
+		    "# comparaison !=\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
+			" setne   %al\n"
+			" movzbl  %al, %eax\n"
+			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;
+	}
+	else if(op==">="){
+		std::cout<<
+		    "# comparaison >=\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
+			" setge    %al\n"
+			" movzbl  %al, %eax\n"
+			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;
+	}
+	else if(op==">"){
+		std::cout<<
+			"# comparaison >\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
+			" setg    %al\n"
+			" movzbl  %al, %eax\n"
+			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;
+	}
+	else if(op=="<"){
+		std::cout<<
+			"# comparaison <\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
+			" setl    %al\n"
+			" movzbl  %al, %eax\n"
+			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;
+	}
+	else if(op=="<="){
+		std::cout<<
+			"# comparaison <=\n"
+			" movl	"<<res_gauche<<"(%rbp), %eax\n"
+			" cmpl	"<<res_droite<<"(%rbp), %eax\n" 
+			" setle   %al\n"
+			" movzbl  %al, %eax\n"
+			" movl    %eax, "<<map[tmp]<<"(%rbp)\n\n"
+			;   
+	}                                                                                                          
+	return map[tmp];
+}
 
+/*antlrcpp::Any CodeGenVisitor::visitCondition(ifccParser::ConditionContext *ctx) 
+{
+	visit(ctx->cond());
+	return 0;
+}
 
+antlrcpp::Any CodeGenVisitor::visitIf(ifccParser::IfContext *ctx) 
+{
+	int res = visit(ctx->expr());
+	if(ctx->ELSE()) { 
+		std::cout<<
+				" cmpl $0, " << res << "(%rbp)\n"
+				" je .L1\n"  
+			;
+		visit(ctx->code()[0]);
+		std::cout<<
+				" jmp .L2\n"
+				" .L1:\n"
+			;
+		visit(ctx->code()[1]);
+		std::cout<<
+				" .L2:\n"
+			;
+	} else {
+		std::cout<<
+				" cmpl $0, " << res << "(%rbp)\n"
+				" je .L1\n"
+			;
+		visit(ctx->code()[0]);
+		std::cout<<
+				" .L1:\n"
+			;
+	}
+	return 0;
+} */
 
 
 

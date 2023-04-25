@@ -11,13 +11,11 @@ antlrcpp::Any DeclarationCheckVisitor::visitDeclaration(ifccParser::DeclarationC
     visit(ctx->vars());
     for(std::string var:listeLigne){
         std::cout << "# declaration de " << var << "\n" ;
-
         bool found = (std::find(listeDeclarations.begin(), listeDeclarations.end(), var) != listeDeclarations.end());
         if(found){
             std::cerr << "# var " << var << " déjà déclarée\n" ;
             exit(3);
         }
-
         listeDeclarations.push_back(var);
     }
    

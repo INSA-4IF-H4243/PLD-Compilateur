@@ -72,20 +72,3 @@ Utilisation de Char:
 Tableaux:
 
 ...
-
-Le code avec les éléments qui permettent de naviguer dedans :
-
-Nous avons pour l'instant 2 visiteurs, un permettant de vérifier 
-la déclaration des variables utilisées et un générant le code.
-Les éléments sont à la même place que dans le squelette du projet.
-
-La description succincte de votre gestion de projet passée et à venir :
-
-Nous n'avons pas de chef, nous travaillons en binôme et nous faisons des réunions
-pour savoir ce qu'on souhaite programmer et se partager le travail entre les binômes.
-Chaque binôme a sa branche git et une personne est chargée de réunir les branches et de vérifier.
-On remplit un document avec les Fonctionnalités voulues et vérifiées.
-
-Pour la suite nous allons garder la même gestion pour mettre en place le passage à l'IR. Nous
-avons mis 4 personnes sur l'architecture de l'IR et le reste sur
-la mise en place des boucles... 

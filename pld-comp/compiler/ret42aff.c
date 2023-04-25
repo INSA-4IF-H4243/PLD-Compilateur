@@ -1,8 +1,7 @@
-int main()
-{
-
-int a=2;
-int b=4;
-int j =b*a;
-return j;
+int main() {
+   int a = 7;
+   if(a != 8888) {
+      a = 1;
+   }
+   return a;
 }
