@@ -25,7 +25,7 @@ antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 }
 
 antlrcpp::Any CFGVisitor::visitBlock(ifccParser::BlockContext *ctx) {
-	visit(ctx->code());
+	if (ctx->code()) visit(ctx->code());
 	return 0;
 }
 
@@ -35,20 +35,29 @@ antlrcpp::Any CFGVisitor::visitWhileInst(ifccParser::WhileInstContext *ctx) {
 	cfg->add_bb(cond_block);
 
 	std::string res_test = visit(ctx->expr());
-	
 	compteurCFG += 4;
 	std::string tmp_test = "_tmp"+std::to_string(compteurCFG);
 	cfg->add_SymbolIndex(tmp_test,-compteurCFG);
 
+	compteurCFG+=4;
+	std::string tmp = "_tmp_"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp,-compteurCFG);
+	IRInstrLdconst* instr0 = new IRInstrLdconst(cfg->current_bb,tmp,0);
+	cfg->current_bb->add_IRInstr(instr0);
+
+	IRInstrCmp_eq* instr = new IRInstrCmp_eq(cfg->current_bb,tmp_test,res_test,tmp);
+	cfg->current_bb->add_IRInstr(instr);
+
 	BasicBlock* body_block = new BasicBlock(cfg, "bodyWhile" + std::to_string(compteurCFG));
+	cond_block->exit_true = body_block;
+	body_block->exit_true = cond_block;
 	cfg->add_bb(body_block);
 	visit(ctx->code()[0]);
-	BasicBlock* afterWhile = new BasicBlock(cfg, "afterWhile" + std::to_string(compteurCFG));
 
-	cond_block->exit_true = body_block;
+	BasicBlock* afterWhile = new BasicBlock(cfg, "afterWhile" + std::to_string(compteurCFG));
 	cond_block->exit_false = afterWhile;
 	
-	body_block->exit_true = cond_block;
+	
 	
 	cfg->add_bb(afterWhile);
 
@@ -62,12 +71,20 @@ antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfInstContext *ctx) {
 	BasicBlock* cond_block = new BasicBlock(cfg, "testIf" + std::to_string(compteurCFG));
 	cfg->current_bb->exit_true = cond_block;
 	cfg->add_bb(cond_block);
-
-	std::string res_test = visit(ctx->expr());
 	
+	std::string res_test = visit(ctx->expr());
 	compteurCFG += 4;
 	std::string tmp_test = "_tmp"+std::to_string(compteurCFG);
 	cfg->add_SymbolIndex(tmp_test,-compteurCFG);
+
+	compteurCFG+=4;
+	std::string tmp = "_tmp_"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp,-compteurCFG);
+	IRInstrLdconst* instr0 = new IRInstrLdconst(cfg->current_bb,tmp,0);
+	cfg->current_bb->add_IRInstr(instr0);
+
+	IRInstrCmp_eq* instr = new IRInstrCmp_eq(cfg->current_bb,tmp_test,res_test,tmp);
+	cfg->current_bb->add_IRInstr(instr);
 
 	BasicBlock* bodyif_block = new BasicBlock(cfg, "bodyIf" + std::to_string(compteurCFG));
 	cfg->add_bb(bodyif_block);
@@ -76,26 +93,31 @@ antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfInstContext *ctx) {
 
 	BasicBlock* endIf = new BasicBlock(cfg, "endIf" + std::to_string(compteurCFG));
 	bodyif_block->exit_true = endIf;
+	cond_block->exit_false = endIf;
+	
+
+	
 	
 	if (ctx->ELSE()) 
 	{
-		visit(ctx->code()[1]);
 		BasicBlock* bodyelse_block = new BasicBlock(cfg, "bodyElse" + std::to_string(compteurCFG));
 		cfg->add_bb(bodyelse_block);
 		cond_block->exit_false = bodyelse_block;
 		bodyelse_block->exit_true = endIf;
+		visit(ctx->code()[1]);
 		
+		cfg->add_bb(endIf);
 		if (ctx->code()[2]) {
 			visit(ctx->code()[2]);
 		}
 	} 
 	else 
 	{
+		cfg->add_bb(endIf);
 		if (ctx->code()[1]) {
 			visit(ctx->code()[1]);
 		}
 	}
-	cfg->add_bb(endIf);
 	return 0;
 }
 

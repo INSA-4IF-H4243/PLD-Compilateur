@@ -1,6 +1,7 @@
 int main() {
-    IF(1){
-        return 1;
+    int a=0;
+    if(5+2){
+        a=12;
     } 
-    return 0;
+    return a;
 }
