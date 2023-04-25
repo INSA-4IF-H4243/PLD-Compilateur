@@ -2,7 +2,7 @@ Compilateur C vers Assembleur:
 Programmé par l'hexanôme H4243 4IF INSA LYON:
     TABAKH Khalil, QI Jiaqi, PHUNG Minh, NGO Ngoc Minh, ALPOU Yannick, BAILLEUX Henri, MOUSSET Maxime
 
-    -- Fonctionnalités De notre Compilateur : 
+                -- Fonctionnalités De notre Compilateur : 
 
 Programme basique C:
 int main() {
@@ -78,7 +78,7 @@ While:
     }
 test6_1
 
-    -- Ce qui ne Fonctionne Pas:
+                -- Ce qui ne Fonctionne Pas:
 
 Boucles: For
 
@@ -94,12 +94,29 @@ Tableaux:
 
 ...
 
-    -- Documentation Utilisateur:
+                -- Documentation Utilisateur:
  
- Pour compiler un programme:
+Pour compiler un programme:
+    Dans le dossier /compiler
+        $make
+        $./ifcc mon_programme.c > mon_programme.s
 
- Dans le dossier /compiler
-    $make
-    $./ifcc mon_programme.c
+                -- Documentation Développeur:
 
-    -- Documentation Développeur:
+Dans le dossier /compiler
+    Voir l'arbre AST d'un programme:
+        $make gui FILE=programme_test.c
+        
+Dans le dossier /tests
+    Lancer tous les tests:
+        $python3 ifcc-test.py ./testfiles/*.c
+
+Indication de développement:
+    grammaire : dans ifcc.g4
+    Makefile : ($make) génère le dossier compiler/generated
+    Visiteur : Le visiteur est un programme visitant l'arbre AST 
+    du programme compilé correspondant à la grammaire/
+               Le visiteur de base ifccBaseVisitor est généré par le make. Il contient
+               Le Visiteur de base parcours l'arbre recursivement sans rien faire.
+               On peut créer un visiteur
+
