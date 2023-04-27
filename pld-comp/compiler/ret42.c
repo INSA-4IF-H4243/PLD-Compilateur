@@ -1,9 +1,7 @@
-int main() {
-    int a = 5;
-    if (a < 2) {
-        a = a - 1;
-    } else {
-        a = 2;
+int main()
+{
+    while(0 == 1){
+        int gg=0;
     }
-    return a;
+    return 0;
 }

@@ -124,9 +124,18 @@ antlrcpp::Any CFGVisitor::visitWhileInst(ifccParser::WhileInstContext *ctx)
 	cfg->current_bb->add_IRInstr(instrUnco1);
 
 	cfg->add_bb(cond_block);	
+	std::string res_test = visit(ctx->expr());
 	compteurCFG += 4;
-	std::string res = visit(ctx->expr());
-	cfg->add_SymbolIndex(res, -compteurCFG);
+	std::string tmp_test = "_tmp" + std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp_test, -compteurCFG);
+
+	compteurCFG+=4;
+	std::string tmp = "_tmp_"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp,-compteurCFG);
+	IRInstrLdconst* instr0 = new IRInstrLdconst(cfg->current_bb,tmp,0);
+	cfg->current_bb->add_IRInstr(instr0);
+	IRInstrCmp_eq* instr = new IRInstrCmp_eq(cfg->current_bb,tmp_test,res_test,tmp);
+	cfg->current_bb->add_IRInstr(instr);
 	IRInstrCondJump *instrCond = new IRInstrCondJump(cfg->current_bb, afterWhile->label);
 	cfg->current_bb->add_IRInstr(instrCond);
 
@@ -154,8 +163,14 @@ antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfInstContext *ctx)
 
 	if (ctx->ELSE())
 	{
-		IRInstrNEJump *instrNE = new IRInstrNEJump(cfg->current_bb, bodyelse_block->label);
-		cfg->current_bb->add_IRInstr(instrNE);
+		compteurCFG+=4;
+		std::string tmp = "_tmp_"+std::to_string(compteurCFG);
+		cfg->add_SymbolIndex(tmp,-compteurCFG);
+		IRInstrLdconst* instr0 = new IRInstrLdconst(cfg->current_bb,tmp,0);
+		cfg->current_bb->add_IRInstr(instr0);
+
+		IRInstrCmp_eq* instr = new IRInstrCmp_eq(cfg->current_bb,tmp_test,res_test,tmp);
+		cfg->current_bb->add_IRInstr(instr);
 	}
 
 	visit(ctx->code()[0]);
