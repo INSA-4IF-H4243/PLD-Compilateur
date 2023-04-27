@@ -112,29 +112,47 @@ Tableaux
 
 ...
 
-                -- Documentation Utilisateur:
- 
-Pour compiler un programme:
-    Dans le dossier /compiler
-        $make
-        $./ifcc mon_programme.c > mon_programme.s
-
-                -- Documentation Développeur:
+               -- Documentation Développeur:
 
 Dans le dossier /compiler
     Voir l'arbre AST d'un programme:
-        $make gui FILE=mon_programme.c
+        $make gui FILE=programme_test.c
         
 Dans le dossier /tests
+    Créer un test dans /testfiles "mon_test.c"
+    Lancer le test:
+        $python3 ifcc-test.py ./testfiles/mon_test.c
     Lancer tous les tests:
         $python3 ifcc-test.py ./testfiles/*.c
-    Lancer un test unique:
-        $python3 ifcc-test.py ./testfiles/mon_programme.c		
+    
 
 Indication de développement:
-    Grammaire : dans ifcc.g4
+    
+    grammaire : dans ifcc.g4
+    
     Makefile : ($make) génère le dossier compiler/generated
-    Visiteur : Le visiteur est un programme visitant l'arbre AST du programme compilé correspondant à la grammaire/
-               Le visiteur de base ifccBaseVisitor est généré par le make. 
-		   Il contient le Visiteur de base parcours l'arbre recursivement sans rien faire.
-               On peut créer un visiteur
+    
+    Visiteur : Le visiteur est un programme visitant l'arbre AST du programme compilé correspondant à la grammaire
+               Le visiteur de base ifccBaseVisitor est généré par le make. Il contient une fonction pour chaque mot non-terminal de la grammaire.
+               Le Visiteur de base parcours l'arbre recursivement sans rien faire.
+               On peut créer un visiteur héritant de ifccBaseVisitor pour changer les fonctions lors de la visite d'un mot de l'arbre.
+               Il faut créer le nouveau visiteur dans main.cpp pour qu'il parcours l'arbre.
+
+               Les visiteurs existants sont :
+               DeclarationCheckVisitor qui parcours l'arbre en vérifiant que les variables dans les expressions ont toutes été déclarées.
+               CFGVisitor qui crée l'IR et qui pour chaque mot visité de l'arbre ajoute les bons blocs et instructions au CFG.
+
+    	       L'IR: IR.cpp contient la classe CFG qui contient les Block qui contiennent les instructions.
+               Après la visite de l'arbre et l'ajout des blocs au CFG dans CFGVisitor, on appele gen_asm.
+               gen_asm parcours les différents blocs et instructions et écrit l'assembleur correspondant aux instructions.
+               On peut aussi génerer du pseudo code avec gen_pseudo code...
+
+    Etapes pour ajouter une nouvelle fonctionnalité:
+          - ajouter les types instructions et mots nécéssaires dans la grammaire.
+          - regénèrer les visiteurs de base avec make.
+          - Ecrire dans les méthodes de CFGVisitor les ajouts au bloc courrant du CFG des suites d'instructions correspondant à la fonctionnalité.
+          - ajouter si besoin les nouveaux types d'instruction dans IRinstr et créer pour chacun la classe IrInstrMonInstr ainsi que ses méthodes de génération de code 	    dans IR.h et IR.cpp.
+          - Créer un test.c utilisant la fonctionnalité. 
+            La visite de l'arbre du programme de test doit identifier la fonctionnalité,
+            La suite d'instructions correspondante doit être ajoutée au CFG
+            et son code bien généré dans le test.s
