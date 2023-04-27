@@ -40,6 +40,7 @@ public:
 		unconditional_jump,
 		conditional_jump,
 		not_equal_jump,
+		equal_jump,
 		retour,
 	} Operation;
 
@@ -109,7 +110,7 @@ public:
 private:
 	string var;
 };
-//comparaison <=
+//constante
 class IRInstrLdconst : public IRInstr
 {
 public:
@@ -272,7 +273,15 @@ public:
 private:
 	string label;
 };
-
+//saut si flag égalité levé
+class IRInstrEJump : public IRInstr
+{
+public:
+	IRInstrEJump(BasicBlock *bb_, string label);
+	void gen_asm(ostream &o) override;
+private:
+	string label;
+};
 //Classe des blocs contenant les instructions
 class BasicBlock
 {

@@ -361,7 +361,16 @@ void IRInstrNEJump::gen_asm(ostream &o)
     " jne " << label << "\n\n";
 }
 
+IRInstrEJump::IRInstrEJump(BasicBlock *bb_, string label) : IRInstr(bb_, Operation::equal_jump, {})
+{
+    this->label = label;
+}
 
+void IRInstrEJump::gen_asm(ostream &o)
+{
+    o << "\n# saut si égal vers " << label << "\n"
+    " je " << label << "\n\n";
+}
 BasicBlock::BasicBlock(CFG *cfg_, string label_)
 {
     this->cfg = cfg_;

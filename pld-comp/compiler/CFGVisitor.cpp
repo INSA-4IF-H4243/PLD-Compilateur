@@ -123,7 +123,7 @@ antlrcpp::Any CFGVisitor::visitWhileInst(ifccParser::WhileInstContext *ctx)
 	IRInstrUncoJump *instrUnco1 = new IRInstrUncoJump(cfg->current_bb, cond_block->label);
 	cfg->current_bb->add_IRInstr(instrUnco1);
 
-	cfg->add_bb(cond_block);	
+	cfg->add_bb (cond_block);	
 	std::string res_test = visit(ctx->expr());
 	compteurCFG += 4;
 	std::string tmp_test = "_tmp" + std::to_string(compteurCFG);
@@ -156,47 +156,57 @@ antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfInstContext *ctx)
 	BasicBlock *bodyelse_block = new BasicBlock(cfg, "bodyElse" + std::to_string(compteurCFG));
 	BasicBlock *endIf_block = new BasicBlock(cfg, "endIf" + std::to_string(compteurCFG));
 
+	//recupere le flag
 	std::string res_test = visit(ctx->expr());
 	compteurCFG += 4;
-	std::string tmp_test = "_tmp" + std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp_test, -compteurCFG);
+	std::string tmp_test = "_tmp"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp_test,-compteurCFG);
+
+	//declaration var à 0
+	compteurCFG+=4;
+	std::string tmp = "_tmp_"+std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp,-compteurCFG);
+	IRInstrLdconst* instr0 = new IRInstrLdconst(cfg->current_bb,tmp,0);
+	cfg->current_bb->add_IRInstr(instr0);
+
+	//comparaison du flag avec la variable à 0
+	IRInstrCmp_eq* instr = new IRInstrCmp_eq(cfg->current_bb,tmp_test,res_test,tmp);
+	cfg->current_bb->add_IRInstr(instr);
 
 	if (ctx->ELSE())
 	{
-		compteurCFG+=4;
-		std::string tmp = "_tmp_"+std::to_string(compteurCFG);
-		cfg->add_SymbolIndex(tmp,-compteurCFG);
-		IRInstrLdconst* instr0 = new IRInstrLdconst(cfg->current_bb,tmp,0);
-		cfg->current_bb->add_IRInstr(instr0);
-
-		IRInstrCmp_eq* instr = new IRInstrCmp_eq(cfg->current_bb,tmp_test,res_test,tmp);
-		cfg->current_bb->add_IRInstr(instr);
+		IRInstrEJump *instrE = new IRInstrEJump(cfg->current_bb, bodyelse_block->label);
+		cfg->current_bb->add_IRInstr(instrE);
 	}
 
+	//ajout du bloc if
+	cfg->add_bb(bodyif_block);
+	
+	//on visite le code
 	visit(ctx->code()[0]);
+	//Arpès le code, on jump au endif
 	IRInstrUncoJump *instrUnco = new IRInstrUncoJump(cfg->current_bb, endIf_block->label);
 	cfg->current_bb->add_IRInstr(instrUnco);
-	if (ctx->IF())
+
+	if (ctx->ELSE())
 	{
-		if (ctx->ELSE())
+		cfg->add_bb(bodyelse_block);
+		visit(ctx->code()[1]);
+		cfg->add_bb(endIf_block);
+		if (ctx->code()[2])
 		{
-			cfg->add_bb(bodyelse_block);
-			visit(ctx->code()[1]);
-			cfg->add_bb(endIf_block);
-			if (ctx->code()[2])
-			{
-				visit(ctx->code()[2]);
-			}
-		}
-		else
-		{	
-			cfg->add_bb(endIf_block);
-			if (ctx->code()[1])
-			{
-				visit(ctx->code()[1]);
-			}
+			visit(ctx->code()[2]);
 		}
 	}
+	else
+	{	
+		cfg->add_bb(endIf_block);
+		if (ctx->code()[1])
+		{
+			visit(ctx->code()[1]);
+		}
+	}
+	
 	return 0;
 }
 
