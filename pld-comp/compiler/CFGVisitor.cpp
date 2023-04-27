@@ -28,13 +28,9 @@ antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 	cfg->current_bb->add_IRInstr(instrPro);
 
 	if (ctx->code())
+	{
 		visit(ctx->code());
-	std::string res = visit(ctx->expr());
-	IRInstrRetour *instr = new IRInstrRetour(cfg->current_bb, res);
-	cfg->current_bb->add_IRInstr(instr);
-
-	IRInstrEpilogue *instrEpi = new IRInstrEpilogue(cfg->current_bb);
-	cfg->current_bb->add_IRInstr(instrEpi);
+	}
 	cfg->gen_asm(std::cout);
 	return 0;
 }
@@ -57,17 +53,21 @@ antlrcpp::Any CFGVisitor::visitFunc(ifccParser::FuncContext *ctx)
 	{
 		visit(ctx->code());
 	}
-	std::string res = visit(ctx->expr());
-	IRInstrRetour *instr = new IRInstrRetour(cfg->current_bb, res);
-	cfg->current_bb->add_IRInstr(instr);
-
-	IRInstrEpilogue *instrEpi = new IRInstrEpilogue(cfg->current_bb);
-	cfg->current_bb->add_IRInstr(instrEpi);
 	if (ctx->func())
 	{
 		visit(ctx->func());
 	}
 	return 0;
+}
+
+antlrcpp::Any CFGVisitor::visitReturn(ifccParser::ReturnContext *ctx)
+{
+	std::string res = visit(ctx->expr());
+	IRInstrRetour *instr = new IRInstrRetour(cfg->current_bb, res);
+	cfg->current_bb->add_IRInstr(instr);
+	IRInstrEpilogue *instrEpi = new IRInstrEpilogue(cfg->current_bb);
+	cfg->current_bb->add_IRInstr(instrEpi);
+	return res;
 }
 
 int compteurArgs = 0;
@@ -78,12 +78,14 @@ antlrcpp::Any CFGVisitor::visitArgs(ifccParser::ArgsContext *ctx)
 	compteurCFG += 4;
 	cfg->add_SymbolIndex("_arg" + std::to_string(compteurCFG), -compteurCFG);
 	std::map<std::string, std::string> mappedParams;
-	try {
+	try
+	{
 		mappedParams = mapFunctionsCFG.at(cfg->current_bb->label);
 		mappedParams.insert(std::pair<std::string, std::string>(ctx->VAR()->getText(), "_arg" + std::to_string(compteurCFG)));
 		mapFunctionsCFG.at(cfg->current_bb->label) = mappedParams;
 	}
-	catch (const std::out_of_range& oor) {
+	catch (const std::out_of_range &oor)
+	{
 		mappedParams.insert(std::pair<std::string, std::string>(ctx->VAR()->getText(), "_arg" + std::to_string(compteurCFG)));
 		mapFunctionsCFG.insert(std::pair<std::string, std::map<std::string, std::string>>(cfg->current_bb->label, mappedParams));
 	}
@@ -109,72 +111,76 @@ antlrcpp::Any CFGVisitor::visitBlock(ifccParser::BlockContext *ctx)
 antlrcpp::Any CFGVisitor::visitWhileInst(ifccParser::WhileInstContext *ctx)
 {
 	BasicBlock *cond_block = new BasicBlock(cfg, "testWhile" + std::to_string(compteurCFG));
-	cfg->current_bb->exit_true = cond_block;
-	std::string res_test = visit(ctx->expr());
-	cfg->add_bb(cond_block);
-
-	compteurCFG += 4;
-	std::string tmp_test = "_tmp" + std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp_test, -compteurCFG);
-
 	BasicBlock *body_block = new BasicBlock(cfg, "bodyWhile" + std::to_string(compteurCFG));
-	visit(ctx->code()[0]);
-	cfg->add_bb(body_block);
 	BasicBlock *afterWhile = new BasicBlock(cfg, "afterWhile" + std::to_string(compteurCFG));
 
-	cond_block->exit_true = body_block;
-	cond_block->exit_false = afterWhile;
+	IRInstrUncoJump *instrUnco = new IRInstrUncoJump(cfg->current_bb, cond_block->label);
+	cfg->current_bb->add_IRInstr(instrUnco);
 
-	body_block->exit_true = cond_block;
+	cfg->add_bb(body_block);
+	visit(ctx->code()[0]);
+	IRInstrUncoJump *instrUnco1 = new IRInstrUncoJump(cfg->current_bb, cond_block->label);
+	cfg->current_bb->add_IRInstr(instrUnco1);
 
+	cfg->add_bb(cond_block);	
+	compteurCFG += 4;
+	std::string res = visit(ctx->expr());
+	cfg->add_SymbolIndex(res, -compteurCFG);
+	IRInstrCondJump *instrCond = new IRInstrCondJump(cfg->current_bb, afterWhile->label);
+	cfg->current_bb->add_IRInstr(instrCond);
+
+	IRInstrUncoJump *instrUnco2 = new IRInstrUncoJump(cfg->current_bb, body_block->label);
+	cfg->current_bb->add_IRInstr(instrUnco2);
+
+	cfg->add_bb(afterWhile);
 	if (ctx->code()[1])
 	{
 		visit(ctx->code()[1]);
 	}
-	cfg->add_bb(afterWhile);
 	return 0;
 }
 
 antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfInstContext *ctx)
 {
-	BasicBlock *cond_block = new BasicBlock(cfg, "testIf" + std::to_string(compteurCFG));
-	cfg->current_bb->exit_true = cond_block;
-	std::string res_test = visit(ctx->expr());
-	cfg->add_bb(cond_block);
+	BasicBlock *bodyif_block = new BasicBlock(cfg, "bodyIf" + std::to_string(compteurCFG));
+	BasicBlock *bodyelse_block = new BasicBlock(cfg, "bodyElse" + std::to_string(compteurCFG));
+	BasicBlock *endIf_block = new BasicBlock(cfg, "endIf" + std::to_string(compteurCFG));
 
+	std::string res_test = visit(ctx->expr());
 	compteurCFG += 4;
 	std::string tmp_test = "_tmp" + std::to_string(compteurCFG);
 	cfg->add_SymbolIndex(tmp_test, -compteurCFG);
 
-	BasicBlock *bodyif_block = new BasicBlock(cfg, "bodyIf" + std::to_string(compteurCFG));
-	visit(ctx->code()[0]);
-	cfg->add_bb(bodyif_block);
-	cond_block->exit_true = bodyif_block;
-
-	BasicBlock *endIf = new BasicBlock(cfg, "endIf" + std::to_string(compteurCFG));
-	bodyif_block->exit_true = endIf;
-
 	if (ctx->ELSE())
 	{
-		visit(ctx->code()[1]);
-		BasicBlock *bodyelse_block = new BasicBlock(cfg, "bodyElse" + std::to_string(compteurCFG));
-		cfg->add_bb(bodyelse_block);
-		cond_block->exit_false = bodyelse_block;
-		bodyelse_block->exit_true = endIf;
+		IRInstrNEJump *instrNE = new IRInstrNEJump(cfg->current_bb, bodyelse_block->label);
+		cfg->current_bb->add_IRInstr(instrNE);
+	}
 
-		if (ctx->code()[2])
-		{
-			visit(ctx->code()[2]);
-		}
-	}
-	else
+	visit(ctx->code()[0]);
+	IRInstrUncoJump *instrUnco = new IRInstrUncoJump(cfg->current_bb, endIf_block->label);
+	cfg->current_bb->add_IRInstr(instrUnco);
+	if (ctx->IF())
 	{
-		if (ctx->code()[1])
+		if (ctx->ELSE())
 		{
+			cfg->add_bb(bodyelse_block);
 			visit(ctx->code()[1]);
+			cfg->add_bb(endIf_block);
+			if (ctx->code()[2])
+			{
+				visit(ctx->code()[2]);
+			}
+		}
+		else
+		{	
+			cfg->add_bb(endIf_block);
+			if (ctx->code()[1])
+			{
+				visit(ctx->code()[1]);
+			}
 		}
 	}
-	cfg->add_bb(endIf);
 	return 0;
 }
 
@@ -276,21 +282,22 @@ antlrcpp::Any CFGVisitor::visitMuldiv(ifccParser::MuldivContext *ctx)
 	char op = ctx->OPM()->getText()[0];
 	string res_gauche = visit(ctx->expr()[0]);
 	string res_droite = visit(ctx->expr()[1]);
-	std::string tmp = "";
-
+	compteurCFG += 4;
+	std::string tmp = "_tmp" + std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp, -compteurCFG);
+	if (funcActuelle.compare("main") != 0)
+	{
+		std::map<std::string, std::string> listMappedParams = mapFunctionsCFG[funcActuelle];
+		res_gauche = listMappedParams[res_gauche];
+		res_droite = listMappedParams[res_droite];
+	}
 	if (op == '*')
 	{
-		compteurCFG += 4;
-		tmp = "_tmp" + std::to_string(compteurCFG);
-		cfg->add_SymbolIndex(tmp, -compteurCFG);
 		IRInstrMul *instr = new IRInstrMul(cfg->current_bb, tmp, res_gauche, res_droite);
 		cfg->current_bb->add_IRInstr(instr);
 	}
 	else
 	{
-		compteurCFG += 4;
-		tmp = "_tmp" + std::to_string(compteurCFG);
-		cfg->add_SymbolIndex(tmp, -compteurCFG);
 		IRInstrDiv *instr = new IRInstrDiv(cfg->current_bb, tmp, res_gauche, res_droite);
 		cfg->current_bb->add_IRInstr(instr);
 	}
@@ -321,6 +328,12 @@ antlrcpp::Any CFGVisitor::visitCmp(ifccParser::CmpContext *ctx)
 	compteurCFG += 4;
 	std::string tmp = "_tmp" + std::to_string(compteurCFG);
 	cfg->add_SymbolIndex(tmp, -compteurCFG);
+	if (funcActuelle.compare("main") != 0)
+	{
+		std::map<std::string, std::string> listMappedParams = mapFunctionsCFG[funcActuelle];
+		res_gauche = listMappedParams[res_gauche];
+		res_droite = listMappedParams[res_droite];
+	}
 
 	if (op.compare("==") == 0)
 	{

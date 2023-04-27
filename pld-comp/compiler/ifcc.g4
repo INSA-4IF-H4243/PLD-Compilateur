@@ -2,9 +2,9 @@ grammar ifcc;
 
 axiom       : prog ;
 
-prog        : (func)? TYPE 'main' '(' ')' '{' code? RETURN expr ';' '}' ;
+prog        : (func)? TYPE 'main' '(' ')' '{' code? '}' ;
 
-func        : TYPE VAR '(' args? ')' '{' code? RETURN expr ';' '}' func?;
+func        : TYPE VAR '(' args? ')' '{' code? '}' func? ;
 
 args        : TYPE VAR (',' args)? ;
 
@@ -13,6 +13,7 @@ code        : instruction ';'                                #uneInst
             | '{' code '}'                                   #block
             | IF '(' expr ')' code  ( ELSE code )? code?     #ifInst
             | WHILE '(' expr ')' code code?                  #whileInst
+            | RETURN expr ';' code?                          #return
             ;
 
 instruction : TYPE vars ('=' expr)?        #declaration

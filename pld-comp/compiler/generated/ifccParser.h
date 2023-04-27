@@ -61,8 +61,6 @@ public:
     ProgContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *TYPE();
-    antlr4::tree::TerminalNode *RETURN();
-    ExprContext *expr();
     FuncContext *func();
     CodeContext *code();
 
@@ -79,8 +77,6 @@ public:
     virtual size_t getRuleIndex() const override;
     antlr4::tree::TerminalNode *TYPE();
     antlr4::tree::TerminalNode *VAR();
-    antlr4::tree::TerminalNode *RETURN();
-    ExprContext *expr();
     ArgsContext *args();
     CodeContext *code();
     FuncContext *func();
@@ -169,6 +165,17 @@ public:
     std::vector<CodeContext *> code();
     CodeContext* code(size_t i);
     antlr4::tree::TerminalNode *ELSE();
+
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
+  class  ReturnContext : public CodeContext {
+  public:
+    ReturnContext(CodeContext *ctx);
+
+    antlr4::tree::TerminalNode *RETURN();
+    ExprContext *expr();
+    CodeContext *code();
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
   };

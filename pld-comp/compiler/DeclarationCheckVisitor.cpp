@@ -40,7 +40,6 @@ antlrcpp::Any DeclarationCheckVisitor::visitFunc(ifccParser::FuncContext *ctx)
     if (ctx->code()) {
         visit(ctx->code());
     }
-    visit(ctx->expr());
     mapFunctions[ctx->VAR()->getText()] = listeParams;
     listeParams.clear();
     listeDeclarations.clear();

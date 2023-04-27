@@ -10,6 +10,7 @@
 # input parametre b
 # expression avec b
 # expression avec a
+# declaration de d
 .globl  add
 add:
 

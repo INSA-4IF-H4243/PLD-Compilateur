@@ -1,10 +1,9 @@
-int add(int a, int b) {
-    return a + b;
-}
-
 int main() {
-    int b = 0;
-    int c = 5;
-    int a = add(c, b);
+    int a = 7;
+
+    while (a < 7) {
+        a = a + 1;
+    }
+    
     return a;
 }

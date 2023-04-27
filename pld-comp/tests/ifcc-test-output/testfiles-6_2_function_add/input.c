@@ -7,4 +7,5 @@ int main() {
     int c = 5;
     int a = add(c, b);
     return a;
+    int d = 5;
 }

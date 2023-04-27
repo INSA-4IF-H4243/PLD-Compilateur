@@ -43,6 +43,9 @@ public:
 		arg_call,
 		prologue,
 		epilogue,
+		unconditional_jump,
+		conditional_jump,
+		not_equal_jump,
 		retour,
 	} Operation;
 
@@ -244,6 +247,33 @@ private:
 	string res_droite;
 };
 
+class IRInstrUncoJump : public IRInstr
+{
+public:
+	IRInstrUncoJump(BasicBlock *bb_, string label);
+	void gen_asm(ostream &o) override;
+private:
+	string label;
+};
+
+class IRInstrCondJump : public IRInstr
+{
+public:
+	IRInstrCondJump(BasicBlock *bb_, string label);
+	void gen_asm(ostream &o) override;
+private:
+	string label;
+};
+
+class IRInstrNEJump : public IRInstr
+{
+public:
+	IRInstrNEJump(BasicBlock *bb_, string label);
+	void gen_asm(ostream &o) override;
+private:
+	string label;
+};
+
 
 /**  The class for a basic block */
 
@@ -280,8 +310,8 @@ public:
 	void add_IRInstr(IRInstr *instr);
 	void gen_PseudoCode();
 	// No encapsulation whatsoever here. Feel free to do better.
-	BasicBlock *exit_true;	  /**< pointer to the next basic block, true branch. If nullptr, return from procedure */
-	BasicBlock *exit_false;	  /**< pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
+	//BasicBlock *exit_true;	  /**< pointer to the next basic block, true branch. If nullptr, return from procedure */
+	//BasicBlock *exit_false;	  /**< pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
 	string label;			  /**< label of the BB, also will be the label in the generated code */
 	CFG *cfg;				  /** < the CFG where this block belongs */
 	vector<IRInstr *> instrs; /** < the instructions themselves. */

@@ -321,13 +321,44 @@ void IRInstrCmp_le::gen_asm(ostream &o)
     " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
 }
 
+IRInstrUncoJump::IRInstrUncoJump(BasicBlock *bb_, string label) : IRInstr(bb_, Operation::unconditional_jump, {})
+{
+    this->label = label;
+}
+
+void IRInstrUncoJump::gen_asm(ostream &o)
+{
+    o << "\n# saut inconditionnel vers " << label << "\n"
+    " jmp " << label << "\n\n";
+}
+
+IRInstrCondJump::IRInstrCondJump(BasicBlock *bb_, string label) : IRInstr(bb_, Operation::conditional_jump, {})
+{
+    this->label = label;
+}
+
+void IRInstrCondJump::gen_asm(ostream &o)
+{
+    o << "\n# saut conditionnel vers " << label << "\n"
+    " jle " << label << "\n\n";
+}
+
+IRInstrNEJump::IRInstrNEJump(BasicBlock *bb_, string label) : IRInstr(bb_, Operation::not_equal_jump, {})
+{
+    this->label = label;
+}
+
+void IRInstrNEJump::gen_asm(ostream &o)
+{
+    o << "\n# saut si non égal vers " << label << "\n"
+    " jne " << label << "\n\n";
+}
+
 
 BasicBlock::BasicBlock(CFG *cfg_, string label_)
 {
     this->cfg = cfg_;
     this->label = label_;
-    this->exit_true = nullptr;
-    this->exit_false = nullptr;
 }
 
 void BasicBlock::add_IRInstr(IRInstr *instr)
@@ -344,15 +375,6 @@ void BasicBlock::gen_asm(ostream &o)
     for (IRInstr *i : instrs)
     {
         i->gen_asm(o);
-    }
-
-    if(exit_true != nullptr && exit_false == nullptr)
-    {
-        o << "jmp " << exit_true->label << "\n";
-    } 
-    else if(exit_true != nullptr && exit_false != nullptr)
-    {
-        o << "je " << exit_false->label << "\n";
     }
 }
 

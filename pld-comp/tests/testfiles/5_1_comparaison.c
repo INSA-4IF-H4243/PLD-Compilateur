@@ -1,7 +1,4 @@
 int main() {
-    int a = 7;
-    int b = 9;
-    int c = 11;
-    c = (a+b) == c;
+    int c = 1+1 == 2;
     return c;
 }
