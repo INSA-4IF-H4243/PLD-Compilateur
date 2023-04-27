@@ -110,6 +110,8 @@ Utilisation de Char
 
 Tableaux
 
+Opérateurs unaires
+
 ...
 
                -- Documentation Développeur:
