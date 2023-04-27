@@ -71,10 +71,11 @@ antlrcpp::Any CFGVisitor::visitReturn(ifccParser::ReturnContext *ctx)
 }
 
 int compteurArgs = 0;
+std::vector<std::string> vectorName = {"%edi", "%esi", "%edx", "%ecx", "%r8d", "%r9d", "%r10d", 
+				"%r11d", "%r12d", "%r13d", "%r14d", "%r15d"};
 
 antlrcpp::Any CFGVisitor::visitArgs(ifccParser::ArgsContext *ctx)
 {
-	std::vector<std::string> vectorName = {"%edi", "%esi"};
 	compteurCFG += 4;
 	cfg->add_SymbolIndex("_arg" + std::to_string(compteurCFG), -compteurCFG);
 	std::map<std::string, std::string> mappedParams;
@@ -279,6 +280,18 @@ antlrcpp::Any CFGVisitor::visitAddsub(ifccParser::AddsubContext *ctx)
 	compteurCFG += 4;
 	std::string tmp = "_tmp" + std::to_string(compteurCFG);
 	cfg->add_SymbolIndex(tmp, -compteurCFG);
+
+	// compteurCFG += 4;
+	// std::string tmp2 = "_tmp" + std::to_string(compteurCFG);
+	// cfg->add_SymbolIndex(tmp2, -compteurCFG);
+	// mapFunctionsCFG.at(funcActuelle).insert(std::pair<std::string, std::string>(ctx->expr()[0]->getText(), "_arg" + std::to_string(compteurCFG)));
+	
+	// compteurCFG += 4;
+	// std::string tmp3 = "_tmp" + std::to_string(compteurCFG);
+	// cfg->add_SymbolIndex(tmp3, -compteurCFG);
+	// mapFunctionsCFG.at(funcActuelle).insert(std::pair<std::string, std::string>(ctx->expr()[1]->getText(), "_arg" + std::to_string(compteurCFG)));
+
+	
 	if (funcActuelle.compare("main") != 0)
 	{
 		std::map<std::string, std::string> listMappedParams = mapFunctionsCFG[funcActuelle];

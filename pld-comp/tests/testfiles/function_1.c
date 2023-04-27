@@ -1,10 +1,11 @@
-int add(int a, int b) {
-    return a + b;
+int add(int a, int b)
+{
+    return a+b;
 }
 
 int main() {
-    int a = 2;
-    int b = 3;
-    a = add(b, 3);
-    return a;
+    int a = 5;
+    int b = 6;
+    int c = add(a, b);
+    return c;
 }

@@ -67,11 +67,18 @@ IRInstrFuncCall::IRInstrFuncCall(BasicBlock *bb_, string label, string tmp, vect
 
 void IRInstrFuncCall::gen_asm(ostream &o)
 {   
-	std::vector<std::string> vectorName = {"%edi", "%esi"};
+    std::vector<std::string> vectorName = {"%edi", "%esi", "%edx", "%ecx", "%r8d", "%r9d", "%r10d", 
+				"%r11d", "%r12d", "%r13d", "%r14d", "%r15d"};
     o << "\n# appel de la fonction " << label << "\n";
     for (int i = 0; i < this->params.size(); i++)
     {
-        o << " movl	" << bb->cfg->get_var_index(params[i]) << "(%rbp), " << vectorName[i] << "\n";
+        int a;
+        try {
+            a = stoi(params[i]);
+            o << " movl	$" << a << ", " << vectorName[i] << "\n";
+        } catch (const std::invalid_argument& ia) {
+            o << " movl	" << bb->cfg->get_var_index(params[i]) << "(%rbp), " << vectorName[i] << "\n";
+        }
     }
     o << " call " << label << "\n";
     o << " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";

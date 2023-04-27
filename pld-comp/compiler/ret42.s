@@ -1,39 +1,91 @@
-	.file	"ret42.c"
-	.text
-	.globl	main
-	.type	main, @function
+# fonction add
+# expression avec a
+# expression avec b
+# declaration de a
+# declaration de b
+# declaration de c
+# appel de fonction add
+# input parametre a
+# expression avec a
+# input parametre b
+# expression avec b
+# expression avec c
+a
+b
+.globl  add
+add:
+
+# prologue
+ pushq	%rbp
+ movq	%rsp, %rbp
+
+# argument %edi
+ movl	%edi, -4(%rbp)
+
+
+# argument %esi
+ movl	%esi, -8(%rbp)
+
+
+# declaration de _tmp12 avec la valeur _arg4 + _arg8
+ movl	-4(%rbp), %eax
+ addl	-8(%rbp), %eax
+ movl	%eax, -12(%rbp)
+
+
+# retour de _tmp12
+ movl	-12(%rbp), %eax
+
+
+# epilogue
+ movq	%rbp, %rsp
+ popq  %rbp
+ ret
+
+.globl  main
 main:
-.LFB0:
-	.cfi_startproc
-	endbr64
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	%rsp, %rbp
-	.cfi_def_cfa_register 6
-	movl	$-7, -4(%rbp)
-	movl	-4(%rbp), %eax
-	popq	%rbp
-	.cfi_def_cfa 7, 8
-	ret
-	.cfi_endproc
-.LFE0:
-	.size	main, .-main
-	.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
-	.section	.note.GNU-stack,"",@progbits
-	.section	.note.gnu.property,"a"
-	.align 8
-	.long	1f - 0f
-	.long	4f - 1f
-	.long	5
-0:
-	.string	"GNU"
-1:
-	.align 8
-	.long	0xc0000002
-	.long	3f - 2f
-2:
-	.long	0x3
-3:
-	.align 8
-4:
+
+# prologue
+ pushq	%rbp
+ movq	%rsp, %rbp
+ subq	  $12, %rsp
+
+# declaration de _tmp20 avec la valeur 5
+ movl	$5, -20(%rbp)
+
+
+# declaration de a dans _tmp20
+ movl	-20(%rbp), %eax
+ movl	%eax, -16(%rbp)
+
+
+# declaration de _tmp28 avec la valeur 6
+ movl	$6, -28(%rbp)
+
+
+# declaration de b dans _tmp28
+ movl	-28(%rbp), %eax
+ movl	%eax, -24(%rbp)
+
+
+# appel de la fonction add
+ movl	-16(%rbp), %edi
+ movl	-24(%rbp), %esi
+ call add
+ movl	%eax, -36(%rbp)
+
+
+# declaration de c dans _tmp36
+ movl	-36(%rbp), %eax
+ movl	%eax, -32(%rbp)
+
+
+# retour de c
+ movl	-32(%rbp), %eax
+
+
+# epilogue
+ movq	%rbp, %rsp
+ popq  %rbp
+ ret
+
