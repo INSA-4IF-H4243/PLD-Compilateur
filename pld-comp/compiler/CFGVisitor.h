@@ -24,9 +24,6 @@ class  CFGVisitor : public ifccBaseVisitor {
 
 		virtual antlrcpp::Any visitReturn(ifccParser::ReturnContext *ctx) override;
 
-		virtual antlrcpp::Any visitNeg(ifccParser::NegContext *ctx) override;
-		virtual antlrcpp::Any visitNot(ifccParser::NotContext *ctx) override;
-
 		virtual antlrcpp::Any visitCmp(ifccParser::CmpContext *ctx) override;
 		virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *ctx) override;
 		

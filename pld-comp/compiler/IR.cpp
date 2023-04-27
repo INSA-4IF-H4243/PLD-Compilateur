@@ -145,34 +145,6 @@ void IRInstrCopy::gen_PseudoCode()
     cout << "copy " << var << " " << res << endl;
 }
 
-IRInstrNeg::IRInstrNeg(BasicBlock *bb_, string tmp, string res) : IRInstr(bb_, Operation::neg, {tmp, res})
-{
-    this->tmp = tmp;
-    this->res = res;
-}
-
-void IRInstrNeg::gen_asm(ostream &o)
-{
-    o << "\n# declaration de " << tmp << " avec la valeur -" << res << "\n"
-    " movl	" << bb->cfg->get_var_index(res) << "(%rbp), %eax\n"
-    " negl	%eax\n"
-    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
-}
-
-IRInstrNot::IRInstrNot(BasicBlock *bb_, string tmp, string res) : IRInstr(bb_, Operation::not_boolean, {tmp, res})
-{
-    this->tmp = tmp;
-    this->res = res;
-}
-
-void IRInstrNot::gen_asm(ostream &o)
-{
-    o << "\n# declaration de " << tmp << " avec la valeur !" << res << "\n"
-    " movl	" << bb->cfg->get_var_index(res) << "(%rbp), %eax\n"
-    " notl	%eax\n"
-    " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
-}
-
 IRInstrAdd::IRInstrAdd(BasicBlock *bb_, string tmp, string res_gauche, string res_droite) : IRInstr(bb_, Operation::add, {tmp, res_gauche, res_droite})
 {
     this->tmp = tmp;
