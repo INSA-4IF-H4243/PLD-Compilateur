@@ -83,7 +83,7 @@ antlrcpp::Any CFGVisitor::visitArgs(ifccParser::ArgsContext *ctx)
 	//on ajoute à la liste des symboles et à la map l'argument de la fonction
 	compteurCFG += 4;
 	string name=ctx->VAR()->getText();
-	/*cfg->add_SymbolIndex("_arg" + std::to_string(compteurCFG), -compteurCFG);
+	/*cfg->add_SymbolIndex(func_actuelle,"_arg" + std::to_string(compteurCFG), -compteurCFG);
 	std::map<std::string, std::string> mappedParams;
 	try
 	{
@@ -99,7 +99,7 @@ antlrcpp::Any CFGVisitor::visitArgs(ifccParser::ArgsContext *ctx)
 		mapFunctionsCFG.insert(std::pair<std::string, std::map<std::string, std::string>>(cfg->current_bb->label, mappedParams));
 	}*/
 
-	cfg->add_SymbolIndex(func_actuelle, name , -compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,func_actuelle, name , -compteurCFG);
 	//ajout de l'instruction de l'argument au bloc courrant avec le registre du numéro d'argument
 	IRInstrArg *instr = new IRInstrArg(cfg->current_bb, vectorName[compteurArgs], -compteurCFG);
 	cfg->current_bb->add_IRInstr(instr);
@@ -133,12 +133,12 @@ antlrcpp::Any CFGVisitor::visitWhileInst(ifccParser::WhileInstContext *ctx)
 	std::string res_test = visit(ctx->expr());
 	compteurCFG += 4;
 	std::string tmp_test = "_tmp" + std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp_test, -compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,tmp_test, -compteurCFG);
 
 	//on declare une variable à 0
 	compteurCFG+=4;
 	std::string tmp = "_tmp_"+std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp,-compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,tmp,-compteurCFG);
 	IRInstrLdconst* instr0 = new IRInstrLdconst(cfg->current_bb,tmp,0);
 	cfg->current_bb->add_IRInstr(instr0);
 	//on compare le flag à la variable à 0
@@ -181,12 +181,12 @@ antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfInstContext *ctx)
 	std::string res_test = visit(ctx->expr());
 	compteurCFG += 4;
 	std::string tmp_test = "_tmp"+std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp_test,-compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,tmp_test,-compteurCFG);
 
 	//declaration var à 0
 	compteurCFG+=4;
 	std::string tmp = "_tmp_"+std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp,-compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,tmp,-compteurCFG);
 	IRInstrLdconst* instr0 = new IRInstrLdconst(cfg->current_bb,tmp,0);
 	cfg->current_bb->add_IRInstr(instr0);
 
@@ -271,7 +271,7 @@ antlrcpp::Any CFGVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
 	for (std::string var : listeVarsCFG)
 	{
 		compteurCFG += 4;
-		cfg->add_SymbolIndex(var, -compteurCFG);
+		cfg->add_SymbolIndex(func_actuelle,var, -compteurCFG);
 	}
 	if (ctx->expr())
 	{
@@ -309,16 +309,16 @@ antlrcpp::Any CFGVisitor::visitAddsub(ifccParser::AddsubContext *ctx)
 	string res_droite = visit(ctx->expr()[1]);
 	compteurCFG += 4;
 	std::string tmp = "_tmp" + std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp, -compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,tmp, -compteurCFG);
 
 	// compteurCFG += 4;
 	// std::string tmp2 = "_tmp" + std::to_string(compteurCFG);
-	// cfg->add_SymbolIndex(tmp2, -compteurCFG);
+	// cfg->add_SymbolIndex(func_actuelle,tmp2, -compteurCFG);
 	// mapFunctionsCFG.at(funcActuelle).insert(std::pair<std::string, std::string>(ctx->expr()[0]->getText(), "_arg" + std::to_string(compteurCFG)));
 	
 	// compteurCFG += 4;
 	// std::string tmp3 = "_tmp" + std::to_string(compteurCFG);
-	// cfg->add_SymbolIndex(tmp3, -compteurCFG);
+	// cfg->add_SymbolIndex(func_actuelle,tmp3, -compteurCFG);
 	// mapFunctionsCFG.at(funcActuelle).insert(std::pair<std::string, std::string>(ctx->expr()[1]->getText(), "_arg" + std::to_string(compteurCFG)));
 
 	
@@ -349,7 +349,7 @@ antlrcpp::Any CFGVisitor::visitMuldiv(ifccParser::MuldivContext *ctx)
 	string res_droite = visit(ctx->expr()[1]);
 	compteurCFG += 4;
 	std::string tmp = "_tmp" + std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp, -compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,tmp, -compteurCFG);
 	if (funcActuelle.compare("main") != 0)
 	{
 		std::map<std::string, std::string> listMappedParams = mapFunctionsCFG[funcActuelle];
@@ -378,7 +378,7 @@ antlrcpp::Any CFGVisitor::visitConst(ifccParser::ConstContext *ctx)
 {
 	compteurCFG += 4;
 	std::string tmp = "_tmp" + std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp, -compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,tmp, -compteurCFG);
 	int cst = stoi(ctx->CONST()->getText());
 	IRInstrLdconst *instr = new IRInstrLdconst(cfg->current_bb, tmp, cst);
 	cfg->current_bb->add_IRInstr(instr);
@@ -392,7 +392,7 @@ antlrcpp::Any CFGVisitor::visitCmp(ifccParser::CmpContext *ctx)
 	string res_droite = visit(ctx->expr()[1]);
 	compteurCFG += 4;
 	std::string tmp = "_tmp" + std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp, -compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,tmp, -compteurCFG);
 	if (funcActuelle.compare("main") != 0)
 	{
 		std::map<std::string, std::string> listMappedParams = mapFunctionsCFG[funcActuelle];
@@ -438,7 +438,7 @@ antlrcpp::Any CFGVisitor::visitFuncCall(ifccParser::FuncCallContext *ctx)
 	std::string func_name = ctx->VAR()->getText();
 	compteurCFG += 4;
 	std::string tmp = "_tmp" + std::to_string(compteurCFG);
-	cfg->add_SymbolIndex(tmp, -compteurCFG);
+	cfg->add_SymbolIndex(func_actuelle,tmp, -compteurCFG);
 	if (ctx->input())
 	{
 		visit(ctx->input());
