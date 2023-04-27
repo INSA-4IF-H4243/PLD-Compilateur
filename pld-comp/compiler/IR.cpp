@@ -371,10 +371,11 @@ void IRInstrEJump::gen_asm(ostream &o)
     o << "\n# saut si égal vers " << label << "\n"
     " je " << label << "\n\n";
 }
-BasicBlock::BasicBlock(CFG *cfg_, string label_)
+BasicBlock::BasicBlock(CFG *cfg_, string label_,string func_)
 {
     this->cfg = cfg_;
     this->label = label_;
+    this->func=func_
 }
 
 void BasicBlock::add_IRInstr(IRInstr *instr)
@@ -447,12 +448,25 @@ void CFG::gen_PseudoCode()
     }
 }
 
-void CFG::add_SymbolIndex(string name, int t)
+void CFG::add_SymbolIndex(string func,string name, int t)
 {
-    SymbolIndex[name] = t;
+	std::map<std::string, std::string> mappedParams;
+	try
+	{
+		//ajout à la map
+		mappedParams = mapCFG.at(cfg->current_bb->func);
+		mappedParams.insert(std::pair<std::string, std::int>(name, t));
+		mapCFG.at(cfg->current_bb->label) = mappedParams;
+	}
+	catch (const std::out_of_range &oor)
+	{
+		//ajout à la map de la fonction si elle n'existe pas dans la map
+		mappedParams.insert(std::pair<std::string, std::string>(name, t));
+		mapCFG.insert(std::pair<std::string, std::map<std::string, std::string>>(cfg->current_bb->func, mappedParams));
+	}
 }
 
-int CFG::get_var_index(string name)
+int CFG::get_var_index(string func,string name)
 {
-    return SymbolIndex[name];
+    return mapCFG[func][name];
 }

@@ -286,7 +286,7 @@ private:
 class BasicBlock
 {
 public:
-	BasicBlock(CFG *cfg, string label);
+	BasicBlock(CFG *cfg, string label,string func);
 	//appel des gen_asm de ses instructions
 	void gen_asm(ostream &o); 
 	//savoir si le bloc est une fonction
@@ -301,7 +301,8 @@ public:
 	CFG *cfg;	
 	//Liste des instructions du bloc
 	vector<IRInstr *> instrs; 
-
+	//fonction d'appartenance
+	string func;
 protected:
 	bool is_func = false;
 };
@@ -319,16 +320,17 @@ public:
 	//appel des gen_asm de ses blocs
 	void gen_asm(ostream &o);
 	//ajouter une variable à la liste des variables
-	void add_SymbolIndex(string name, int t);
+	void add_SymbolIndex(string func,string name, int t);
 	//avoir l'index d'une variable (pour connaître le registre)
-	int get_var_index(string name);
+	int get_var_index(string func,string name);
 	int get_stack_pointer();
 	//bloc courrant pour l'ajout des instructions au bloc courrant dans CFGVisitor
 	BasicBlock *current_bb;
-	
+
 protected:
-	//liste des variables
-	map<string, int> SymbolIndex;
+	//liste des variables par fonctions
+	// function, pair<var, var_index>
+	std::map<std::string, std::map<std::string, std::string>> mapCFG;
 	//liste des blocs du CFG
 	vector<BasicBlock *> bbs; 
 };

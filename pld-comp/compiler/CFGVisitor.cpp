@@ -19,7 +19,7 @@ antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 		visit(ctx->func());
 	}
 	funcActuelle = "main";
-	BasicBlock *bb = new BasicBlock(cfg, "main");
+	BasicBlock *bb = new BasicBlock(cfg, "main1","main");
 	cfg->add_bb(bb);
 	bb->set_is_func(true);
 
@@ -82,7 +82,8 @@ antlrcpp::Any CFGVisitor::visitArgs(ifccParser::ArgsContext *ctx)
 
 	//on ajoute à la liste des symboles et à la map l'argument de la fonction
 	compteurCFG += 4;
-	cfg->add_SymbolIndex("_arg" + std::to_string(compteurCFG), -compteurCFG);
+	string name=ctx->VAR()->getText();
+	/*cfg->add_SymbolIndex("_arg" + std::to_string(compteurCFG), -compteurCFG);
 	std::map<std::string, std::string> mappedParams;
 	try
 	{
@@ -96,7 +97,9 @@ antlrcpp::Any CFGVisitor::visitArgs(ifccParser::ArgsContext *ctx)
 		//ajout à la map de la fonction si elle n'existe pas dans la map
 		mappedParams.insert(std::pair<std::string, std::string>(ctx->VAR()->getText(), "_arg" + std::to_string(compteurCFG)));
 		mapFunctionsCFG.insert(std::pair<std::string, std::map<std::string, std::string>>(cfg->current_bb->label, mappedParams));
-	}
+	}*/
+
+	cfg->add_SymbolIndex(func_actuelle, name , -compteurCFG);
 	//ajout de l'instruction de l'argument au bloc courrant avec le registre du numéro d'argument
 	IRInstrArg *instr = new IRInstrArg(cfg->current_bb, vectorName[compteurArgs], -compteurCFG);
 	cfg->current_bb->add_IRInstr(instr);
