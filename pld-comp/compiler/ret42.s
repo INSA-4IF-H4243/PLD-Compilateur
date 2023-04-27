@@ -1,5 +1,7 @@
 # fonction add
+# declaration de c
 # expression avec a
+# expression avec c
 # declaration de a
 # declaration de b
 # declaration de e
@@ -27,18 +29,13 @@ add:
  movl	%esi, -8(%rbp)
 
 
-# declaration de _tmp12 avec la valeur 2
- movl	$2, -12(%rbp)
-
-
-# declaration de _tmp16 avec la valeur _arg4 + 
- movl	-4(%rbp), %eax
- addl	0(%rbp), %eax
- movl	%eax, -16(%rbp)
-
-
-# retour de _tmp16
+# declaration de c dans a
  movl	-16(%rbp), %eax
+ movl	%eax, -12(%rbp)
+
+
+# retour de c
+ movl	-12(%rbp), %eax
 
 
 # epilogue
@@ -52,40 +49,40 @@ main:
 # prologue
  pushq	%rbp
  movq	%rsp, %rbp
- subq	  $16, %rsp
+ subq	  $12, %rsp
 
-# declaration de _tmp24 avec la valeur 1
- movl	$1, -24(%rbp)
-
-
-# declaration de a dans _tmp24
- movl	-24(%rbp), %eax
- movl	%eax, -20(%rbp)
+# declaration de _tmp20 avec la valeur 1
+ movl	$1, -20(%rbp)
 
 
-# declaration de _tmp32 avec la valeur 2
- movl	$2, -32(%rbp)
+# declaration de a dans _tmp20
+ movl	-20(%rbp), %eax
+ movl	%eax, -16(%rbp)
 
 
-# declaration de b dans _tmp32
- movl	-32(%rbp), %eax
- movl	%eax, -28(%rbp)
+# declaration de _tmp28 avec la valeur 2
+ movl	$2, -28(%rbp)
+
+
+# declaration de b dans _tmp28
+ movl	-28(%rbp), %eax
+ movl	%eax, -24(%rbp)
 
 
 # appel de la fonction add
- movl	-20(%rbp), %edi
- movl	-28(%rbp), %esi
+ movl	-16(%rbp), %edi
+ movl	-24(%rbp), %esi
  call add
- movl	%eax, -40(%rbp)
-
-
-# declaration de e dans _tmp40
- movl	-40(%rbp), %eax
  movl	%eax, -36(%rbp)
 
 
-# retour de e
+# declaration de e dans _tmp36
  movl	-36(%rbp), %eax
+ movl	%eax, -32(%rbp)
+
+
+# retour de e
+ movl	-32(%rbp), %eax
 
 
 # epilogue

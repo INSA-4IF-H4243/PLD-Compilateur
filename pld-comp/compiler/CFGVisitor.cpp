@@ -42,6 +42,7 @@ antlrcpp::Any CFGVisitor::visitFunc(ifccParser::FuncContext *ctx)
 	BasicBlock *bb = new BasicBlock(cfg, ctx->VAR()->getText());
 	cfg->add_bb(bb);
 	bb->set_is_func(true);
+	//prologue avec debut au stack_pointer pour délimiter l'espace de la fct
 	int stack_pointer = cfg->get_stack_pointer();
 	IRInstrPrologue *instrPro = new IRInstrPrologue(cfg->current_bb, stack_pointer);
 	cfg->current_bb->add_IRInstr(instrPro);
