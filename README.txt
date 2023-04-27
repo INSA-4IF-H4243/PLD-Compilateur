@@ -1,8 +1,10 @@
 Compilateur C vers Assembleur:
 Programmé par l'hexanôme H4243 4IF INSA LYON:
     TABAKH Khalil, QI Jiaqi, PHUNG Minh, NGO Ngoc Minh, ALPOU Yannick, BAILLEUX Henri, MOUSSET Maxime
+             
+                -- Documentation Utilisateur:
 
-                -- Fonctionnalités De notre Compilateur : 
+        -- Fonctionnalités De notre Compilateur : 
 
 Programme basique C:
 int main() {
@@ -78,28 +80,37 @@ While:
     }
 test6_1
 
-                -- Ce qui ne Fonctionne Pas:
+        -- Ce qui ne Fonctionne Pas:
 
-Boucles: For
+Boucles For
 
-Fonctions:
+Fonctions
 
-Adressage:
+Adressage
 
-Types différents de int:
+Types différents de int
 
-Utilisation de Char:
+Utilisation de Char
 
-Tableaux:
+Tableaux
+
+Expression Unaire
+
+Return dans le programme
 
 ...
-
-                -- Documentation Utilisateur:
  
-Pour compiler un programme:
-    Dans le dossier /compiler
-        $make
-        $./ifcc mon_programme.c > mon_programme.s
+        -- Aide pour compiler un programme:
+
+Dans le dossier /compiler
+    Créer le programme "mon_programme.c"
+
+    $make
+    $./ifcc mon_programme.c > mon_programme.s
+
+    mon_programme.s contient le code assembleur du programme
+
+
 
                 -- Documentation Développeur:
 
@@ -108,15 +119,32 @@ Dans le dossier /compiler
         $make gui FILE=programme_test.c
         
 Dans le dossier /tests
+    Créer un test dans /testfiles "mon_test.c"
+    Lancer le test:
+        $python3 ifcc-test.py ./testfiles/mon_test.c
     Lancer tous les tests:
         $python3 ifcc-test.py ./testfiles/*.c
+    
 
 Indication de développement:
+    
     grammaire : dans ifcc.g4
+    
     Makefile : ($make) génère le dossier compiler/generated
+    
     Visiteur : Le visiteur est un programme visitant l'arbre AST 
-    du programme compilé correspondant à la grammaire/
-               Le visiteur de base ifccBaseVisitor est généré par le make. Il contient
+    du programme compilé correspondant à la grammaire
+               Le visiteur de base ifccBaseVisitor est généré par le make. Il contient une fonction pour chaque mot non-terminal de la grammaire.
                Le Visiteur de base parcours l'arbre recursivement sans rien faire.
-               On peut créer un visiteur
+               On peut créer un visiteur héritant de ifccBaseVisitor pour changer les fonctions lors de la visite d'un mot de l'arbre.
+               Il faut créer le nouveau visiteur dans main.cpp pour qu'il parcours l'arbre.
+
+               Les visiteurs existants sont :
+               DeclarationCheckVisitor qui parcours l'arbre en vérifiant que les variables dans les expressions ont toutes été déclarées.
+               CFGVisitor qui crée l'IR et qui pour chaque mot visité de l'arbre ajoute les bons blocs et instructions au CFG.
+
+    l'IR: 
+
+
+    
 
