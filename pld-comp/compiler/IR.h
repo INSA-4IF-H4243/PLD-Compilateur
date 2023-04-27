@@ -8,20 +8,17 @@
 #include <initializer_list>
 
 using namespace std;
-// Declarations from the parser -- replace with your own
-// #include "type.h"
-// #include "symbole.h"
 
 class BasicBlock;
 class CFG;
 class DefFonction;
 
-//! The class for one 3-address instruction
+//Instructions
 class IRInstr
 {
 
 public:
-	/** The instructions themselves -- feel free to subclass instead */
+	
 	typedef enum
 	{
 		ldconst,
@@ -30,9 +27,6 @@ public:
 		sub,
 		mul,
 		div,
-		// rmem,
-		// wmem,
-		// call,
 		cmp_eq,
 		cmp_ne,
 		cmp_gt,
@@ -49,20 +43,25 @@ public:
 		retour,
 	} Operation;
 
-	/**  constructor */
 	IRInstr(BasicBlock *bb_, Operation op, vector<string> params);
 
-	/** Actual code generation */
-	virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
-	virtual void gen_PseudoCode(); /**< Pseudo code generation for this IR instruction */
+	//Génération de l'assembleur
+	virtual void gen_asm(ostream &o); 
+
+	//Génération du pseudo code
+	virtual void gen_PseudoCode(); 
+
 protected:
-	BasicBlock *bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
+	//BasicBlock auquelle l'instruction appartient
+	BasicBlock *bb; 
+	//Type d'instruction
 	Operation op;
-	// Type t;
-	vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
-						   // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design.
+	//paramètres
+	vector<string> params; 
+						  
 };
 
+//prologue du programme
 class IRInstrPrologue : public IRInstr
 {
 public:
@@ -71,14 +70,14 @@ public:
 private:
 	int stack_pointer;
 };
-
+//epilogue du programme
 class IRInstrEpilogue : public IRInstr
 {
 public:
 	IRInstrEpilogue(BasicBlock *bb_);
 	void gen_asm(ostream &o) override;
 };
-
+//argument d'une fonction
 class IRInstrArg : public IRInstr
 {
 public:
@@ -88,7 +87,7 @@ private:
 	string nom_var;
 	int offset;
 };
-
+//appel d'une fonction
 class IRInstrFuncCall : public IRInstr
 {
 public:
@@ -100,7 +99,7 @@ private:
 	string tmp;
 	vector<string> params;
 };
-
+//return
 class IRInstrRetour : public IRInstr
 {
 public:
@@ -110,7 +109,7 @@ public:
 private:
 	string var;
 };
-
+//comparaison <=
 class IRInstrLdconst : public IRInstr
 {
 public:
@@ -121,7 +120,7 @@ private:
 	string var;
 	int cst;
 };
-
+//affectation
 class IRInstrCopy : public IRInstr
 {
 public:
@@ -132,7 +131,7 @@ private:
 	string var;
 	string res;
 };
-
+//addition
 class IRInstrAdd : public IRInstr
 {
 public:
@@ -144,7 +143,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//soustraction
 class IRInstrSub : public IRInstr
 {
 public:
@@ -156,7 +155,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//multiplication
 class IRInstrMul : public IRInstr
 {
 public:
@@ -168,7 +167,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//division
 class IRInstrDiv : public IRInstr
 {
 public:
@@ -180,7 +179,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//égalité
 class IRInstrCmp_eq : public IRInstr
 {
 public:
@@ -191,7 +190,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//inégalité
 class IRInstrCmp_ne : public IRInstr
 {
 public:
@@ -202,7 +201,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//>
 class IRInstrCmp_gt : public IRInstr
 {
 public:
@@ -213,7 +212,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//>=
 class IRInstrCmp_ge : public IRInstr
 {
 public:
@@ -224,7 +223,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//<
 class IRInstrCmp_lt : public IRInstr
 {
 public:
@@ -235,7 +234,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//<=
 class IRInstrCmp_le : public IRInstr
 {
 public:
@@ -246,7 +245,7 @@ private:
 	string res_gauche;
 	string res_droite;
 };
-
+//saut inconditionnel
 class IRInstrUncoJump : public IRInstr
 {
 public:
@@ -255,7 +254,7 @@ public:
 private:
 	string label;
 };
-
+//saut conditionnel
 class IRInstrCondJump : public IRInstr
 {
 public:
@@ -264,7 +263,7 @@ public:
 private:
 	string label;
 };
-
+//saut si flag inégalité levé
 class IRInstrNEJump : public IRInstr
 {
 public:
@@ -274,92 +273,55 @@ private:
 	string label;
 };
 
-
-/**  The class for a basic block */
-
-/* A few important comments.
-	 IRInstr has no jump instructions.
-	 cmp_* instructions behaves as an arithmetic two-operand instruction (add or mult),
-	  returning a boolean value (as an int)
-
-	 Assembly jumps are generated as follows:
-	 BasicBlock::gen_asm() first calls IRInstr::gen_asm() on all its instructions, and then
-			if  exit_true  is a  nullptr,
-			the epilogue is generated
-		else if exit_false is a nullptr,
-		  an unconditional jmp to the exit_true branch is generated
-				else (we have two successors, hence a branch)
-		  an instruction comparing the value of test_var_name to true is generated,
-					followed by a conditional branch to the exit_false branch,
-					followed by an unconditional branch to the exit_true branch
-	 The attribute test_var_name itself is defined when converting
-  the if, while, etc of the AST  to IR.
-
-Possible optimization:
-	 a cmp_* comparison instructions, if it is the last instruction of its block,
-	   generates an actual assembly comparison
-	   followed by a conditional jump to the exit_false branch
-*/
-
+//Classe des blocs contenant les instructions
 class BasicBlock
 {
 public:
 	BasicBlock(CFG *cfg, string label);
-	void gen_asm(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
+	//appel des gen_asm de ses instructions
+	void gen_asm(ostream &o); 
+	//savoir si le bloc est une fonction
 	void set_is_func(bool is_func);
+	//ajouter une instruction au bloc
 	void add_IRInstr(IRInstr *instr);
+	//appel des gen_pseudo_code de ses instructions
 	void gen_PseudoCode();
-	// No encapsulation whatsoever here. Feel free to do better.
-	//BasicBlock *exit_true;	  /**< pointer to the next basic block, true branch. If nullptr, return from procedure */
-	//BasicBlock *exit_false;	  /**< pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
-	string label;			  /**< label of the BB, also will be the label in the generated code */
-	CFG *cfg;				  /** < the CFG where this block belongs */
-	vector<IRInstr *> instrs; /** < the instructions themselves. */
-	string test_var_name;	  /** < when generating IR code for an if(expr) or while(expr) etc,
-														  store here the name of the variable that holds the value of expr */
+	//Nom du bloc
+	string label;	
+	//CFG auquel le bloc appartient
+	CFG *cfg;	
+	//Liste des instructions du bloc
+	vector<IRInstr *> instrs; 
+
 protected:
 	bool is_func = false;
 };
 
-/** The class for the control flow graph, also includes the symbol table */
 
-/* A few important comments:
-	 The entry block is the one with the same label as the AST function name.
-	   (it could be the first of bbs, or it could be defined by an attribute value)
-	 The exit block is the one with both exit pointers equal to nullptr.
-	 (again it could be identified in a more explicit way)
-
- */
 class CFG
 {
 public:
-	// CFG(DefFonction* ast);
 
-	// DefFonction* ast; /**< The AST this CFG comes from */
 	CFG();
+	//ajouter une un bloc au CFG
 	void add_bb(BasicBlock *bb);
+	//appel des gen_pseudo_code de ses blocs
 	void gen_PseudoCode();
-	// x86 code generation: could be encapsulated in a processor class in a retargetable compiler
+	//appel des gen_asm de ses blocs
 	void gen_asm(ostream &o);
-	// string IR_reg_to_asm(string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
-
-	// symbol table methods
+	//ajouter une variable à la liste des variables
 	void add_SymbolIndex(string name, int t);
-	// string create_new_tempvar(int t);
+	//avoir l'index d'une variable (pour connaître le registre)
 	int get_var_index(string name);
 	int get_stack_pointer();
-	// int get_var_type(string name);
-
+	//bloc courrant pour l'ajout des instructions au bloc courrant dans CFGVisitor
 	BasicBlock *current_bb;
 	
 protected:
+	//liste des variables
 	map<string, int> SymbolIndex;
-	// map <string, Type> SymbolType; /**< part of the symbol table  */
-	 /**< part of the symbol table  */
-	// int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
-	// int nextBBnumber; /**< just for naming */
-
-	vector<BasicBlock *> bbs; /**< all the basic blocks of this CFG*/
+	//liste des blocs du CFG
+	vector<BasicBlock *> bbs; 
 };
 
 #endif

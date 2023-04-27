@@ -1,8 +1,9 @@
 int main()
 {
-    // int a;
-    // while(a=2){
-    //     a = a - 1;
-    // }
-    // return a;
+    int a =5;
+    int b = 8;
+    while(a<154){
+        a = a + b;
+    }
+    return a;
 }
