@@ -67,6 +67,14 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitNeg(ifccParser::NegContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
+  virtual antlrcpp::Any visitNot(ifccParser::NotContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitConst(ifccParser::ConstContext *ctx) override {
     return visitChildren(ctx);
   }

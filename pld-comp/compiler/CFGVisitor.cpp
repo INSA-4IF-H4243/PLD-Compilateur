@@ -249,6 +249,28 @@ antlrcpp::Any CFGVisitor::visitPar(ifccParser::ParContext *ctx)
 	return res;
 }
 
+antlrcpp::Any CFGVisitor::visitNeg(ifccParser::NegContext *ctx)
+{
+	string res = visit(ctx->expr());
+	compteurCFG += 4;
+	std::string tmp = "_tmp" + std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp, -compteurCFG);
+	IRInstrNeg *instr = new IRInstrNeg(cfg->current_bb, tmp, res);
+	cfg->current_bb->add_IRInstr(instr);
+	return tmp;
+}
+
+antlrcpp::Any CFGVisitor::visitNot(ifccParser::NotContext *ctx)
+{
+	string res = visit(ctx->expr());
+	compteurCFG += 4;
+	std::string tmp = "_tmp" + std::to_string(compteurCFG);
+	cfg->add_SymbolIndex(tmp, -compteurCFG);
+	IRInstrNot *instr = new IRInstrNot(cfg->current_bb, tmp, res);
+	cfg->current_bb->add_IRInstr(instr);
+	return tmp;
+}
+
 antlrcpp::Any CFGVisitor::visitAddsub(ifccParser::AddsubContext *ctx)
 {
 	char op = ctx->OPP()->getText()[0];

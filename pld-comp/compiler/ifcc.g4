@@ -27,6 +27,8 @@ expr        : expr OPM expr         #muldiv
             | '(' expr ')'          #par
             | expr CMPOP expr       #cmp
             | VAR '(' input? ')'    #funcCall
+            | '-'expr               #neg
+            | '!'expr               #not
             ;
 
 vars        : VAR(',' vars)?;

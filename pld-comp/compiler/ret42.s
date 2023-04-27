@@ -11,13 +11,7 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	movl	$7, -4(%rbp)
-	jmp	.L2
-.L3:
-	addl	$1, -4(%rbp)
-.L2:
-	cmpl	$6, -4(%rbp)
-	jle	.L3
+	movl	$-7, -4(%rbp)
 	movl	-4(%rbp), %eax
 	popq	%rbp
 	.cfi_def_cfa 7, 8

@@ -30,6 +30,8 @@ public:
 		sub,
 		mul,
 		div,
+		not_boolean,
+		neg,
 		// rmem,
 		// wmem,
 		// call,
@@ -179,6 +181,26 @@ private:
 	string tmp;
 	string res_gauche;
 	string res_droite;
+};
+
+class IRInstrNeg : public IRInstr
+{
+public:
+	IRInstrNeg(BasicBlock *bb_, string tmp, string res);
+	void gen_asm(ostream &o) override;
+private:
+	string tmp;
+	string res;
+};
+
+class IRInstrNot : public IRInstr
+{
+public:
+	IRInstrNot(BasicBlock *bb_, string tmp, string res);
+	void gen_asm(ostream &o) override;
+private:
+	string tmp;
+	string res;
 };
 
 class IRInstrCmp_eq : public IRInstr

@@ -45,6 +45,10 @@ public:
 
     virtual antlrcpp::Any visitPar(ifccParser::ParContext *context) = 0;
 
+    virtual antlrcpp::Any visitNeg(ifccParser::NegContext *context) = 0;
+
+    virtual antlrcpp::Any visitNot(ifccParser::NotContext *context) = 0;
+
     virtual antlrcpp::Any visitConst(ifccParser::ConstContext *context) = 0;
 
     virtual antlrcpp::Any visitVar(ifccParser::VarContext *context) = 0;
