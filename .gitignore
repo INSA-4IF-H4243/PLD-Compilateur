@@ -27,6 +27,6 @@
 *.log
 
 # antlr
-**generated/
-**build/
-**antlr/
+**/generated/
+**/build/
+**/antlr/

@@ -18,6 +18,75 @@ void IRInstr::gen_PseudoCode()
 {
 }
 
+IRInstrPrologue::IRInstrPrologue(BasicBlock *bb_, int stack_pointer) : IRInstr(bb_, Operation::prologue, {to_string(stack_pointer)})
+{
+    this->stack_pointer = stack_pointer;
+}
+
+void IRInstrPrologue::gen_asm(ostream &o)
+{
+    o << "\n# prologue\n"
+    " pushq	%rbp\n"
+    " movq	%rsp, %rbp\n";
+    if (stack_pointer != 0)
+    {
+        o << " subq	  $" << stack_pointer << ", %rsp\n";
+    }
+}
+
+IRInstrEpilogue::IRInstrEpilogue(BasicBlock *bb_) : IRInstr(bb_, Operation::epilogue, {})
+{
+}
+
+void IRInstrEpilogue::gen_asm(ostream &o)
+{
+    o << "\n# epilogue\n"
+    " movq	%rbp, %rsp\n"
+    " popq  %rbp\n"
+    " ret\n\n";
+}
+
+IRInstrArg::IRInstrArg(BasicBlock *bb_, string nom_var, int offset) : IRInstr(bb_, Operation::arg_call, {nom_var})
+{
+    this->nom_var = nom_var;
+    this->offset = offset;
+}
+
+void IRInstrArg::gen_asm(ostream &o)
+{
+    o << "\n# argument " << nom_var << "\n";
+    o << " movl	" << nom_var << ", " << offset << "(%rbp)\n\n";
+}
+
+IRInstrFuncCall::IRInstrFuncCall(BasicBlock *bb_, string label, string tmp, vector<string> params) : IRInstr(bb_, Operation::func_call, params)
+{
+    this->label = label;
+    this->tmp = tmp;
+    this->params = params;
+}
+
+void IRInstrFuncCall::gen_asm(ostream &o)
+{   
+	std::vector<std::string> vectorName = {"%edi", "%esi"};
+    o << "\n# appel de la fonction " << label << "\n";
+    for (int i = 0; i < this->params.size(); i++)
+    {
+        o << " movl	" << bb->cfg->get_var_index(params[i]) << "(%rbp), " << vectorName[i] << "\n";
+    }
+    o << " call " << label << "\n";
+    o << " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
+}
+
+void IRInstrFuncCall::gen_PseudoCode()
+{
+    cout << "# appel de la fonction " << label << endl;
+    cout << "call " << label << " ";
+    for (int i = 0; i < this->params.size(); i++)
+    {
+        cout << params[i] << " ";
+    }
+}
+
 /*Instructions par type*/
 IRInstrRetour::IRInstrRetour(BasicBlock *bb_, string var) : IRInstr(bb_, Operation::retour, {var})
 {
@@ -60,7 +129,7 @@ IRInstrCopy::IRInstrCopy(BasicBlock *bb_, string var, string res) : IRInstr(bb_,
 void IRInstrCopy::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << var << " dans " << res << "\n"
-    " movl	" << bb->cfg->get_var_index(res) << "(%rbp),%eax\n"
+    " movl	" << bb->cfg->get_var_index(res) << "(%rbp), %eax\n"
     " movl	%eax, " << bb->cfg->get_var_index(var) << "(%rbp)\n\n";
 }
 
@@ -79,8 +148,8 @@ IRInstrAdd::IRInstrAdd(BasicBlock *bb_, string tmp, string res_gauche, string re
 void IRInstrAdd::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << tmp << " avec la valeur " << res_gauche << " + " << res_droite << "\n"
-    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp),%eax\n"
-    " addl	" << bb->cfg->get_var_index(res_droite) << "(%rbp),%eax\n"
+    " movl	" << bb->cfg->get_var_index(res_gauche) << "(%rbp), %eax\n"
+    " addl	" << bb->cfg->get_var_index(res_droite) << "(%rbp), %eax\n"
     " movl	%eax, " << bb->cfg->get_var_index(tmp) << "(%rbp)\n\n";
 }
 
@@ -268,6 +337,9 @@ void BasicBlock::add_IRInstr(IRInstr *instr)
 
 void BasicBlock::gen_asm(ostream &o)
 {
+    if (is_func) {
+        o << ".globl  " << label << "\n";
+    }
     o << label << ":\n";
     for (IRInstr *i : instrs)
     {
@@ -282,6 +354,11 @@ void BasicBlock::gen_asm(ostream &o)
     {
         o << "je " << exit_false->label << "\n";
     }
+}
+
+void BasicBlock::set_is_func(bool is_func)
+{
+    this->is_func = is_func;
 }
 
 void BasicBlock::gen_PseudoCode()
@@ -301,6 +378,19 @@ void CFG::add_bb(BasicBlock *bb)
 {
     bbs.push_back(bb);
     current_bb = bb;
+}
+
+int CFG::get_stack_pointer() {
+    int min = 999999;
+    for (auto& index : SymbolIndex) {
+        if (index.second < min) {
+            min = index.second;
+        }
+    }
+    if (min == 999999) {
+        return 0;
+    }
+    return -min;
 }
 
 void CFG::gen_asm(ostream &o)

@@ -9,6 +9,8 @@
 class  CFGVisitor : public ifccBaseVisitor {
 	public:
 		virtual antlrcpp::Any visitProg(ifccParser::ProgContext *ctx) override ;
+		virtual antlrcpp::Any visitFunc(ifccParser::FuncContext *ctx) override;
+		virtual antlrcpp::Any visitArgs(ifccParser::ArgsContext *ctx) override;
 		virtual antlrcpp::Any visitUneInst(ifccParser::UneInstContext *ctx) override;
 		virtual antlrcpp::Any visitMulInst(ifccParser::MulInstContext *ctx) override;
 	    virtual antlrcpp::Any visitAffectation(ifccParser::AffectationContext *ctx) override;
@@ -22,9 +24,11 @@ class  CFGVisitor : public ifccBaseVisitor {
 
 		virtual antlrcpp::Any visitCmp(ifccParser::CmpContext *ctx) override;
 		virtual antlrcpp::Any visitBlock(ifccParser::BlockContext *ctx) override;
-		//virtual antlrcpp::Any visitIf(ifccParser::IfContext *ctx) override;
 		
 		virtual antlrcpp::Any visitWhileInst(ifccParser::WhileInstContext *ctx) override;
 		virtual antlrcpp::Any visitIfInst(ifccParser::IfInstContext *ctx) override;
+
+		virtual antlrcpp::Any visitFuncCall(ifccParser::FuncCallContext *ctx) override;
+		virtual antlrcpp::Any visitInput(ifccParser::InputContext *ctx) override;
 };
 

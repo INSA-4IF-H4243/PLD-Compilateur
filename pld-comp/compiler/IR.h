@@ -39,7 +39,11 @@ public:
 		cmp_ge,
 		cmp_lt,
 		cmp_le,
-		retour
+		func_call,
+		arg_call,
+		prologue,
+		epilogue,
+		retour,
 	} Operation;
 
 	/**  constructor */
@@ -54,6 +58,44 @@ protected:
 	// Type t;
 	vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
 						   // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design.
+};
+
+class IRInstrPrologue : public IRInstr
+{
+public:
+	IRInstrPrologue(BasicBlock *bb_, int stack_pointer);
+	void gen_asm(ostream &o) override;
+private:
+	int stack_pointer;
+};
+
+class IRInstrEpilogue : public IRInstr
+{
+public:
+	IRInstrEpilogue(BasicBlock *bb_);
+	void gen_asm(ostream &o) override;
+};
+
+class IRInstrArg : public IRInstr
+{
+public:
+	IRInstrArg(BasicBlock *bb_, string nom_var, int offset);
+	void gen_asm(ostream &o) override;
+private:
+	string nom_var;
+	int offset;
+};
+
+class IRInstrFuncCall : public IRInstr
+{
+public:
+	IRInstrFuncCall(BasicBlock *bb_, string label, string tmp, vector<string> params);
+	void gen_asm(ostream &o) override;
+	void gen_PseudoCode() override;
+private:
+	string label;
+	string tmp;
+	vector<string> params;
 };
 
 class IRInstrRetour : public IRInstr
@@ -234,7 +276,7 @@ class BasicBlock
 public:
 	BasicBlock(CFG *cfg, string label);
 	void gen_asm(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
-
+	void set_is_func(bool is_func);
 	void add_IRInstr(IRInstr *instr);
 	void gen_PseudoCode();
 	// No encapsulation whatsoever here. Feel free to do better.
@@ -246,6 +288,7 @@ public:
 	string test_var_name;	  /** < when generating IR code for an if(expr) or while(expr) etc,
 														  store here the name of the variable that holds the value of expr */
 protected:
+	bool is_func = false;
 };
 
 /** The class for the control flow graph, also includes the symbol table */
@@ -269,17 +312,14 @@ public:
 	// x86 code generation: could be encapsulated in a processor class in a retargetable compiler
 	void gen_asm(ostream &o);
 	// string IR_reg_to_asm(string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
-	// void gen_asm_prologue(ostream& o);
-	// void gen_asm_epilogue(ostream& o);
 
 	// symbol table methods
 	void add_SymbolIndex(string name, int t);
 	// string create_new_tempvar(int t);
 	int get_var_index(string name);
+	int get_stack_pointer();
 	// int get_var_type(string name);
 
-	// basic block management
-	// string new_BB_name();
 	BasicBlock *current_bb;
 	
 protected:

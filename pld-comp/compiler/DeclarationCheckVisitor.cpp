@@ -5,72 +5,16 @@
 
 std::list<std::string> listeDeclarations;
 std::list<std::string> listeLigne;
-std::map<std::string, std::list<std::string>> mapFunctions;
+
+// sauvegarder key: function et value: leurs parametres
+std::map<std::string, std::list<std::string>> mapFunctions; 
 std::list<std::string> listeParams;
 std::list<std::string> listInput;
 
-antlrcpp::Any DeclarationCheckVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
-{
-    visit(ctx->vars());
-    for(std::string var:listeLigne){
-        std::cout << "# declaration de " << var << "\n" ;
-        bool found = (std::find(listeDeclarations.begin(), listeDeclarations.end(), var) != listeDeclarations.end());
-        if(found){
-            std::cerr << "# var " << var << " déjà déclarée\n" ;
-            exit(3);
-        }
-        listeDeclarations.push_back(var);
-    }
-   
-    if(ctx->expr()){
-        visit(ctx->expr());
-    }
-    listeLigne.clear();
-    return 0;
-}
-
-antlrcpp::Any DeclarationCheckVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
-{
-
-    visit(ctx->vars());
-    for(std::string var:listeLigne){
-        std::cout << "# affectation de " << var << "\n" ;
-        bool found = (std::find(listeDeclarations.begin(), listeDeclarations.end(), var) != listeDeclarations.end());
-        if(!found){
-            std::cerr << "# var " << var << " non déclarée\n" ;
-            exit(3);
-        }
-    }
-    visit(ctx->expr());
-    listeLigne.clear();
-    return 0;
-}
-
-antlrcpp::Any DeclarationCheckVisitor::visitVar(ifccParser::VarContext *ctx)
-{
-    if(ctx->VAR()){
-        std::cout << "# expression avec " << ctx->VAR()->getText() << "\n" ;
-        bool found = (std::find(listeDeclarations.begin(), listeDeclarations.end(), ctx->VAR()->getText()) != listeDeclarations.end());
-        if(!found){
-            std::cerr << "# var " << ctx->VAR()->getText() << " non déclarée\n" ;
-            exit(3);
-        }
-    }
-    return 0;
-}
-		
-antlrcpp::Any DeclarationCheckVisitor::visitVars(ifccParser::VarsContext *ctx){
-    listeLigne.push_back(ctx->VAR()->getText());
-    if(ctx->vars()){
-        visit(ctx->vars());
-    }
-    return 0;
-}
-
 antlrcpp::Any DeclarationCheckVisitor::visitInput(ifccParser::InputContext *ctx) {
-    std::cout << "# input parametre " << ctx->VAR()->getText() << "\n" ;
-    listInput.push_back(ctx->VAR()->getText());
-    visit(ctx->VAR());
+    std::cout << "# input parametre " << ctx->expr()->getText() << "\n" ;
+    listInput.push_back(ctx->expr()->getText());
+    visit(ctx->expr());
     if (ctx->input()) {
         visit(ctx->input());
     }
@@ -93,8 +37,16 @@ antlrcpp::Any DeclarationCheckVisitor::visitFunc(ifccParser::FuncContext *ctx)
     if (ctx->args()) {
         visit(ctx->args());
     }
+    if (ctx->code()) {
+        visit(ctx->code());
+    }
+    visit(ctx->expr());
     mapFunctions[ctx->VAR()->getText()] = listeParams;
     listeParams.clear();
+    listeDeclarations.clear();
+    if (ctx->func()) {
+        visit(ctx->func());
+    }
     return 0;
 }
 
@@ -117,5 +69,66 @@ antlrcpp::Any DeclarationCheckVisitor::visitFuncCall(ifccParser::FuncCallContext
         exit(3);
     }
     listInput.clear();
+    return 0;
+}
+
+antlrcpp::Any DeclarationCheckVisitor::visitDeclaration(ifccParser::DeclarationContext *ctx)
+{
+    visit(ctx->vars());
+    for(std::string var:listeLigne){
+        std::cout << "# declaration de " << var << "\n" ;
+        bool found = (std::find(listeDeclarations.begin(), listeDeclarations.end(), var) != listeDeclarations.end()
+        || std::find(listeParams.begin(), listeParams.end(), var) != listeParams.end());
+        if(found){
+            std::cerr << "# var " << var << " déjà déclarée\n" ;
+            exit(3);
+        }
+        listeDeclarations.push_back(var);
+    }
+   
+    if(ctx->expr()){
+        visit(ctx->expr());
+    }
+    listeLigne.clear();
+    return 0;
+}
+
+antlrcpp::Any DeclarationCheckVisitor::visitAffectation(ifccParser::AffectationContext *ctx)
+{
+
+    visit(ctx->vars());
+    for(std::string var:listeLigne){
+        bool found = (std::find(listeDeclarations.begin(), listeDeclarations.end(), var) != listeDeclarations.end()
+        || std::find(listeParams.begin(), listeParams.end(), var) != listeParams.end());
+        if(!found){
+            std::cerr << "# var " << var << " non déclarée\n" ;
+            exit(3);
+        }
+        std::cout << "# affectation de " << var << "\n" ;
+    }
+    visit(ctx->expr());
+    listeLigne.clear();
+    return 0;
+}
+
+antlrcpp::Any DeclarationCheckVisitor::visitVar(ifccParser::VarContext *ctx)
+{
+    if(ctx->VAR()){
+        bool found = (std::find(listeDeclarations.begin(), listeDeclarations.end(), ctx->VAR()->getText()) != listeDeclarations.end()
+        || std::find(listeParams.begin(), listeParams.end(), ctx->VAR()->getText()) != listeParams.end());
+        if(!found){
+            std::cerr << "# var " << ctx->VAR()->getText() << " non déclarée\n" ;
+            exit(3);
+        }
+        std::cout << "# expression avec " << ctx->VAR()->getText() << "\n" ;
+    }
+    return 0;
+}
+		
+antlrcpp::Any DeclarationCheckVisitor::visitVars(ifccParser::VarsContext *ctx){
+    listeLigne.push_back(ctx->VAR()->getText());
+    if(ctx->vars()){
+        visit(ctx->vars());
+    }
     return 0;
 }

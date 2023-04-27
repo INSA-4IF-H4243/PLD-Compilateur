@@ -63,8 +63,7 @@ public:
     antlr4::tree::TerminalNode *TYPE();
     antlr4::tree::TerminalNode *RETURN();
     ExprContext *expr();
-    std::vector<FuncContext *> func();
-    FuncContext* func(size_t i);
+    FuncContext *func();
     CodeContext *code();
 
 
@@ -84,6 +83,7 @@ public:
     ExprContext *expr();
     ArgsContext *args();
     CodeContext *code();
+    FuncContext *func();
 
 
     virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
@@ -314,7 +314,7 @@ public:
   public:
     InputContext(antlr4::ParserRuleContext *parent, size_t invokingState);
     virtual size_t getRuleIndex() const override;
-    antlr4::tree::TerminalNode *VAR();
+    ExprContext *expr();
     InputContext *input();
 
 

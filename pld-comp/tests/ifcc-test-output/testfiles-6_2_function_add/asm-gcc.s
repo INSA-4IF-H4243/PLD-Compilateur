@@ -1,4 +1,4 @@
-	.file	"ret42.c"
+	.file	"input.c"
 	.text
 	.globl	add
 	.type	add, @function
