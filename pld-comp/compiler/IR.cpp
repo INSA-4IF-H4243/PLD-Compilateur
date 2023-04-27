@@ -119,7 +119,7 @@ IRInstrLdconst::IRInstrLdconst(BasicBlock *bb_, string var, int cst) : IRInstr(b
 void IRInstrLdconst::gen_asm(ostream &o)
 {
     o << "\n# declaration de " << var << " avec la valeur " << cst << "\n"
-    " movl	$" << cst << ", " << bb->cfg->get_var_index(bb->func,bb->func,var) << "(%rbp)\n\n";
+    " movl	$" << cst << ", " << bb->cfg->get_var_index(bb->func,var) << "(%rbp)\n\n";
 }
 
 void IRInstrLdconst::gen_PseudoCode()
@@ -375,7 +375,7 @@ BasicBlock::BasicBlock(CFG *cfg_, string label_,string func_)
 {
     this->cfg = cfg_;
     this->label = label_;
-    this->func=func_
+    this->func=func_;
 }
 
 void BasicBlock::add_IRInstr(IRInstr *instr)
@@ -410,7 +410,7 @@ void BasicBlock::gen_PseudoCode()
 
 CFG::CFG()
 {
-    this->current_bb = new BasicBlock(this, "initBlock");
+    this->current_bb = new BasicBlock(this, "initBlock","initBlock");
 }
 
 void CFG::add_bb(BasicBlock *bb)
@@ -421,9 +421,11 @@ void CFG::add_bb(BasicBlock *bb)
 
 int CFG::get_stack_pointer() {
     int min = 999999;
-    for (auto& index : SymbolIndex) {
-        if (index.second < min) {
-            min = index.second;
+    for (auto& func : mapCFG) {
+        for (auto& index : func.second) {
+            if (index.second < min) {
+                min = index.second;
+            }
         }
     }
     if (min == 999999) {
@@ -450,23 +452,33 @@ void CFG::gen_PseudoCode()
 
 void CFG::add_SymbolIndex(string func,string name, int t)
 {
-	std::map<std::string, std::string> mappedParams;
+	std::map<std::string, int> mappedParams;
 	try
 	{
 		//ajout à la map
-		mappedParams = mapCFG.at(cfg->current_bb->func);
-		mappedParams.insert(std::pair<std::string, std::int>(name, t));
-		mapCFG.at(cfg->current_bb->label) = mappedParams;
+		mappedParams = mapCFG.at(func);
+		mappedParams.insert(std::pair<std::string, int>(name, t));
+		mapCFG.at(func) = mappedParams;
 	}
 	catch (const std::out_of_range &oor)
 	{
 		//ajout à la map de la fonction si elle n'existe pas dans la map
-		mappedParams.insert(std::pair<std::string, std::string>(name, t));
-		mapCFG.insert(std::pair<std::string, std::map<std::string, std::string>>(cfg->current_bb->func, mappedParams));
+		mappedParams.insert(std::pair<std::string, int>(name, t));
+		mapCFG.insert(std::pair<std::string, std::map<std::string, int>>(func, mappedParams));
 	}
+    /*cout<<" test func : "<<func<<" name : "<<name<<" index : "<<t<<endl<<endl;
+    for (auto& func : mapCFG) {
+        for (auto& index : func.second) {
+            cout<<" func : "<<func.first<<" name : "<<index.first<<" index : "<<index.second<<endl<<endl;
+        }
+    }*/
+
 }
 
-int CFG::get_var_index(bb->func,string func,string name)
+int CFG::get_var_index(string func,string name)
 {
-    return mapCFG[func][name];
+    std::map<std::string, int> map = mapCFG[func];
+    int index=map[name];
+    //cout<<" func : "<<func<<" name : "<<name<<" index : "<<index<<endl;
+    return index;
 }

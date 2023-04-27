@@ -330,7 +330,7 @@ public:
 protected:
 	//liste des variables par fonctions
 	// function, pair<var, var_index>
-	std::map<std::string, std::map<std::string, std::string>> mapCFG;
+	std::map<std::string, std::map<std::string, int>> mapCFG;
 	//liste des blocs du CFG
 	vector<BasicBlock *> bbs; 
 };
