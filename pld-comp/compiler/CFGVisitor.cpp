@@ -114,34 +114,43 @@ antlrcpp::Any CFGVisitor::visitWhileInst(ifccParser::WhileInstContext *ctx)
 	BasicBlock *cond_block = new BasicBlock(cfg, "testWhile" + std::to_string(compteurCFG));
 	BasicBlock *body_block = new BasicBlock(cfg, "bodyWhile" + std::to_string(compteurCFG));
 	BasicBlock *afterWhile = new BasicBlock(cfg, "afterWhile" + std::to_string(compteurCFG));
-
-	IRInstrUncoJump *instrUnco = new IRInstrUncoJump(cfg->current_bb, cond_block->label);
-	cfg->current_bb->add_IRInstr(instrUnco);
-
-	cfg->add_bb(body_block);
-	visit(ctx->code()[0]);
-	IRInstrUncoJump *instrUnco1 = new IRInstrUncoJump(cfg->current_bb, cond_block->label);
-	cfg->current_bb->add_IRInstr(instrUnco1);
-
+	//on ajoute le bloc de condition
 	cfg->add_bb (cond_block);	
+
+	//on enregistre le flag de la condition
 	std::string res_test = visit(ctx->expr());
 	compteurCFG += 4;
 	std::string tmp_test = "_tmp" + std::to_string(compteurCFG);
 	cfg->add_SymbolIndex(tmp_test, -compteurCFG);
 
+	//on declare une variable à 0
 	compteurCFG+=4;
 	std::string tmp = "_tmp_"+std::to_string(compteurCFG);
 	cfg->add_SymbolIndex(tmp,-compteurCFG);
 	IRInstrLdconst* instr0 = new IRInstrLdconst(cfg->current_bb,tmp,0);
 	cfg->current_bb->add_IRInstr(instr0);
+	//on compare le flag à la variable à 0
 	IRInstrCmp_eq* instr = new IRInstrCmp_eq(cfg->current_bb,tmp_test,res_test,tmp);
 	cfg->current_bb->add_IRInstr(instr);
-	IRInstrCondJump *instrCond = new IRInstrCondJump(cfg->current_bb, afterWhile->label);
+
+	//si le flag vaut 0 (=la condition n'est pas vraie), on fait un saut vers le bloc afterWhile (= on quitte le while)
+	IRInstrEJump *instrCond = new IRInstrEJump(cfg->current_bb, afterWhile->label);
 	cfg->current_bb->add_IRInstr(instrCond);
 
+	//si le flag vaut 1 , on fait un saut pour faire le body_block
 	IRInstrUncoJump *instrUnco2 = new IRInstrUncoJump(cfg->current_bb, body_block->label);
 	cfg->current_bb->add_IRInstr(instrUnco2);
 
+	//on ajoute le bodybloc
+	cfg->add_bb(body_block);
+	//on ajoute le code du bodybloc
+	visit(ctx->code()[0]);
+
+	//saut vers le bloc de condition (condition dans le while(condition))
+	IRInstrUncoJump *instrUnco = new IRInstrUncoJump(cfg->current_bb, cond_block->label);
+	cfg->current_bb->add_IRInstr(instrUnco);
+
+	//on ajoute le bloc afterWhile
 	cfg->add_bb(afterWhile);
 	if (ctx->code()[1])
 	{
@@ -173,6 +182,7 @@ antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfInstContext *ctx)
 	IRInstrCmp_eq* instr = new IRInstrCmp_eq(cfg->current_bb,tmp_test,res_test,tmp);
 	cfg->current_bb->add_IRInstr(instr);
 
+	//si on a un else, et que le flag est nul, on saute vers le bodyelse
 	if (ctx->ELSE())
 	{
 		IRInstrEJump *instrE = new IRInstrEJump(cfg->current_bb, bodyelse_block->label);
@@ -182,22 +192,27 @@ antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfInstContext *ctx)
 	//ajout du bloc if
 	cfg->add_bb(bodyif_block);
 	
-	//on visite le code
+	//on visite le code et on l'ajoute au bodyif
 	visit(ctx->code()[0]);
-	//Arpès le code, on jump au endif
+
+	//Après le code du bodyif, on jump au endif (= on saute le bodyelse)
 	IRInstrUncoJump *instrUnco = new IRInstrUncoJump(cfg->current_bb, endIf_block->label);
 	cfg->current_bb->add_IRInstr(instrUnco);
 
+	//si on a un else, on ajoute le bodyelse
 	if (ctx->ELSE())
 	{
 		cfg->add_bb(bodyelse_block);
 		visit(ctx->code()[1]);
+		//après le code du else, on ajoute le bloc endif
 		cfg->add_bb(endIf_block);
+		//on ajoute le code suivant le if..else
 		if (ctx->code()[2])
 		{
 			visit(ctx->code()[2]);
 		}
 	}
+	//si on a pas de else, on ajoute le bloc endif et le code suivant le if
 	else
 	{	
 		cfg->add_bb(endIf_block);
