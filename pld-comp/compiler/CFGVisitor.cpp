@@ -17,7 +17,7 @@ antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 		visit(ctx->func());
 	}
 	funcActuelle = "main";
-	BasicBlock *bb = new BasicBlock(cfg, "main1","main");
+	BasicBlock *bb = new BasicBlock(cfg, "main","main");
 	cfg->add_bb(bb);
 	bb->set_is_func(true);
 
