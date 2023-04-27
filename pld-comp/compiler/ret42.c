@@ -1,15 +1,11 @@
-int main()
+int add(int a, int b)
 {
-    int a = 2;
-    int b=0;
-    while (a < 8) {
-        b = 2;
-        if (a == 4) {
-            a = a + 1;
-        }
-        else {
-            a = a + 2;
-        }
-    }
-    return a;
+    return a + 2;
+}
+
+int main() {
+    int a = 1;
+    int b = 2;
+    int e = add(a, b);
+    return e;
 }

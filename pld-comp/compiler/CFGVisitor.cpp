@@ -37,6 +37,7 @@ antlrcpp::Any CFGVisitor::visitProg(ifccParser::ProgContext *ctx)
 
 antlrcpp::Any CFGVisitor::visitFunc(ifccParser::FuncContext *ctx)
 {
+
 	funcActuelle = ctx->VAR()->getText();
 	BasicBlock *bb = new BasicBlock(cfg, ctx->VAR()->getText());
 	cfg->add_bb(bb);
@@ -71,34 +72,41 @@ antlrcpp::Any CFGVisitor::visitReturn(ifccParser::ReturnContext *ctx)
 }
 
 int compteurArgs = 0;
+//registre disponibles pour les arguments
 std::vector<std::string> vectorName = {"%edi", "%esi", "%edx", "%ecx", "%r8d", "%r9d", "%r10d", 
 				"%r11d", "%r12d", "%r13d", "%r14d", "%r15d"};
 
 antlrcpp::Any CFGVisitor::visitArgs(ifccParser::ArgsContext *ctx)
 {
+
+	//on ajoute à la liste des symboles et à la map l'argument de la fonction
 	compteurCFG += 4;
 	cfg->add_SymbolIndex("_arg" + std::to_string(compteurCFG), -compteurCFG);
 	std::map<std::string, std::string> mappedParams;
 	try
 	{
+		//ajout à la map
 		mappedParams = mapFunctionsCFG.at(cfg->current_bb->label);
 		mappedParams.insert(std::pair<std::string, std::string>(ctx->VAR()->getText(), "_arg" + std::to_string(compteurCFG)));
 		mapFunctionsCFG.at(cfg->current_bb->label) = mappedParams;
 	}
 	catch (const std::out_of_range &oor)
 	{
+		//ajout à la map de la fonction si elle n'existe pas dans la map
 		mappedParams.insert(std::pair<std::string, std::string>(ctx->VAR()->getText(), "_arg" + std::to_string(compteurCFG)));
 		mapFunctionsCFG.insert(std::pair<std::string, std::map<std::string, std::string>>(cfg->current_bb->label, mappedParams));
 	}
-
+	//ajout de l'instruction de l'argument au bloc courrant avec le registre du numéro d'argument
 	IRInstrArg *instr = new IRInstrArg(cfg->current_bb, vectorName[compteurArgs], -compteurCFG);
 	cfg->current_bb->add_IRInstr(instr);
 
+	//visite des prochains arguments
 	if (ctx->args())
 	{
 		compteurArgs++;
 		visit(ctx->args());
 	}
+	// on remet à 0 s'il y'a une prochaine fonction
 	compteurArgs = 0;
 	return 0;
 }

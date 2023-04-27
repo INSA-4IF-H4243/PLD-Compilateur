@@ -1,6 +1,6 @@
-int add(int a, int b, int c, int d)
+int add(int a, int b)
 {
-    return a + b + c + d;
+    return a + b + 4 ;
 }
 
 int main() {
@@ -8,6 +8,6 @@ int main() {
     int b = 2;
     int c = 3;
     int d = 4;
-    int e = add(a, b, c, d);
+    int e = add(a, b);
     return e;
 }
