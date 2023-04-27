@@ -21,187 +21,199 @@ class IRInstr
 {
 
 public:
-	/** The instructions themselves -- feel free to subclass instead */
-	typedef enum
-	{
-		ldconst,
-		copy,
-		add,
-		sub,
-		mul,
-		div,
-		// rmem,
-		// wmem,
-		// call,
-		cmp_eq,
-		cmp_ne,
-		cmp_gt,
-		cmp_ge,
-		cmp_lt,
-		cmp_le,
-		retour
-	} Operation;
+		/** The instructions themselves -- feel free to subclass instead */
+		typedef enum
+		{
+			ldconst,
+			copy,
+			add,
+			sub,
+			mul,
+			div,
+			// rmem,
+			// wmem,
+			// call,
+			cmp_eq,
+			cmp_ne,
+			cmp_gt,
+			cmp_ge,
+			cmp_lt,
+			cmp_le,
+			retour
+		} Operation;
 
-	/**  constructor */
-	IRInstr(BasicBlock *bb_, Operation op, vector<string> params);
+		/**  constructor */
+		IRInstr(BasicBlock *bb_, Operation op, vector<string> params);
 
-	/** Actual code generation */
-	virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
-	virtual void gen_PseudoCode(); /**< Pseudo code generation for this IR instruction */
-protected:
-	BasicBlock *bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
-	Operation op;
-	// Type t;
-	vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
-						   // if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design.
+		/** Actual code generation */
+		virtual void gen_asm(ostream &o); /**< x86 assembly code generation for this IR instruction */
+		virtual void gen_PseudoCode();	  /**< Pseudo code generation for this IR instruction */
+	protected:
+		BasicBlock *bb; /**< The BB this instruction belongs to, which provides a pointer to the CFG this instruction belong to */
+		Operation op;
+		// Type t;
+		vector<string> params; /**< For 3-op instrs: d, x, y; for ldconst: d, c;  For call: label, d, params;  for wmem and rmem: choose yourself */
+							// if you subclass IRInstr, each IRInstr subclass has its parameters and the previous (very important) comment becomes useless: it would be a better design.
 };
 
 class IRInstrRetour : public IRInstr
 {
-public:
-	IRInstrRetour(BasicBlock *bb_, string var);
-	void gen_asm(ostream &o) override;
-	void gen_PseudoCode() override;
-private:
-	string var;
+	public:
+		IRInstrRetour(BasicBlock *bb_, string var);
+		void gen_asm(ostream &o) override;
+		void gen_PseudoCode() override;
+
+	private:
+		string var;
 };
 
 class IRInstrLdconst : public IRInstr
 {
-public:
-	IRInstrLdconst(BasicBlock *bb_, string var, int cst);
-	void gen_asm(ostream &o) override;
-	void gen_PseudoCode() override;
-private:
-	string var;
-	int cst;
+	public:
+		IRInstrLdconst(BasicBlock *bb_, string var, int cst);
+		void gen_asm(ostream &o) override;
+		void gen_PseudoCode() override;
+
+	private:
+		string var;
+		int cst;
 };
 
 class IRInstrCopy : public IRInstr
 {
-public:
-    IRInstrCopy(BasicBlock *bb_, string var, string res);
-    void gen_asm(ostream &o) override;
-	void gen_PseudoCode() override;
-private:
-	string var;
-	string res;
+	public:
+		IRInstrCopy(BasicBlock *bb_, string var, string res);
+		void gen_asm(ostream &o) override;
+		void gen_PseudoCode() override;
+
+	private:
+		string var;
+		string res;
 };
 
 class IRInstrAdd : public IRInstr
 {
-public:
-	IRInstrAdd(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-	void gen_PseudoCode() override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
+	public:
+		IRInstrAdd(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
+		void gen_PseudoCode() override;
+
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
 };
 
 class IRInstrSub : public IRInstr
 {
-public:
-	IRInstrSub(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-	void gen_PseudoCode() override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
+	public:
+		IRInstrSub(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
+		void gen_PseudoCode() override;
+
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
 };
 
 class IRInstrMul : public IRInstr
 {
-public:
-	IRInstrMul(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-	void gen_PseudoCode() override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
+	public:
+		IRInstrMul(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
+		void gen_PseudoCode() override;
+
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
 };
 
 class IRInstrDiv : public IRInstr
 {
-public:
-	IRInstrDiv(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-	void gen_PseudoCode() override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
+	public:
+		IRInstrDiv(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
+		void gen_PseudoCode() override;
+
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
 };
 
 class IRInstrCmp_eq : public IRInstr
 {
-public:
-	IRInstrCmp_eq(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
+	public:
+		IRInstrCmp_eq(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
+
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
 };
 
 class IRInstrCmp_ne : public IRInstr
 {
-public:
-	IRInstrCmp_ne(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
+	public:
+		IRInstrCmp_ne(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
+
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
 };
 
 class IRInstrCmp_gt : public IRInstr
 {
-public:
-	IRInstrCmp_gt(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
+	public:
+		IRInstrCmp_gt(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
+
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
 };
 
 class IRInstrCmp_ge : public IRInstr
 {
-public:
-	IRInstrCmp_ge(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
+	public:
+		IRInstrCmp_ge(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
+
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
 };
 
 class IRInstrCmp_lt : public IRInstr
 {
-public:
-	IRInstrCmp_lt(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
+	public:
+		IRInstrCmp_lt(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
+
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
 };
 
 class IRInstrCmp_le : public IRInstr
 {
-public:
-	IRInstrCmp_le(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
-	void gen_asm(ostream &o) override;
-private:
-	string tmp;
-	string res_gauche;
-	string res_droite;
-};
+	public:
+		IRInstrCmp_le(BasicBlock *bb_, string tmp, string res_gauche, string res_droite);
+		void gen_asm(ostream &o) override;
 
+	private:
+		string tmp;
+		string res_gauche;
+		string res_droite;
+};
 
 /**  The class for a basic block */
 
@@ -231,21 +243,21 @@ Possible optimization:
 
 class BasicBlock
 {
-public:
-	BasicBlock(CFG *cfg, string label);
-	void gen_asm(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
+	public:
+		BasicBlock(CFG *cfg, string label);
+		void gen_asm(ostream &o); /**< x86 assembly code generation for this basic block (very simple) */
 
-	void add_IRInstr(IRInstr *instr);
-	void gen_PseudoCode();
-	// No encapsulation whatsoever here. Feel free to do better.
-	BasicBlock *exit_true;	  /**< pointer to the next basic block, true branch. If nullptr, return from procedure */
-	BasicBlock *exit_false;	  /**< pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
-	string label;			  /**< label of the BB, also will be the label in the generated code */
-	CFG *cfg;				  /** < the CFG where this block belongs */
-	vector<IRInstr *> instrs; /** < the instructions themselves. */
-	string test_var_name;	  /** < when generating IR code for an if(expr) or while(expr) etc,
-														  store here the name of the variable that holds the value of expr */
-protected:
+		void add_IRInstr(IRInstr *instr);
+		void gen_PseudoCode();
+		// No encapsulation whatsoever here. Feel free to do better.
+		BasicBlock *exit_true;	  /**< pointer to the next basic block, true branch. If nullptr, return from procedure */
+		BasicBlock *exit_false;	  /**< pointer to the next basic block, false branch. If null_ptr, the basic block ends with an unconditional jump */
+		string label;			  /**< label of the BB, also will be the label in the generated code */
+		CFG *cfg;				  /** < the CFG where this block belongs */
+		vector<IRInstr *> instrs; /** < the instructions themselves. */
+		string test_var_name;	  /** < when generating IR code for an if(expr) or while(expr) etc,
+															store here the name of the variable that holds the value of expr */
+	protected:
 };
 
 /** The class for the control flow graph, also includes the symbol table */
@@ -259,37 +271,37 @@ protected:
  */
 class CFG
 {
-public:
-	// CFG(DefFonction* ast);
+	public:
+		// CFG(DefFonction* ast);
 
-	// DefFonction* ast; /**< The AST this CFG comes from */
-	CFG();
-	void add_bb(BasicBlock *bb);
-	void gen_PseudoCode();
-	// x86 code generation: could be encapsulated in a processor class in a retargetable compiler
-	void gen_asm(ostream &o);
-	// string IR_reg_to_asm(string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
-	// void gen_asm_prologue(ostream& o);
-	// void gen_asm_epilogue(ostream& o);
+		// DefFonction* ast; /**< The AST this CFG comes from */
+		CFG();
+		void add_bb(BasicBlock *bb);
+		void gen_PseudoCode();
+		// x86 code generation: could be encapsulated in a processor class in a retargetable compiler
+		void gen_asm(ostream &o);
+		// string IR_reg_to_asm(string reg); /**< helper method: inputs a IR reg or input variable, returns e.g. "-24(%rbp)" for the proper value of 24 */
+		// void gen_asm_prologue(ostream& o);
+		// void gen_asm_epilogue(ostream& o);
 
-	// symbol table methods
-	void add_SymbolIndex(string name, int t);
-	// string create_new_tempvar(int t);
-	int get_var_index(string name);
-	// int get_var_type(string name);
+		// symbol table methods
+		void add_SymbolIndex(string name, int t);
+		// string create_new_tempvar(int t);
+		int get_var_index(string name);
+		// int get_var_type(string name);
 
-	// basic block management
-	// string new_BB_name();
-	BasicBlock *current_bb;
-	
-protected:
-	map<string, int> SymbolIndex;
-	// map <string, Type> SymbolType; /**< part of the symbol table  */
-	 /**< part of the symbol table  */
-	// int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
-	// int nextBBnumber; /**< just for naming */
+		// basic block management
+		// string new_BB_name();
+		BasicBlock *current_bb;
 
-	vector<BasicBlock *> bbs; /**< all the basic blocks of this CFG*/
+	protected:
+		map<string, int> SymbolIndex;
+		// map <string, Type> SymbolType; /**< part of the symbol table  */
+		/**< part of the symbol table  */
+		// int nextFreeSymbolIndex; /**< to allocate new symbols in the symbol table */
+		// int nextBBnumber; /**< just for naming */
+
+		vector<BasicBlock *> bbs; /**< all the basic blocks of this CFG*/
 };
 
 #endif

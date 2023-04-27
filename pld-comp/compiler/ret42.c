@@ -1,8 +1,12 @@
-int main() {
+int main()
+{
    int a = 7;
-   if(a == 9) {
+   if (a == 9)
+   {
       a = 1;
-   }else{
+   }
+   else
+   {
       a = 0;
    }
    return a;
