@@ -1,8 +1,20 @@
-Compilateur C vers Assembleur:
+Compilateur C vers Assembleur x86:
 Programmé par l'hexanôme H4243 4IF INSA LYON:
     TABAKH Khalil, QI Jiaqi, PHUNG Minh, NGO Ngoc Minh, ALPOU Yannick, BAILLEUX Henri, MOUSSET Maxime
              
                 -- Documentation Utilisateur:
+
+
+        -- Aide pour compiler un programme:
+
+Dans le dossier /compiler
+    Créer le programme "mon_programme.c"
+
+    $make
+    $./ifcc mon_programme.c > mon_programme.s
+
+    mon_programme.s contient le code assembleur du programme
+
 
         -- Fonctionnalités De notre Compilateur : 
 
@@ -100,17 +112,6 @@ Return dans le programme
 
 ...
  
-        -- Aide pour compiler un programme:
-
-Dans le dossier /compiler
-    Créer le programme "mon_programme.c"
-
-    $make
-    $./ifcc mon_programme.c > mon_programme.s
-
-    mon_programme.s contient le code assembleur du programme
-
-
 
                 -- Documentation Développeur:
 
@@ -143,7 +144,25 @@ Indication de développement:
                DeclarationCheckVisitor qui parcours l'arbre en vérifiant que les variables dans les expressions ont toutes été déclarées.
                CFGVisitor qui crée l'IR et qui pour chaque mot visité de l'arbre ajoute les bons blocs et instructions au CFG.
 
-    l'IR: 
+    l'IR: IR.cpp contient la classe CFG qui contient les Block qui contiennent les instructions.
+          Après la visite de l'arbre et l'ajout des blocs au CFG dans CFGVisitor, on appele gen_asm.
+          gen_asm parcours les différents blocs et instructions et écrit l'assembleur correspondant aux instructions.
+          on peut aussi génerer du pseudo code avec gen_pseudo code...
+
+    Etapes pour ajouter une nouvelle fonctionnalité:
+          - ajouter les types instructions et mots nécéssaires dans la grammaire.
+          - regénèrer les visiteurs de base avec make.
+          - Ecrire dans les méthodes de CFGVisitor les ajouts au bloc courrant du CFG des suites d'instructions correspondant à la fonctionnalité.
+          - ajouter si besoin les nouveaux types d'instruction dans IRinstr et créer pour chacun la classe IrInstrMonInstr ainsi que ses méthodes de génération de code dans IR.h et IR.cpp.
+          - Créer un test.c utilisant la fonctionnalité. 
+            La visite de l'arbre du programme de test doit identifier la fonctionnalité,
+            La suite d'instructions correspondante doit être ajoutée au CFG
+            et son code bien généré dans le test.s
+
+          
+
+          
+
 
 
     
