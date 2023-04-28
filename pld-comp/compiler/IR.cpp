@@ -135,7 +135,7 @@ IRInstrCopy::IRInstrCopy(BasicBlock *bb_, string var, string res) : IRInstr(bb_,
 
 void IRInstrCopy::gen_asm(ostream &o)
 {
-    o << "\n# declaration de " << var << " dans " << res << "\n"
+    o << "\n# declaration de " << var << " avec " << res << "\n"
     " movl	" << bb->cfg->get_var_index(bb->func,res) << "(%rbp), %eax\n"
     " movl	%eax, " << bb->cfg->get_var_index(bb->func,var) << "(%rbp)\n\n";
 }

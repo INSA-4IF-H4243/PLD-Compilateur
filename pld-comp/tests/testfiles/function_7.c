@@ -1,17 +1,13 @@
-int add(int a, int b,int c,int d)
+int add()
 {
-    return a + b + d * c - 4 ;
+    return 1 ;
 }
-int mul(int a, int b,int c,int d)
+int mul()
 {
-    return a * b * d * c - 4 ;
+    return 2 ;
 }
 int main() {
-    int a = 1;
-    int b = 2;
-    int c = 3;
-    int d = 4;
-    int e = mul(a, b,c,d);
-    int z = add(a, b,c,d);
+    int e = mul();
+    int z = add();
     return e + z;
 }
