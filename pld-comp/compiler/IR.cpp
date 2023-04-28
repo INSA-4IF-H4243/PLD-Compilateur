@@ -466,10 +466,11 @@ void CFG::add_SymbolIndex(string func,string name, int t)
 		mappedParams.insert(std::pair<std::string, int>(name, t));
 		mapCFG.insert(std::pair<std::string, std::map<std::string, int>>(func, mappedParams));
 	}
-    /*cout<<" test func : "<<func<<" name : "<<name<<" index : "<<t<<endl<<endl;
+    /*cout<<" test func : "<<func<<" name : "<<name<<" index : "<<t<<"\n\n"<<endl;
     for (auto& func : mapCFG) {
+        cout<<"\n"<<endl;
         for (auto& index : func.second) {
-            cout<<" func : "<<func.first<<" name : "<<index.first<<" index : "<<index.second<<endl<<endl;
+            cout<<" func : "<<func.first<<" name : "<<index.first<<" index : "<<index.second<<endl;
         }
     }*/
 
