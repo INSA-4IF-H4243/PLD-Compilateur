@@ -198,6 +198,10 @@ antlrcpp::Any CFGVisitor::visitIfInst(ifccParser::IfInstContext *ctx)
 		IRInstrEJump *instrE = new IRInstrEJump(cfg->current_bb, bodyelse_block->label);
 		cfg->current_bb->add_IRInstr(instrE);
 	}
+	else{
+		IRInstrEJump *instrE = new IRInstrEJump(cfg->current_bb, endIf_block->label);
+		cfg->current_bb->add_IRInstr(instrE);
+	}
 
 	//ajout du bloc if
 	cfg->add_bb(bodyif_block);
