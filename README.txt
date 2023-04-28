@@ -1,5 +1,14 @@
 Compilateur C vers Assembleur:
 
+Création des tests:
+
+- Créer un dossier dans "./pld-comp/tests/testfiles". Par ex: nom "TestAdd1"
+- Créer un fichier .c pour faire le test (par ex: "test.c", ".c" est obligatoire)
+- Créer un fichier "description" (création n'est pas obligatoire mais le nommage "description" est obligatoire,
+pour que le ifcc-test.py puisse le lire)
+- Va dans ce chemin "./pld-comp/tests"
+- Lancer la commande "python3 ifcc-test.py ./testfiles/TestAdd1" pour compiler le test	
+
 Fonctionnalités : 
 
 Programme basique C:
