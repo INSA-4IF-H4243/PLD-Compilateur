@@ -173,6 +173,10 @@ if args.debug:
 ## TEST step: actually compile all test-cases with both compilers
 nb_success = 0
 nb_failure = 0
+command("rm -rf " + orig_cwd + "/ifcc-test-ok-output")
+command("rm -rf " + orig_cwd + "/ifcc-test-fail-output")
+command("mkdir " + orig_cwd + "/ifcc-test-ok-output")
+command("mkdir " + orig_cwd + "/ifcc-test-fail-output")
 for i, jobname in enumerate(jobs):
     os.chdir(orig_cwd)
     print('------------------------------------------------------------------------')
@@ -202,6 +206,8 @@ for i, jobname in enumerate(jobs):
         ## ifcc correctly rejects invalid program -> test-case ok
         prGreen("TEST OK")
         nb_success += 1
+        os.makedirs(orig_cwd + "/ifcc-test-ok-output/" + jobname)
+        command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-ok-output/" + jobname + "/")
         print("------------------------------------------------------------------------")
         print()
         continue
@@ -209,6 +215,8 @@ for i, jobname in enumerate(jobs):
         ## ifcc wrongly accepts invalid program -> error
         prRed("TEST FAIL (your compiler accepts an invalid program)")
         nb_failure += 1
+        os.makedirs(orig_cwd + "/ifcc-test-fail-output/" + jobname)
+        command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-fail-output/" + jobname + "/")
         print("------------------------------------------------------------------------")
         print()
         continue
@@ -216,6 +224,8 @@ for i, jobname in enumerate(jobs):
         ## ifcc wrongly rejects valid program -> error
         prRed("TEST FAIL (your compiler rejects a valid program)")
         nb_failure += 1
+        os.makedirs(orig_cwd + "/ifcc-test-fail-output/" + jobname)
+        command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-fail-output/" + jobname + "/")
         print("------------------------------------------------------------------------")
         print()
         if args.verbose:
@@ -227,6 +237,8 @@ for i, jobname in enumerate(jobs):
         if ldstatus:
             prRed("TEST FAIL (your compiler produces incorrect assembly)")
             nb_failure += 1
+            os.makedirs(orig_cwd + "/ifcc-test-fail-output/" + jobname)
+            command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-fail-output/" + jobname + "/")
             print("------------------------------------------------------------------------")
             print()
             if args.verbose:
@@ -240,6 +252,8 @@ for i, jobname in enumerate(jobs):
     if open("gcc-execute.txt").read() != open("ifcc-execute.txt").read() :
         prRed("TEST FAIL (different results at execution)")
         nb_failure += 1
+        os.makedirs(orig_cwd + "/ifcc-test-fail-output/" + jobname)
+        command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-fail-output/" + jobname + "/")
         print("------------------------------------------------------------------------")
         print()
         if args.verbose:
@@ -252,6 +266,8 @@ for i, jobname in enumerate(jobs):
     ## last but not least
     prGreen("TEST OK")
     nb_success += 1
+    os.makedirs(orig_cwd + "/ifcc-test-ok-output/" + jobname)
+    command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-ok-output/" + jobname + "/")
     print("------------------------------------------------------------------------")
     print()
 
@@ -262,3 +278,8 @@ print(str(nb_success)+" tests succeeded")
 print(str(nb_failure)+" tests failed")
 print("------------------------------------------------------------------------")
 print()
+
+command("rm -rf " + orig_cwd + "/ifcc-test-output")
+print("Moving successful tests to "+orig_cwd+"/ifcc-test-ok-output and failed tests to "+
+                        orig_cwd+"/ifcc-test-fail-output ...")
+print("Done.")
