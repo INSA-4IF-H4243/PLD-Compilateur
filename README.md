@@ -123,13 +123,6 @@ Dans le dossier /compiler
     Voir l'arbre AST d'un programme:
         $make gui FILE=programme_test.c
         
-Dans le dossier /tests
-    Créer un test dans /testfiles "mon_test.c"
-    Lancer le test:
-        $python3 ifcc-test.py ./testfiles/mon_test.c
-    Lancer tous les tests:
-        $python3 ifcc-test.py ./testfiles/*.c
-    
 
 Indication de développement:
     
