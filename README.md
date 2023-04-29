@@ -17,9 +17,9 @@ Les sorties des tests échoués sont dans le dossier "./pld-comp/tests/ifcc-test
 ![Image](./img/test.png)
 
 ### Programme basique C:
-int main() {
-   return 42;
-}
+    int main() {
+     return 42;
+    }
 test1_1
 
 ### Déclaration de variables:
@@ -48,17 +48,17 @@ test1_4
 test1_5
 
 ### Détection des multiples déclarations:
-        int a,b;
-        int a;
-        return 0;
+    int a,b;
+    int a;
+    return 0;
 test1_6
 
 ### Expressions Arithmétiques (=,+,-,*,/,()):
-        int b,c;
-        int a=17;
-        b=42+a;
-        c = a*b - (b*b +12)*7;
-        return c+46*(6-12);
+    int b,c;
+    int a=17;
+    b=42+a;
+    c = a*b - (b*b +12)*7;
+    return c+46*(6-12);
 test1_7
 
 ### Comparateurs:
