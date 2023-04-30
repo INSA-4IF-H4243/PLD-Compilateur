@@ -2,28 +2,35 @@ grammar ifcc;
 
 axiom       : prog ;
 
-prog        : TYPE 'main' '(' ')' '{' code? RETURN expr ';' '}' ;
+prog        : (func)? TYPE 'main' '(' ')' '{' code? '}' ;
+
+func        : TYPE VAR '(' args? ')' '{' code? '}' func? ;
+
+args        : TYPE VAR (',' args)? ;
 
 code        : instruction ';'                                #uneInst
             | instruction ';' code                           #mulInst
             | '{' code? '}'                                  #block
             | IF '(' expr ')' code  ( ELSE code )? code?     #ifInst
             | WHILE '(' expr ')' code code?                  #whileInst
+            | RETURN expr ';' code?                          #return
             ;
 
 instruction : TYPE vars ('=' expr)?        #declaration
             | vars '=' expr                #affectation
             ;
 
-expr        : expr OPM  expr         #muldiv
-            | expr OPP  expr         #addsub
-            | CONST                  #const
-            | VAR                    #var
-            | '(' expr ')'           #par
-            | expr CMPOP expr        #cmp
+expr        : expr OPM expr         #muldiv
+            | expr OPP expr         #addsub
+            | CONST                 #const
+            | VAR                   #var
+            | '(' expr ')'          #par
+            | expr CMPOP expr       #cmp
+            | VAR '(' input? ')'    #funcCall
             ;
 
 vars        : VAR(',' vars)?;
+input       : expr(',' input)?;
 TYPE        : INT|CHAR;
 INT         :'int';
 CHAR        :'char';

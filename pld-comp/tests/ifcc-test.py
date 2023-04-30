@@ -15,11 +15,14 @@
 #
 
 import argparse
-import glob
 import os
 import shutil
 import sys
 import subprocess
+
+def prRed(skk): print("\033[91m{}\033[00m" .format(skk))
+ 
+def prGreen(skk): print("\033[92m{}\033[00m" .format(skk))
 
 def command(string, logfile=None):
     """execute `string` as a shell command, optionnaly logging stdout+stderr to a file. return exit status.)"""
@@ -77,20 +80,19 @@ if os.path.isdir('ifcc-test-output'):
 os.mkdir('ifcc-test-output')
     
 ## Then we process the inputs arguments i.e. filenames or subtrees
-inputfilenames=[]
+inputfilenames=[] # list of all input file test files .c
+path_descriptions=[]    # list of all input file descriptions
 for path in args.input:
     path=os.path.normpath(path) # collapse redundant slashes etc.
-    if os.path.isfile(path):
-        if path[-2:] == '.c':
-            inputfilenames.append(path)
-        else:
-            print("error: incorrect filename suffix (should be '.c'): "+path)
-            exit(1)
-    elif os.path.isdir(path):
+    if os.path.isdir(path):
         for dirpath,dirnames,filenames in os.walk(path):
             inputfilenames+=[dirpath+'/'+name for name in filenames if name[-2:]=='.c']
+            if 'description' in filenames: # we also look for a description file
+                path_descriptions.append("{}/description".format(dirpath))
+            else:
+                path_descriptions.append("")
     else:
-        print("error: cannot read input path `"+path+"'")
+        print("error: there is no test folder path `"+path+"'")
         sys.exit(1)
 
 ## debug: after treewalk
@@ -104,10 +106,17 @@ if len(inputfilenames) == 0:
 
 ## Here we check that  we can actually read the files.  Our goal is to
 ## fail as early as possible when the CLI arguments are wrong.
-for inputfilename in inputfilenames:
+descriptions = []
+for i, inputfilename in enumerate(inputfilenames):
     try:
         f=open(inputfilename,"r")
         f.close()
+        if (path_descriptions[i] != ""):
+            f_description=open(path_descriptions[i],"r")
+            descriptions.append(f_description.read())
+            f_description.close()
+        else:
+            descriptions.append("")
     except Exception as e:
         print("error: "+e.args[1]+": "+inputfilename)
         sys.exit(1)
@@ -162,10 +171,22 @@ if args.debug:
 
 ######################################################################################
 ## TEST step: actually compile all test-cases with both compilers
-
-for jobname in jobs:
+nb_success = 0
+nb_failure = 0
+command("rm -rf " + orig_cwd + "/ifcc-test-ok-output")
+command("rm -rf " + orig_cwd + "/ifcc-test-fail-output")
+command("mkdir " + orig_cwd + "/ifcc-test-ok-output")
+command("mkdir " + orig_cwd + "/ifcc-test-fail-output")
+for i, jobname in enumerate(jobs):
+    folder_name = jobname.split('/')[-1]
     os.chdir(orig_cwd)
-
+    print('------------------------------------------------------------------------')
+    print()
+    print('Description:')
+    print()
+    print(descriptions[i])
+    print()
+    print('------------------------------------------------------------------------')
     print('TEST-CASE: '+jobname)
     os.chdir(jobname)
     
@@ -184,15 +205,30 @@ for jobname in jobs:
     
     if gccstatus != 0 and ifccstatus != 0:
         ## ifcc correctly rejects invalid program -> test-case ok
-        print("TEST OK")
+        prGreen("TEST OK")
+        nb_success += 1
+        os.makedirs(orig_cwd + "/ifcc-test-ok-output/" + folder_name)
+        command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-ok-output/" + folder_name + "/")
+        print("------------------------------------------------------------------------")
+        print()
         continue
     elif gccstatus != 0 and ifccstatus == 0:
         ## ifcc wrongly accepts invalid program -> error
-        print("TEST FAIL (your compiler accepts an invalid program)")
+        prRed("TEST FAIL (your compiler accepts an invalid program)")
+        nb_failure += 1
+        os.makedirs(orig_cwd + "/ifcc-test-fail-output/" + folder_name)
+        command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-fail-output/" + folder_name + "/")
+        print("------------------------------------------------------------------------")
+        print()
         continue
     elif gccstatus == 0 and ifccstatus != 0:
         ## ifcc wrongly rejects valid program -> error
-        print("TEST FAIL (your compiler rejects a valid program)")
+        prRed("TEST FAIL (your compiler rejects a valid program)")
+        nb_failure += 1
+        os.makedirs(orig_cwd + "/ifcc-test-fail-output/" + folder_name)
+        command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-fail-output/" + folder_name + "/")
+        print("------------------------------------------------------------------------")
+        print()
         if args.verbose:
             dumpfile("ifcc-compile.txt")
         continue
@@ -200,7 +236,12 @@ for jobname in jobs:
         ## ifcc accepts to compile valid program -> let's link it
         ldstatus=command("gcc -o exe-ifcc asm-ifcc.s", "ifcc-link.txt")
         if ldstatus:
-            print("TEST FAIL (your compiler produces incorrect assembly)")
+            prRed("TEST FAIL (your compiler produces incorrect assembly)")
+            nb_failure += 1
+            os.makedirs(orig_cwd + "/ifcc-test-fail-output/" + folder_name)
+            command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-fail-output/" + folder_name + "/")
+            print("------------------------------------------------------------------------")
+            print()
             if args.verbose:
                 dumpfile("ifcc-link.txt")
             continue
@@ -210,7 +251,12 @@ for jobname in jobs:
         
     command("./exe-ifcc","ifcc-execute.txt")
     if open("gcc-execute.txt").read() != open("ifcc-execute.txt").read() :
-        print("TEST FAIL (different results at execution)")
+        prRed("TEST FAIL (different results at execution)")
+        nb_failure += 1
+        os.makedirs(orig_cwd + "/ifcc-test-fail-output/" + folder_name)
+        command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-fail-output/" + folder_name + "/")
+        print("------------------------------------------------------------------------")
+        print()
         if args.verbose:
             print("GCC:")
             dumpfile("gcc-execute.txt")
@@ -219,4 +265,22 @@ for jobname in jobs:
         continue
 
     ## last but not least
-    print("TEST OK")
+    prGreen("TEST OK")
+    nb_success += 1
+    os.makedirs(orig_cwd + "/ifcc-test-ok-output/" + folder_name)
+    command("mv " + orig_cwd + "/" + jobname + "/* " + orig_cwd + "/ifcc-test-ok-output/" + folder_name + "/")
+    print("------------------------------------------------------------------------")
+    print()
+
+print()
+print("------------------------------------------------------------------------")
+print("SUMMARY:")
+print(str(nb_success)+" tests succeeded")
+print(str(nb_failure)+" tests failed")
+print("------------------------------------------------------------------------")
+print()
+
+command("rm -rf " + orig_cwd + "/ifcc-test-output")
+print("Moving successful tests to "+orig_cwd+"/ifcc-test-ok-output and failed tests to "+
+                        orig_cwd+"/ifcc-test-fail-output ...")
+print("Done.")
