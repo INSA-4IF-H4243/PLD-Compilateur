@@ -11,9 +11,6 @@
 # input parametre b
 # expression avec b
 # expression avec e
-visite des fct
-visite des arg
-visite des arg
 .globl  add
 add:
 
@@ -29,8 +26,8 @@ add:
  movl	%esi, -8(%rbp)
 
 
-# declaration de c dans a
- movl	-16(%rbp), %eax
+# declaration de c avec a
+ movl	-4(%rbp), %eax
  movl	%eax, -12(%rbp)
 
 
@@ -55,16 +52,16 @@ main:
  movl	$1, -20(%rbp)
 
 
-# declaration de a dans _tmp20
+# declaration de a avec _tmp20
  movl	-20(%rbp), %eax
  movl	%eax, -16(%rbp)
 
 
-# declaration de _tmp28 avec la valeur 2
- movl	$2, -28(%rbp)
+# declaration de _tmp28 avec la valeur 3
+ movl	$3, -28(%rbp)
 
 
-# declaration de b dans _tmp28
+# declaration de b avec _tmp28
  movl	-28(%rbp), %eax
  movl	%eax, -24(%rbp)
 
@@ -76,7 +73,7 @@ main:
  movl	%eax, -36(%rbp)
 
 
-# declaration de e dans _tmp36
+# declaration de e avec _tmp36
  movl	-36(%rbp), %eax
  movl	%eax, -32(%rbp)
 

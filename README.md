@@ -2,19 +2,20 @@
 Programmé par l'hexanôme H4243 4IF INSA LYON:
     TABAKH Khalil, QI Jiaqi, PHUNG Minh, NGO Ngoc Minh, ALPOU Yannick, BAILLEUX Henri, MOUSSET Maxime
 
-                -- Fonctionnalités De notre Compilateur : 
+### Documentation utilisateur:
 
-### Création des tests
-- Créer un dossier dans "./pld-comp/tests/testfiles". Par ex: nom "TestAdd1"
-- Créer un fichier .c pour faire le test (par ex: "test.c", ".c" est obligatoire)
-- Créer un fichier "description" (création n'est pas obligatoire mais le nommage "description" est obligatoire,
-pour que le ifcc-test.py puisse le lire)
-- Va dans ce chemin "./pld-comp/tests"
-- Lancer la commande "python3 ifcc-test.py ./testfiles/TestAdd1" pour compiler le test	
 
-Les sorties des tests passés sont dans le dossier "./pld-comp/tests/ifcc-test-ok-output"
-Les sorties des tests échoués sont dans le dossier "./pld-comp/tests/ifcc-test-fail-output"
-![Image](./img/test.png)
+        -- Aide pour compiler un programme:
+
+Dans le dossier /compiler
+    Créer le programme "mon_programme.c"
+
+    $make
+    $./ifcc mon_programme.c > mon_programme.s
+
+    mon_programme.s contient le code assembleur du programme
+
+        -- Fonctionnalités De notre Compilateur : 
 
 ### Programme basique C:
     int main() {
@@ -123,8 +124,19 @@ Dans le dossier /compiler
     Voir l'arbre AST d'un programme:
         $make gui FILE=programme_test.c
         
+### Création et lancement des tests
+- Créer un dossier dans "./pld-comp/tests/testfiles". Par ex: nom "TestAdd1"
+- Créer un fichier .c pour faire le test (par ex: "test.c", ".c" est obligatoire)
+- Créer un fichier "description" (création n'est pas obligatoire mais le nommage "description" est obligatoire,
+pour que le ifcc-test.py puisse le lire)
+- Va dans ce chemin "./pld-comp/tests"
+- Lancer la commande "python3 ifcc-test.py ./testfiles/TestAdd1" pour compiler le test	
 
-Indication de développement:
+Les sorties des tests passés sont dans le dossier "./pld-comp/tests/ifcc-test-ok-output"
+Les sorties des tests échoués sont dans le dossier "./pld-comp/tests/ifcc-test-fail-output"
+![Image](./img/test.png)
+
+### Indication de développement:
     
     grammaire : dans ifcc.g4
     
